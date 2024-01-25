@@ -6,27 +6,63 @@ set(CMAKE_CXX_STANDARD 11)
 if (NOT DEFINED ENV{GLFW_HOME})
     message(FATAL_ERROR "found no env named GLFW_HOME")
 endif()
+if (NOT DEFINED ENV{ASSIMP_HOME})
+    message(FATAL_ERROR "found no env named ASSIMP_HOME")
+endif()
+if (NOT DEFINED ENV{GLM_HOME})
+    message(FATAL_ERROR "found no env named GLM_HOME")
+endif()
+if (NOT DEFINED ENV{GLAD_HOME})
+    message(FATAL_ERROR "found no env named GLAD_HOME")
+endif()
 
-set(GLFW_HOME $ENV{GLFW_HOME})
+if(APPLE)
+    set(GLFW_HOME $ENV{GLFW_HOME})
+    set(ASSIMP_HOME $ENV{ASSIMP_HOME})
+elseif(WIN32)
+    set(GLFW_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/WIN32/glfw-3.3.9)
+    set(ASSIMP_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/WIN32/Assimp)
+endif()
+
 set(GLAD_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad)
-set(ASSIMP_HOME $ENV{ASSIMP_HOME})
-set(GLM_HOME $ENV{GLM_HOME})
+set(GLM_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/glm)
 
 include_directories("${GLFW_HOME}/include")
 include_directories("${GLAD_HOME}/include")
 include_directories("${ASSIMP_HOME}/include")
 include_directories("${GLM_HOME}/include")
 
-add_library(glfw SHARED IMPORTED)
-SET_TARGET_PROPERTIES(glfw PROPERTIES IMPORTED_LOCATION "${GLFW_HOME}/lib/libglfw.3.dylib")
+message("GLFW_HOME: ${GLFW_HOME}")
+message("GLAD_HOME: ${GLAD_HOME}")
+message("ASSIMP_HOME: ${ASSIMP_HOME}")
+message("GLM_HOME: ${GLM_HOME}")
 
-add_library(glad STATIC "${GLAD_HOME}/src/glad.c")
+add_library(glfw SHARED IMPORTED)
+if (APPLE)
+    SET_TARGET_PROPERTIES(glfw PROPERTIES IMPORTED_LOCATION "${GLFW_HOME}/lib/libglfw.3.dylib")
+elseif (WIN32)
+    SET_TARGET_PROPERTIES(glfw PROPERTIES 
+        IMPORTED_LOCATION "${GLFW_HOME}/lib-vc2022/glfw3.dll"
+        IMPORTED_IMPLIB "${GLFW_HOME}/lib-vc2022/glfw3.lib")
+endif()
 
 add_library(assimp SHARED IMPORTED)
-SET_TARGET_PROPERTIES(assimp PROPERTIES IMPORTED_LOCATION "${ASSIMP_HOME}/lib/libassimp.5.dylib")
+if (APPLE)
+    SET_TARGET_PROPERTIES(assimp PROPERTIES IMPORTED_LOCATION "${ASSIMP_HOME}/lib/libassimp.5.dylib")
+elseif (WIN32)
+    SET_TARGET_PROPERTIES(assimp PROPERTIES 
+        IMPORTED_LOCATION "${ASSIMP_HOME}/bin/x64/assimp-vc143-mt.dll"
+        IMPORTED_IMPLIB "${ASSIMP_HOME}/lib/x64/assimp-vc143-mt.lib")
+endif()
 
 add_library(glm INTERFACE)
 
+add_library(glad STATIC "${GLAD_HOME}/src/glad.c")
+
 add_executable(graphics main.cpp)
 
-target_link_libraries(graphics glfw glad assimp glm "-framework OpenGL")
+if (APPLE)
+    target_link_libraries(graphics glfw glad assimp glm "-framework OpenGL")
+elseif (WIN32)
+    target_link_libraries(graphics glfw glad assimp glm opengl32) # Link to opengl32 on Windows
+endif()
