@@ -15,8 +15,7 @@
 #include <vector>
 #include "utils/assimpHelper.h"
 #include "utils/animData.h"
-#include "mesh.h"
-#include "texture.h"
+#include "resourceManager.h"
 
 class Model
 {
@@ -30,7 +29,7 @@ public:
 
     void setID(unsigned int ID);
     
-	auto& GetBoneInfoMap() { return m_BoneInfoMap; }
+	//auto& GetBoneInfoMap() { return m_BoneInfoMap; }
 	int& GetBoneCount() { return m_BoneCounter; }
 
 

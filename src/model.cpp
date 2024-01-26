@@ -1,5 +1,4 @@
 #include "model.h"
-#include "resourceManager.h"
 
 unsigned int Model::getID() const {
     return ID;
@@ -196,7 +195,8 @@ void Model::setID(unsigned int ID) {
 		{
 			aiString str;
 			mat->GetTexture(type, i, &str);
-            Texture* texture = ResourceManager::loadTexture(typeName, str.C_Str());
+			std::string fullPath = std::string(ASSET_DIR) + "/textures/" + str.C_Str();
+            Texture* texture = ResourceManager::loadTexture(typeName, fullPath.c_str());
             textures.push_back(texture);
         
 		}

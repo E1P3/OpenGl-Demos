@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 project(graphics)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -12,13 +12,10 @@ endif()
 if (NOT DEFINED ENV{GLM_HOME})
     message(FATAL_ERROR "found no env named GLM_HOME")
 endif()
-if (NOT DEFINED ENV{GLAD_HOME})
-    message(FATAL_ERROR "found no env named GLAD_HOME")
-endif()
 
 if(APPLE)
     set(GLFW_HOME $ENV{GLFW_HOME})
-    set(ASSIMP_HOME $ENV{ASSIMP_HOME})
+    set(ASSIMP_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/APPLE/assimp)
 elseif(WIN32)
     set(GLFW_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/WIN32/glfw-3.3.9)
     set(ASSIMP_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/WIN32/Assimp)
@@ -55,7 +52,7 @@ endif()
 
 add_library(assimp SHARED IMPORTED)
 if (APPLE)
-    SET_TARGET_PROPERTIES(assimp PROPERTIES IMPORTED_LOCATION "${ASSIMP_HOME}/lib/libassimp.5.dylib")
+    SET_TARGET_PROPERTIES(assimp PROPERTIES IMPORTED_LOCATION "${ASSIMP_HOME}/bin/libassimp.5.dylib")
 elseif (WIN32)
     SET_TARGET_PROPERTIES(assimp PROPERTIES 
         IMPORTED_LOCATION "${ASSIMP_HOME}/bin/x64/assimp-vc143-mt.dll"

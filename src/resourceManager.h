@@ -10,6 +10,8 @@
 #include "texture.h"
 #include "model.h"
 
+class Model;
+
 class ResourceManager {
 public:
     static Shader* loadShader(const char* vertexShaderFile, const char* fragmentShaderFile);

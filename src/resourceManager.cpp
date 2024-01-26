@@ -1,5 +1,4 @@
 #include "resourceManager.h"
-#include "model.h"
 
 std::vector<Shader*> ResourceManager::shaders;
 std::vector<Texture*> ResourceManager::textures;

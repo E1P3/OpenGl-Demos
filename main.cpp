@@ -1,7 +1,8 @@
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <assimp/Importer.hpp>
 #include <glm/glm.hpp>
+#include "src/texture.h"
 
 int main() {
     // Initialize GLFW
@@ -9,6 +10,11 @@ int main() {
         std::cerr << "Failed to initialize GLFW" << std::endl;
         return -1;
     }
+
+    // Mac m1 will automatically load OpenGL 2.1 without hints enabled
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     // Create a window
     GLFWwindow* window = glfwCreateWindow(800, 600, "My OpenGL Window", nullptr, nullptr);
@@ -20,6 +26,20 @@ int main() {
 
     // Make the window's context current
     glfwMakeContextCurrent(window);
+
+    // Initialize GLAD
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "Failed to initialize Glad" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+
+    std::cout << "OpenGL Version: " << GLVersion.major << "." << GLVersion.minor << std::endl;
+
+
+    std::string textureFile = std::string(ASSET_DIR) + "/textures/bateman_texture.png";
+    std::cout << textureFile << std::endl;
+    Texture texture = Texture(NORMAL, textureFile);
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
