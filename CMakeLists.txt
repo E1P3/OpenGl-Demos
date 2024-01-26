@@ -37,6 +37,13 @@ message("GLAD_HOME: ${GLAD_HOME}")
 message("ASSIMP_HOME: ${ASSIMP_HOME}")
 message("GLM_HOME: ${GLM_HOME}")
 
+# Reference asset directory
+set(ASSET_DIR "${PROJECT_SOURCE_DIR}/assets")
+add_definitions(-DASSET_DIR="${ASSET_DIR}")
+
+set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
+add_definitions(-DSRC_DIR="${SRC_DIR}")
+
 add_library(glfw SHARED IMPORTED)
 if (APPLE)
     SET_TARGET_PROPERTIES(glfw PROPERTIES IMPORTED_LOCATION "${GLFW_HOME}/lib/libglfw.3.dylib")
@@ -59,7 +66,22 @@ add_library(glm INTERFACE)
 
 add_library(glad STATIC "${GLAD_HOME}/src/glad.c")
 
-add_executable(graphics main.cpp)
+add_executable(graphics
+    main.cpp
+    src/shader.h
+    src/entity.h
+    src/gameObject.h
+    src/material.h
+    src/texture.h
+    src/mesh.h
+    src/model.h
+    src/model.cpp
+    src/resourceManager.h
+    src/resourceManager.cpp
+    src/utils/stb_image.h
+    src/utils/stb_image.cpp
+    src/utils/animData.h
+    src/utils/assimpHelper.h)
 
 if (APPLE)
     target_link_libraries(graphics glfw glad assimp glm "-framework OpenGL")
