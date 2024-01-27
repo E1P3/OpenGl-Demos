@@ -29,9 +29,9 @@ public:
 
     void setID(unsigned int ID);
     
-	//auto& GetBoneInfoMap() { return m_BoneInfoMap; }
 	int& GetBoneCount() { return m_BoneCounter; }
 
+	void Draw(Shader* shader);
 
 private:
     unsigned int ID;
