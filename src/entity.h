@@ -10,7 +10,7 @@ public:
         transform = glm::mat4(1.0f);
     }
 
-    ~Entity();
+    ~Entity() = default;
 
     glm::mat4 getTransform() {
         return transform;

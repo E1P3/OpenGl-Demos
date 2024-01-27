@@ -1,3 +1,8 @@
+#ifndef MATERIAL_H
+#define MATERIAL_H
+
+#include "shader.h"
+
 class Material {
 public:
     // Constructor
@@ -14,8 +19,16 @@ public:
     void setDiffuse(float diffuse) { m_diffuse = diffuse; }
     void setSpecular(float specular) { m_specular = specular; }
 
+    void Draw(Shader* shader) {
+        shader->SetFloat("material.ambient", m_ambient, true);
+        shader->SetFloat("material.diffuse", m_diffuse, true);
+        shader->SetFloat("material.specular", m_specular, true);
+    }
+
 private:
     float m_ambient;
     float m_diffuse;
     float m_specular;
 };
+
+#endif // MATERIAL_H

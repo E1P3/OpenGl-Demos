@@ -71,10 +71,13 @@ add_executable(graphics
     src/material.h
     src/texture.h
     src/mesh.h
+    src/entityModule.h
     src/model.h
     src/model.cpp
     src/resourceManager.h
     src/resourceManager.cpp
+    src/entityModules/renderModelModule.h
+    src/entityModules/gameplayModule.h
     src/utils/stb_image.h
     src/utils/stb_image.cpp
     src/utils/animData.h

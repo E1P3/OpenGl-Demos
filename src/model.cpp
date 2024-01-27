@@ -51,6 +51,12 @@ void Model::setID(unsigned int ID) {
 
 	}
 
+	void Model::Draw(Shader* shader) 
+	{
+		for (unsigned int i = 0; i < meshes.size(); i++)
+			meshes[i]->Draw(shader);
+	}
+
 	void Model::SetVertexBoneDataToDefault(Vertex& vertex)
 	{
 		for (int i = 0; i < MAX_BONE_INFLUENCE; i++)

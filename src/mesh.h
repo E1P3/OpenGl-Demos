@@ -49,6 +49,54 @@ public:
         this->ID = ID;
     }
 
+    void Draw(Shader* shader)
+    {
+        // bind appropriate textures
+        unsigned int diffuseNr = 1;
+        unsigned int specularNr = 1;
+        unsigned int normalNr = 1;
+        unsigned int heightNr = 1;
+
+        for (unsigned int i = 0; i < textures.size(); i++)
+        {
+            glActiveTexture(GL_TEXTURE0 + i + 1); // active proper texture unit before binding
+            // retrieve texture number (the N in diffuse_textureN)
+            std::string number;
+            std::string name;
+            TextureType type = textures[i]->getType();
+            if (type == DIFFUSE){
+                number = std::to_string(diffuseNr++);
+                name = "texture_diffuse";
+            }
+            else if (type == SPECULAR){
+                number = std::to_string(specularNr++); // transfer unsigned int to string
+                name = "texture_specular";
+            }
+            else if (type == NORMAL){
+                number = std::to_string(normalNr++); // transfer unsigned int to string
+                name = "texture_normal";
+            }
+            else if (type == HEIGHT){
+                number = std::to_string(heightNr++); // transfer unsigned int to string
+                name = "texture_height";
+            }  
+            //std::cout << name << number <<" " << i + 1 << "\n";
+            // now set the sampler to the correct texture unit
+            shader->SetInteger((name + number).c_str(), i+1, false);
+            // and finally bind the texture
+            glBindTexture(GL_TEXTURE_2D, textures[i]->getID());
+        }
+
+        // draw mesh
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        // always good practice to set everything back to defaults once configured.
+        glActiveTexture(GL_TEXTURE0);
+    }
+
+
 private:
 
     unsigned int VAO, VBO, EBO, ID;
