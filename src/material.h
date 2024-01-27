@@ -22,6 +22,12 @@ public:
         this->ID = ID;
     }
 
+    void Draw(Shader* shader) {
+        shader->SetFloat("material.ambient", m_ambient, true);
+        shader->SetFloat("material.diffuse", m_diffuse, true);
+        shader->SetFloat("material.specular", m_specular, true);
+    }
+
 private:
     unsigned int ID;
 };
