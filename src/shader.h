@@ -81,9 +81,13 @@ public:
 	}
 
 	void Compile(const char* PVS, const char* PFS) {
-
+		
 		if (!PVS || !PFS) {
-			throw std::exception("SHADER_LINKING_ERROR: Shader data is empty");
+			#ifdef __APPLE__
+				throw "SHADER_LINKING_ERROR: Shader data is empty";
+			#else
+				throw std::runtime_error("SHADER_LINKING_ERROR: Shader data is empty");
+			#endif
 		}
 
 		ID = glCreateProgram();
@@ -129,7 +133,11 @@ private:
 
 	char* readShaderSource(const char* shaderFile) {
 		FILE* fp;
-		fopen_s(&fp, shaderFile, "rb");
+		#ifdef _WIN32
+			fopen_s(&fp, shaderFile, "rb");
+		#else
+			fp = fopen(shaderFile, "rb");
+		#endif
 
 		if (fp == NULL) { return NULL; }
 
