@@ -18,7 +18,7 @@ if(APPLE)
     set(ASSIMP_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/APPLE/assimp)
 elseif(WIN32)
     set(GLFW_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/WIN32/glfw-3.3.9)
-    set(ASSIMP_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/WIN32/Assimp)
+    set(ASSIMP_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/WIN32/assimp)
 endif()
 
 set(GLAD_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad)
@@ -55,8 +55,8 @@ if (APPLE)
     SET_TARGET_PROPERTIES(assimp PROPERTIES IMPORTED_LOCATION "${ASSIMP_HOME}/bin/libassimp.5.dylib")
 elseif (WIN32)
     SET_TARGET_PROPERTIES(assimp PROPERTIES 
-        IMPORTED_LOCATION "${ASSIMP_HOME}/bin/x64/assimp-vc143-mt.dll"
-        IMPORTED_IMPLIB "${ASSIMP_HOME}/lib/x64/assimp-vc143-mt.lib")
+        IMPORTED_LOCATION "${ASSIMP_HOME}/bin/assimp-vc143-mtd.dll"
+        IMPORTED_IMPLIB "${ASSIMP_HOME}/lib/assimp/assimp-vc143-mtd.lib")
 endif()
 
 add_library(glm INTERFACE)

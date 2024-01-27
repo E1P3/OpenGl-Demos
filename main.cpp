@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <glm/glm.hpp>
-#include "src/texture.h"
+#include "src/resourceManager.h"
 
 int main() {
     // Initialize GLFW
@@ -39,7 +39,11 @@ int main() {
 
     std::string textureFile = std::string(ASSET_DIR) + "/textures/bateman_texture.png";
     std::cout << textureFile << std::endl;
-    Texture texture = Texture(NORMAL, textureFile);
+    Texture* texture = ResourceManager::loadTexture(NORMAL, textureFile.c_str());
+
+    std::string modelFile = std::string(ASSET_DIR) + "/models/bateman.dae";
+    std::cout << modelFile << std::endl;
+    Model* model = ResourceManager::loadModel(modelFile.c_str());
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
