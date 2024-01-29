@@ -17,59 +17,105 @@
 		return ID;
 	}
 
-	void Shader::SetFloat(const std::string& name, float value, bool useShader)
-	{
-		if (useShader)
+	void Shader::setDebug(bool debug) {
+        isDebug = debug;
+    }
+
+	void Shader::SetFloat(const std::string& name, float value, bool useShader) {
+		if (useShader) {
 			this->Use();
+		}
 		glUniform1f(glGetUniformLocation(this->ID, name.c_str()), value);
+		if (isDebug) {
+			std::cout << "SetFloat: " << name << " = " << value << std::endl;
+		}
 	}
-	void Shader::SetInteger(const std::string& name, int value, bool useShader)
-	{
-		if (useShader)
+
+	void Shader::SetInteger(const std::string& name, int value, bool useShader) {
+		if (useShader) {
 			this->Use();
+		}
 		glUniform1i(glGetUniformLocation(this->ID, name.c_str()), value);
+		if (isDebug) {
+			std::cout << "SetInteger: " << name << " = " << value << std::endl;
+		}
 	}
-	void Shader::Shader::SetVector2f(const std::string& name, float x, float y, bool useShader)
-	{
-		if (useShader)
+
+	void Shader::SetVector2f(const std::string& name, float x, float y, bool useShader) {
+		if (useShader) {
 			this->Use();
+		}
 		glUniform2f(glGetUniformLocation(this->ID, name.c_str()), x, y);
+		if (isDebug) {
+			std::cout << "SetVector2f: " << name << " = (" << x << ", " << y << ")" << std::endl;
+		}
 	}
-	void Shader::SetVector2f(const std::string& name, const glm::vec2& value, bool useShader)
-	{
-		if (useShader)
+
+	void Shader::SetVector2f(const std::string& name, const glm::vec2& value, bool useShader) {
+		if (useShader) {
 			this->Use();
+		}
 		glUniform2f(glGetUniformLocation(this->ID, name.c_str()), value.x, value.y);
+		if (isDebug) {
+			std::cout << "SetVector2f: " << name << " = (" << value.x << ", " << value.y << ")" << std::endl;
+		}
 	}
-	void Shader::SetVector3f(const std::string& name, float x, float y, float z, bool useShader)
-	{
-		if (useShader)
+
+	void Shader::SetVector3f(const std::string& name, float x, float y, float z, bool useShader) {
+		if (useShader) {
 			this->Use();
+		}
 		glUniform3f(glGetUniformLocation(this->ID, name.c_str()), x, y, z);
+		if (isDebug) {
+			std::cout << "SetVector3f: " << name << " = (" << x << ", " << y << ", " << z << ")" << std::endl;
+		}
 	}
-	void Shader::SetVector3f(const std::string& name, const glm::vec3& value, bool useShader)
-	{
-		if (useShader)
+
+	void Shader::SetVector3f(const std::string& name, const glm::vec3& value, bool useShader) {
+		if (useShader) {
 			this->Use();
+		}
 		glUniform3f(glGetUniformLocation(this->ID, name.c_str()), value.x, value.y, value.z);
+		if (isDebug) {
+			std::cout << "SetVector3f: " << name << " = (" << value.x << ", " << value.y << ", " << value.z << ")" << std::endl;
+		}
 	}
-	void Shader::SetVector4f(const std::string& name, float x, float y, float z, float w, bool useShader)
-	{
-		if (useShader)
+
+	void Shader::SetVector4f(const std::string& name, float x, float y, float z, float w, bool useShader) {
+		if (useShader) {
 			this->Use();
+		}
 		glUniform4f(glGetUniformLocation(this->ID, name.c_str()), x, y, z, w);
+		if (isDebug) {
+			std::cout << "SetVector4f: " << name << " = (" << x << ", " << y << ", " << z << ", " << w << ")" << std::endl;
+		}
 	}
-	void Shader::SetVector4f(const std::string& name, const glm::vec4& value, bool useShader)
-	{
-		if (useShader)
+
+	void Shader::SetVector4f(const std::string& name, const glm::vec4& value, bool useShader) {
+		if (useShader) {
 			this->Use();
+		}
 		glUniform4f(glGetUniformLocation(this->ID, name.c_str()), value.x, value.y, value.z, value.w);
+		if (isDebug) {
+			std::cout << "SetVector4f: " << name << " = (" << value.x << ", " << value.y << ", " << value.z << ", " << value.w << ")" << std::endl;
+		}
 	}
-	void Shader::SetMatrix4(const std::string& name, const glm::mat4& matrix, bool useShader)
-	{
-		if (useShader)
+
+	void Shader::SetMatrix4(const std::string& name, const glm::mat4& matrix, bool useShader) {
+		if (useShader) {
 			this->Use();
-		glUniformMatrix4fv(glGetUniformLocation(this->ID, name.c_str()), 1, false, &matrix[0][0]);
+		}
+		glUniformMatrix4fv(glGetUniformLocation(this->ID, name.c_str()), 1, false, glm::value_ptr(matrix));
+		if (isDebug) {
+			std::cout << "SetMatrix4: " << name << std::endl;
+
+			for (int row = 0; row < 4; row++) {
+				for (int col = 0; col < 4; col++) {
+					std::cout << matrix[row][col] << " ";
+				}
+				std::cout << std::endl;
+			}
+		}
 	}
 
 	void Shader::Compile(const char* PVS, const char* PFS) {

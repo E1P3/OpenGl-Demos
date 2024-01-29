@@ -39,15 +39,6 @@ public:
         module->setParent(this);
     }
 
-    void OnRenderPass() {
-        for (auto module : modules) {
-            module->OnRenderPass();
-        }
-        for (auto child : children) {
-            child->OnRenderPass();
-        }
-    }
-
     void OnUpdate() {
         for (auto module : modules) {
             module->OnUpdate();

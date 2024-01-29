@@ -26,7 +26,6 @@ public:
         this->ID = ID;
     }
 
-    virtual void OnRenderPass() = 0;
     virtual void OnUpdate() = 0;
     virtual void OnStart() = 0;
 

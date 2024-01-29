@@ -40,8 +40,7 @@ public:
             printInfo();
         }
     }
-
-    void OnRenderPass() override{}
+    
     void OnStart() override{}
 
 private:

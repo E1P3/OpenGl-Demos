@@ -61,9 +61,6 @@ public:
             module->model->Draw(this);
         }
 
-
-
-
     }
 
 };

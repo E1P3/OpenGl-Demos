@@ -23,7 +23,7 @@ public:
     static GLFWwindow* getWindow();
 
     //Resource management
-    static Shader* loadShader(const char* vertexShaderFile, const char* fragmentShaderFile);
+    static Shader* addShader(Shader* shader);
     static Shader* getShader(unsigned int ID);
     static Texture* loadTexture( TextureType type, const char* textureFile);
     static Texture* getTexture(unsigned int ID);

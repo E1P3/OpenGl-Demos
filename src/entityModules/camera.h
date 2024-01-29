@@ -28,7 +28,6 @@ enum Camera_Projection {
 
 class Camera : public EntityModule {
 public:
-    Camera() = default;
     Camera(glm::vec3 worldUp, Camera_Projection projection, float fov, float aspect, float near, float far){
         this->worldUp = worldUp;
         this->projection = projection;
@@ -45,10 +44,6 @@ public:
     }
     ~Camera() = default;
 
-    void OnRenderPass() override{
-        
-    }
-
     void OnUpdate() override{
         this->updateCameraVectors();
         this->updateViewMatrix();
@@ -56,6 +51,12 @@ public:
 
     void OnStart() override{
         
+    }
+
+    void lookAt(glm::vec3 target){
+        glm::vec3 direction = glm::normalize(target - this->getParent()->getPosition());
+        glm::quat rotation = glm::quatLookAt(direction, this->worldUp);
+        this->getParent()->setRotation(rotation);
     }
 
     glm::mat4 getViewMatrix(){

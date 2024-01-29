@@ -12,10 +12,6 @@ class GameplayModule : public EntityModule {
         }
         
         ~GameplayModule();
-        
-        void OnRenderPass(){
-            std::cout << "GameplayModule" << gameid << "::OnRenderPass()" << std::endl;
-        }
 
         void OnUpdate(){
             std::cout << "GameplayModule" << gameid << "::OnUpdate()" << std::endl;

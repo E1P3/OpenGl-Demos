@@ -31,8 +31,7 @@ Model* ResourceManager::getModel(unsigned int ID){
     return models[ID];
 }
 
-Shader* ResourceManager::loadShader(const char* vertexShaderFile, const char* fragmentShaderFile){
-        Shader* shader = new Shader(vertexShaderFile, fragmentShaderFile);
+Shader* ResourceManager::addShader(Shader* shader){
         shaders.push_back(shader);
         return shader;
 }

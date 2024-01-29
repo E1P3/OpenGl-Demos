@@ -19,6 +19,8 @@ public:
     Shader& Use();
     unsigned int getID() const;
 
+    void setDebug(bool debug);
+
     void SetFloat(const std::string& name, float value, bool useShader = false);
     void SetInteger(const std::string& name, int value, bool useShader = false);
     void SetVector2f(const std::string& name, float x, float y, bool useShader = false);
@@ -39,14 +41,16 @@ public:
 
 protected:
     char* readShaderSource(const char* shaderFile);
-
-private:
-    unsigned int ID;
-    unsigned int AddShader(const char* shaderText, GLenum shaderType);
-
     std::vector<RenderModule*> objectsToRender;
     std::vector<DirectionalLight*> dirLightsToRender;
     std::vector<PointLight*> pointLightsToRender;
+
+private:
+    bool isDebug = false;
+    unsigned int ID;
+    unsigned int AddShader(const char* shaderText, GLenum shaderType);
+
+
 };
 
 #endif // SHADER_CLASS_H

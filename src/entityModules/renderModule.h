@@ -14,11 +14,17 @@ class RenderModule : public EntityModule {
             this->model = model;
             this->material = material;
             this->shader = shader;
+        }
+        
+        void OnStart() override{
             if(shader != nullptr){
                 shader->bindRenderModule(this);
             }
         }
-        
+
+        void OnUpdate() override{
+            
+        }
         ~RenderModule();
         
         Shader* shader;
