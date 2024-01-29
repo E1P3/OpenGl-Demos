@@ -66,6 +66,7 @@ add_library(glad STATIC "${GLAD_HOME}/src/glad.c")
 add_executable(graphics
     main.cpp
     src/shader.h
+    src/shader.cpp
     src/entity.h
     src/gameObject.h
     src/material.h
@@ -74,14 +75,19 @@ add_executable(graphics
     src/entityModule.h
     src/model.h
     src/model.cpp
+    src/lights.h
     src/resourceManager.h
     src/resourceManager.cpp
-    src/entityModules/renderModelModule.h
+    src/entityModules/renderModule.h
     src/entityModules/gameplayModule.h
+    src/entityModules/camera.h
+    src/entityModules/controllerModule.h
+    src/shaders/forwardPass/forwardShader.h
     src/utils/stb_image.h
     src/utils/stb_image.cpp
     src/utils/animData.h
-    src/utils/assimpHelper.h)
+    src/utils/assimpHelper.h
+    src/utils/programInfo.h)
 
 if (APPLE)
     target_link_libraries(graphics glfw glad assimp glm "-framework OpenGL")

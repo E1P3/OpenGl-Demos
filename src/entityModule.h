@@ -3,27 +3,12 @@
 
 class GameObject;
 
-class IRenderable {
-public:
-    virtual void OnRenderPass() = 0;
-};
-
-class IUpdate {
-public:
-    virtual void OnUpdate() = 0;
-};
-
-class IStart {
-public:
-    virtual void OnStart() = 0;
-};
-
-class entityModule : public IRenderable, public IUpdate, public IStart
+class EntityModule
 {
 public:
-    entityModule() = default;
+    EntityModule() = default;
 
-    ~entityModule() = default;
+    ~EntityModule() = default;
 
     void setParent(GameObject* parent) {
         this->parent = parent;
@@ -33,7 +18,20 @@ public:
         return parent;
     }
 
+    unsigned int getID() {
+        return ID;
+    }
+
+    void setID(unsigned int ID) {
+        this->ID = ID;
+    }
+
+    virtual void OnRenderPass() = 0;
+    virtual void OnUpdate() = 0;
+    virtual void OnStart() = 0;
+
 private:
+    unsigned int ID;
     GameObject* parent;
 };
 

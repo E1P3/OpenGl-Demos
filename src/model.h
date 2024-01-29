@@ -38,6 +38,10 @@ private:
     unsigned int ID;
     std::vector<Texture*> textures;
 	std::vector<Mesh*>    meshes;
+	bool hasDiffuseMap = false;
+	bool hasSpecularMap = false;
+	bool hasNormalMap = false;
+	bool hasHeightMap = false;
 
 	std::string directory;
 
@@ -61,6 +65,8 @@ private:
 	void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 
 	std::vector<Texture*> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
+
+	bool loadTextureMaps(aiMaterial* material, aiTextureType type, TextureType typeName, std::vector<Texture*>& textures);
 };
 
 

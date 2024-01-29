@@ -21,12 +21,20 @@ public:
         }
     }
 
+    unsigned int getID() {
+        return ID;
+    }
+
+    void setID(unsigned int ID) {
+        this->ID = ID;
+    }
+
     void addChild(GameObject* child) {
         children.push_back(child);
         child->parent = this;
     }
 
-    void addModule(entityModule* module) {
+    void addModule(EntityModule* module) {
         modules.push_back(module);
         module->setParent(this);
     }
@@ -57,10 +65,12 @@ public:
             child->OnStart();
         }
     }
+    
 private:
+    unsigned int ID;
     std::vector<GameObject*> children;
     GameObject* parent;
-    std::vector<entityModule*> modules;
+    std::vector<EntityModule*> modules;
 };
 
 #endif // GAMEOBJECT_H

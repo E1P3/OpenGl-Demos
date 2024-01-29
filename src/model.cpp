@@ -53,6 +53,10 @@ void Model::setID(unsigned int ID) {
 
 	void Model::Draw(Shader* shader) 
 	{
+		shader->SetInteger("hasDiffuseMap", hasDiffuseMap, true);
+		shader->SetInteger("hasSpecularMap", hasSpecularMap, true);
+		shader->SetInteger("hasNormalMap", hasNormalMap, true);
+		shader->SetInteger("hasHeightMap", hasHeightMap, true);
 		for (unsigned int i = 0; i < meshes.size(); i++)
 			meshes[i]->Draw(shader);
 	}
@@ -126,14 +130,10 @@ void Model::setID(unsigned int ID) {
 		
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		std::vector<Texture*> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, DIFFUSE);
-		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-		std::vector<Texture*> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, HEIGHT);
-		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-		std::vector<Texture*> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, SPECULAR);
-		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-		std::vector<Texture*> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, NORMAL);
-		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+		bool hasDiffuseMaps = loadTextureMaps(material, aiTextureType_DIFFUSE, DIFFUSE, textures);
+		bool hasNormalMaps = loadTextureMaps(material, aiTextureType_HEIGHT, HEIGHT, textures);
+		bool hasSpecularMaps = loadTextureMaps(material, aiTextureType_SPECULAR, SPECULAR, textures);
+		bool hasHeightMaps = loadTextureMaps(material, aiTextureType_AMBIENT, NORMAL, textures);
 
 		std::cout << " Verticies size: " << vertices.size() << "\n";
 
@@ -142,6 +142,16 @@ void Model::setID(unsigned int ID) {
 		return ResourceManager::loadMesh(vertices, indices, textures);
 	}
 	
+	bool Model::loadTextureMaps(aiMaterial* material, aiTextureType type, TextureType typeName, std::vector<Texture*>& textures){
+		std::vector<Texture*> textureMaps = loadMaterialTextures(material, type, typeName);
+		if(textureMaps.size() > 0){
+			textures.insert(textures.end(), textureMaps.begin(), textureMaps.end());
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	void Model::SetVertexBoneData(Vertex& vertex, int boneID, float weight)
 	{
 		for (int i = 0; i < MAX_BONE_INFLUENCE; ++i)

@@ -5,28 +5,28 @@
 #include "../shader.h"
 #include "../resourceManager.h"
 
-class GameplayModule : public entityModule {
+class GameplayModule : public EntityModule {
     public:
-        GameplayModule(int id){
-            this->id = id;
+        GameplayModule(int gameid){
+            this->gameid = gameid;
         }
         
         ~GameplayModule();
         
         void OnRenderPass(){
-            std::cout << "GameplayModule" << id << "::OnRenderPass()" << std::endl;
+            std::cout << "GameplayModule" << gameid << "::OnRenderPass()" << std::endl;
         }
 
         void OnUpdate(){
-            std::cout << "GameplayModule" << id << "::OnUpdate()" << std::endl;
+            std::cout << "GameplayModule" << gameid << "::OnUpdate()" << std::endl;
         }
 
         void OnStart(){
-            std::cout << "GameplayModule" << id << "::OnStart()" << std::endl;
+            std::cout << "GameplayModule" << gameid << "::OnStart()" << std::endl;
         }
         
     private:
-      int id;
+      int gameid;
 };
 
 #endif // GAMEPLAY_MODULE_H

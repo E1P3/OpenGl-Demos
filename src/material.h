@@ -25,7 +25,16 @@ public:
         shader->SetFloat("material.specular", m_specular, true);
     }
 
+    unsigned int getID() {
+        return ID;
+    }
+
+    void setID(unsigned int ID) {
+        this->ID = ID;
+    }
+
 private:
+    unsigned int ID;
     float m_ambient;
     float m_diffuse;
     float m_specular;
