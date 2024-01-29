@@ -58,6 +58,7 @@ public:
     static void runGameLoop();
 
 private:
+    static bool isDebug;
     static GLFWwindow* window;
     static float deltaTime, previousTime;
     static double mouseX, mouseY, lastMouseX, lastMouseY;

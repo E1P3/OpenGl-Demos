@@ -19,6 +19,7 @@ std::unordered_map<int, bool> ResourceManager::mouseStates;
 Camera* ResourceManager::activeCamera;
 std::vector<PointLight*> ResourceManager::pointLights;
 std::vector<DirectionalLight*> ResourceManager::directionalLights;
+bool ResourceManager::isDebug = false;
 
 Model* ResourceManager::loadModel(const char* modelFile){
         Model* model = new Model(modelFile);
@@ -189,7 +190,8 @@ void ResourceManager::runGameLoop(){
     updateDeltaTime();
     updateKeysPressed();
     updateMousePosition();
-    ProgramInfo::printAllInfo();
+    if(isDebug)
+        ProgramInfo::printAllInfo();
 
     for(GameObject* gameObject : gameObjects){
         gameObject->OnUpdate();

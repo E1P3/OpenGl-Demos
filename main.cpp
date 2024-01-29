@@ -33,7 +33,7 @@ void setUpScene(){
     PointLight* pointLight = ResourceManager::loadPointLight(1.0f, glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 0.09f, 0.032f);
 
     Shader* shader = new ForwardShader(vShaderPath.c_str(), fShaderPath.c_str());
-    shader->setDebug(true);
+    shader->setDebug(false);
     ResourceManager::addShader(shader);
     Material *material = ResourceManager::loadMaterial(1.0f, 1.0f, 1.0f);
     Model* model = ResourceManager::loadModel(modelPath.c_str());
@@ -65,15 +65,17 @@ int main() {
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
-        clearCommandLine();
+        //clearCommandLine();
         // Process events
         glfwPollEvents();
+
+        // Rendering code goes here
+        glClear(GL_COLOR_BUFFER_BIT);
 
         // Update
         ResourceManager::runGameLoop();
 
-        // Rendering code goes here
-        glClear(GL_COLOR_BUFFER_BIT);
+
 
         // Swap buffers
         glfwSwapBuffers(window);

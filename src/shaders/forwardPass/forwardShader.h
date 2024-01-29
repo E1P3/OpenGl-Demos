@@ -19,7 +19,7 @@ public:
 
         this->SetVector3f("viewPos", ResourceManager::getActiveCamera()->getParent()->getPosition());
         this->SetMatrix4("view", ResourceManager::getActiveCamera()->getViewMatrix());
-        this->SetMatrix4("projection", ResourceManager::getActiveCamera()->getProjectionMatrix());
+        this->SetMatrix4("proj", ResourceManager::getActiveCamera()->getProjectionMatrix());
 
         // Load point light uniforms
 
