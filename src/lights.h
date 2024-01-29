@@ -26,8 +26,8 @@ public:
 
     Light(float strength, glm::vec3 position, glm::quat rotation){
         this->strength = strength;
-        this->translate(position);
-        this->rotate(rotation);
+        this->Translate(position);
+        this->Rotate(rotation);
     }
 
     // Destructor

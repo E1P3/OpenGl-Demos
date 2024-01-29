@@ -25,8 +25,8 @@ public:
         this->velocity = velocity;
     }
 
-    void setMouseSensitivity(float mouseSensitivity) {
-        this->mouseSensitivity = mouseSensitivity;
+    void setRotationSensitivity(float rotationSensitivity) {
+        this->rotationSensitivity = rotationSensitivity;
     }
 
     void OnUpdate() override{
@@ -39,6 +39,7 @@ public:
         if (debug) {
             printInfo();
         }
+
     }
     
     void OnStart() override{}
@@ -49,7 +50,8 @@ private:
     bool enableVerticalMovement = true;
     bool debug = false;
     float velocity = 10.0f;
-    float mouseSensitivity = 0.1f;
+    float rotationSensitivity = 0.3f;
+    float currentPitch = 0.0f;
 
     void move(){
         GameObject* parent = this->getParent();
@@ -94,25 +96,56 @@ private:
     void rotate() {
         GameObject* parent = this->getParent();
 
-        float yaw = ResourceManager::getMouseDeltaX() * mouseSensitivity;
-        float pitch = ResourceManager::getMouseDeltaY() * mouseSensitivity;
+        float yawDelta = ResourceManager::getMouseDeltaX();
+        float pitchDelta = ResourceManager::getMouseDeltaY();
 
-        glm::quat orientation = parent->getRotation();
-        glm::quat yawRotation = glm::angleAxis(glm::radians(yaw), glm::vec3(0, 1, 0));
-        glm::quat pitchRotation = glm::angleAxis(glm::radians(pitch), glm::vec3(1, 0, 0));
-
-        glm::quat newRotation = glm::normalize(pitchRotation * yawRotation * orientation);
-        parent->rotate(newRotation);
+        rotateAxis(glm::vec3(0, 1, 0), -yawDelta);
+        rotateAxis(glm::vec3(1, 0, 0), -pitchDelta);
     }
+
+    void rotateWSAD(){
+        GameObject* parent = this->getParent();
+
+        float yawDelta = 0.0f; 
+        float pitchDelta = 0.0f;
+
+        if (ResourceManager::isKeyPressed(GLFW_KEY_W)) {
+            pitchDelta = 1.0f * ResourceManager::getDeltaTime() * rotationSensitivity;
+        }
+        if (ResourceManager::isKeyPressed(GLFW_KEY_S)) {
+            pitchDelta = -1.0f * ResourceManager::getDeltaTime() * rotationSensitivity;
+        }
+        if (ResourceManager::isKeyPressed(GLFW_KEY_D)) {
+            yawDelta = 1.0f * ResourceManager::getDeltaTime() * rotationSensitivity;
+        }
+        if (ResourceManager::isKeyPressed(GLFW_KEY_A)) {
+            yawDelta = -1.0f * ResourceManager::getDeltaTime() * rotationSensitivity;
+        }
+
+        rotateAxis(glm::vec3(0, 1, 0), -yawDelta);
+        rotateAxis(glm::vec3(1, 0, 0), -pitchDelta);
+    }
+
 
     void printInfo() {
         GameObject* parent = this->getParent();
         glm::vec3 position = parent->getPosition();
         glm::quat rotation = parent->getRotation();
 
+        float deltaTime = ResourceManager::getDeltaTime();
+
+        std::cout << "DeltaTime: " << deltaTime << std::endl;
         std::cout << "Position: (" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
         std::cout << "Rotation: (" << rotation.x << ", " << rotation.y << ", " << rotation.z << ", " << rotation.w << ")" << std::endl;
     }
+
+    void rotateAxis(glm::vec3 axis, float angle){
+        float angleVelocity = angle * rotationSensitivity * ResourceManager::getDeltaTime();
+        glm::vec3 rotationVector = axis * angleVelocity;
+        glm::quat rotation = glm::quat(glm::radians(rotationVector));
+        this->getParent()->Rotate(rotation);
+    }
+    
 
 };
 #endif // CONTROLLER_MODULE_H

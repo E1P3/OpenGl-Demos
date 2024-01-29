@@ -20,6 +20,7 @@ Camera* ResourceManager::activeCamera;
 std::vector<PointLight*> ResourceManager::pointLights;
 std::vector<DirectionalLight*> ResourceManager::directionalLights;
 bool ResourceManager::isDebug = false;
+int ResourceManager::screenWidth, ResourceManager::screenHeight;
 
 Model* ResourceManager::loadModel(const char* modelFile){
         Model* model = new Model(modelFile);
@@ -98,6 +99,9 @@ void ResourceManager::updateKeysPressed(){
     for (int i = 0; i < 1024; i++) {
         if (glfwGetKey(window, i) == GLFW_PRESS) {
             keyStates[i] = true;
+            if (i == GLFW_KEY_ESCAPE) {
+                glfwSetWindowShouldClose(window, true);
+            }
         }
         else {
             keyStates[i] = false;
@@ -110,6 +114,10 @@ bool ResourceManager::isKeyPressed(int key){
 }
 
 GLFWwindow* ResourceManager::createWindow(int width, int height, const char* title){
+
+    screenWidth = width;
+    screenHeight = height;
+
     // Initialize GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -122,7 +130,7 @@ GLFWwindow* ResourceManager::createWindow(int width, int height, const char* tit
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     // Create a window
-    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    window = glfwCreateWindow(screenWidth, screenHeight, title, nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -138,6 +146,8 @@ GLFWwindow* ResourceManager::createWindow(int width, int height, const char* tit
         glfwTerminate();
         return nullptr;
     }
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     std::cout << "OpenGL Version: " << GLVersion.major << "." << GLVersion.minor << std::endl;
 
@@ -168,6 +178,7 @@ void ResourceManager::updateMousePosition(){
     lastMouseX = mouseX;
     lastMouseY = mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);
+    //glfwSetCursorPos(window, screenWidth / 2, screenHeight / 2);
 }
 
 void ResourceManager::initialize(){
@@ -190,6 +201,7 @@ void ResourceManager::runGameLoop(){
     updateDeltaTime();
     updateKeysPressed();
     updateMousePosition();
+    
     if(isDebug)
         ProgramInfo::printAllInfo();
 

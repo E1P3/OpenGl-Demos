@@ -25,12 +25,12 @@ void clearCommandLine() {
 
 void setUpScene(){
 
-    std::string modelPath = std::string(ASSET_DIR) + "/models/bateman.dae";
+    std::string modelPath = std::string(ASSET_DIR) + "/models/sphere.dae";
     std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/baseShader.vert";
     std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/baseShader.frag";
 
-    DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
-    PointLight* pointLight = ResourceManager::loadPointLight(1.0f, glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 0.09f, 0.032f);
+    DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 0.0f, 3.0f), 1.0f, 0.09f, 0.032f);
 
     Shader* shader = new ForwardShader(vShaderPath.c_str(), fShaderPath.c_str());
     shader->setDebug(false);
@@ -48,11 +48,10 @@ void setUpScene(){
     GameObject* gameObject2 = ResourceManager::loadGameObject();
     RenderModule* renderModule = new RenderModule(model, material, shader);
     gameObject2->addModule(renderModule);
-    gameObject2->translate(glm::vec3(0.0f, 0.0f, -10.0f));
+    gameObject2->Translate(glm::vec3(0.0f, 0.0f, -10.0f));
 
-    gameObject->translate(glm::vec3(0.0f, 0.0f, 10.0f));
+    gameObject->Translate(glm::vec3(0.0f, 0.0f, 10.0f));
     camera->lookAt(gameObject2->getPosition());
-
 }
 
 int main() {

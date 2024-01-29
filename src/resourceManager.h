@@ -21,7 +21,6 @@ class ResourceManager {
 public:
     static GLFWwindow* createWindow(int width = 800, int height = 600, const char* title = "Graphics");
     static GLFWwindow* getWindow();
-
     //Resource management
     static Shader* addShader(Shader* shader);
     static Shader* getShader(unsigned int ID);
@@ -60,6 +59,7 @@ public:
 private:
     static bool isDebug;
     static GLFWwindow* window;
+    static int screenWidth, screenHeight;
     static float deltaTime, previousTime;
     static double mouseX, mouseY, lastMouseX, lastMouseY;
     static Camera* activeCamera;

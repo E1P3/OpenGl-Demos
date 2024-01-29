@@ -11,7 +11,8 @@
 #include "../entityModule.h"
 #include "../gameObject.h"
 
-// Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
+// Defines several possible options for camera movement. 
+// Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
     FORWARD,
     BACKWARD,
@@ -77,10 +78,10 @@ private:
     glm::vec3 worldUp;
 
     void updateCameraVectors(){
-        glm::vec3 front = this->getParent()->getRotation() * glm::vec3(0.0f, 0.0f, -1.0f);
-        this->front = glm::normalize(front);
-        this->right = glm::normalize(glm::cross(this->front, this->worldUp));
-        this->up    = glm::normalize(glm::cross(this->right, this->front));
+        glm::quat rotation = this->getParent()->getRotation();
+        this->front = glm::rotate(rotation, glm::vec3(0.0f, 0.0f, -1.0f));
+        this->right = glm::rotate(rotation, glm::vec3(1.0f, 0.0f, 0.0f));
+        this->up = glm::rotate(rotation, glm::vec3(0.0f, 1.0f, 0.0f));
     }
 
     void updateViewMatrix(){
@@ -88,7 +89,6 @@ private:
             this->viewMatrix = glm::lookAt(this->getParent()->getPosition(), this->getParent()->getPosition() + this->front, this->up);
         }
     }
-
 };
 
 #endif // CAMERA_H
