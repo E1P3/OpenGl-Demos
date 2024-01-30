@@ -5,24 +5,30 @@
 
 class Material {
 public:
-    // Constructor
-    Material(float ambient, float diffuse, float specular)
-        : m_ambient(ambient), m_diffuse(diffuse), m_specular(specular) {}
 
+    Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess) {
+        this->ambient = ambient;
+        this->diffuse = diffuse;
+        this->specular = specular;
+        this->shininess = shininess;
+    }
     // Getters
-    float getAmbient() const { return m_ambient; }
-    float getDiffuse() const { return m_diffuse; }
-    float getSpecular() const { return m_specular; }
+    glm::vec3 getAmbient() const { return this->ambient; }
+    glm::vec3 getDiffuse() const { return this->diffuse; }
+    glm::vec3 getSpecular() const { return this->specular; }
+    float getShininess() const { return this->shininess; }
 
     // Setters
-    void setAmbient(float ambient) { m_ambient = ambient; }
-    void setDiffuse(float diffuse) { m_diffuse = diffuse; }
-    void setSpecular(float specular) { m_specular = specular; }
+    void setAmbient(glm::vec3 ambient) { this->ambient = ambient; }
+    void setDiffuse(glm::vec3 diffuse) { this->diffuse = diffuse; }
+    void setSpecular(glm::vec3 specular) { this->specular = specular; }
+    void setShininess(float shininess) { this->shininess = shininess; }
 
     void Draw(Shader* shader) {
-        shader->SetFloat("material.ambient", m_ambient, true);
-        shader->SetFloat("material.diffuse", m_diffuse, true);
-        shader->SetFloat("material.specular", m_specular, true);
+        shader->SetVector3f("material.ambient", this->ambient);
+        shader->SetVector3f("material.diffuse", this->diffuse);
+        shader->SetVector3f("material.specular", this->specular);
+        shader->SetFloat("material.shininess", this->shininess);
     }
 
     unsigned int getID() {
@@ -35,9 +41,10 @@ public:
 
 private:
     unsigned int ID;
-    float m_ambient;
-    float m_diffuse;
-    float m_specular;
+    glm::vec3 ambient = glm::vec3(0.5f);
+    glm::vec3 diffuse = glm::vec3(0.5f);
+    glm::vec3 specular = glm::vec3(0.5f);
+    float shininess = 32.0f;
 };
 
 #endif // MATERIAL_H

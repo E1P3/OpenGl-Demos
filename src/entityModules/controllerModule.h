@@ -50,7 +50,7 @@ private:
     bool enableVerticalMovement = true;
     bool debug = false;
     float velocity = 10.0f;
-    float rotationSensitivity = 0.3f;
+    float rotationSensitivity = 0.6f;
     float currentPitch = 0.0f;
 
     void move(){

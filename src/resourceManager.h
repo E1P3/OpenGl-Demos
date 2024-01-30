@@ -30,7 +30,7 @@ public:
     static Mesh* getMesh(unsigned int ID);
     static Model* loadModel(const char* modelFile);
     static Model* getModel(unsigned int ID);
-    static Material* loadMaterial(float ambient, float diffuse, float specular);
+    static Material* loadMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess);
     static Material* getMaterial(unsigned int ID);
     static GameObject* loadGameObject();
     static GameObject* getGameObject(unsigned int ID);

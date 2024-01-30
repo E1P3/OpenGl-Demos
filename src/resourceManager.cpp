@@ -63,8 +63,8 @@ Mesh* ResourceManager::getMesh(unsigned int ID){
     return meshes[ID];
 }
 
-Material* ResourceManager::loadMaterial(float ambient, float diffuse, float specular){
-    Material* material = new Material(ambient, diffuse, specular);
+Material* ResourceManager::loadMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess){
+    Material* material = new Material(ambient, diffuse, specular, shininess);
     material->setID(materials.size());
     materials.push_back(material);
     return material;
@@ -210,6 +210,9 @@ void ResourceManager::runGameLoop(){
     }
 
     for(Shader* shader : shaders){
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, screenWidth, screenHeight);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader->Render();
     }
 }

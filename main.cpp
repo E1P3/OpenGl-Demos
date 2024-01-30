@@ -7,6 +7,7 @@
 #include "src/entityModules/renderModule.h"
 #include "src/entityModules/camera.h"
 #include "src/shaders/forwardPass/forwardShader.h"
+#include "src/shaders/forwardPass/blinnPhongShader.h"
 #include <string>
 
 #ifdef _WIN32
@@ -26,16 +27,16 @@ void clearCommandLine() {
 void setUpScene(){
 
     std::string modelPath = std::string(ASSET_DIR) + "/models/sphere.dae";
-    std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/baseShader.vert";
-    std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/baseShader.frag";
+    std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/blinnPhong.vert";
+    std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/blinnPhong.frag";
 
     DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 0.0f, 3.0f), 1.0f, 0.09f, 0.032f);
 
-    Shader* shader = new ForwardShader(vShaderPath.c_str(), fShaderPath.c_str());
+    Shader* shader = new blinnPhongShader(vShaderPath.c_str(), fShaderPath.c_str());
     shader->setDebug(false);
     ResourceManager::addShader(shader);
-    Material *material = ResourceManager::loadMaterial(1.0f, 1.0f, 1.0f);
+    Material *material = ResourceManager::loadMaterial(glm::vec3(1.0f,1.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f);
     Model* model = ResourceManager::loadModel(modelPath.c_str());
 
     GameObject* gameObject = ResourceManager::loadGameObject();
@@ -62,19 +63,21 @@ int main() {
 
     ResourceManager::initialize();
 
+    float timer = 0;
+
     // Main loop
     while (!glfwWindowShouldClose(window)) {
         //clearCommandLine();
         // Process events
         glfwPollEvents();
 
-        // Rendering code goes here
-        glClear(GL_COLOR_BUFFER_BIT);
+        if (timer < 1.0f) {
+            ResourceManager::getActiveCamera()->getParent()->setRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+            timer += ResourceManager::getDeltaTime();
+        }
 
         // Update
         ResourceManager::runGameLoop();
-
-
 
         // Swap buffers
         glfwSwapBuffers(window);

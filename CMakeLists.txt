@@ -83,6 +83,7 @@ add_executable(graphics
     src/entityModules/camera.h
     src/entityModules/controllerModule.h
     src/shaders/forwardPass/forwardShader.h
+    src/shaders/forwardPass/blinnPhongShader.h
     src/utils/stb_image.h
     src/utils/stb_image.cpp
     src/utils/animData.h
