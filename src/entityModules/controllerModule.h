@@ -30,11 +30,11 @@ public:
     }
 
     void OnUpdate() override{
-        if (enableRotation) {
-            rotate();
-        }
         if (enableMovement) {
             move();
+        }
+        if (enableRotation) {
+            rotate();
         }
         if (debug) {
             printInfo();
@@ -122,8 +122,7 @@ private:
             yawDelta = -1.0f * ResourceManager::getDeltaTime() * rotationSensitivity;
         }
 
-        rotateAxis(glm::vec3(0, 1, 0), -yawDelta);
-        rotateAxis(glm::vec3(1, 0, 0), -pitchDelta);
+        rotateAxis(glm::vec3(1, 1, 1), -pitchDelta, 0.0f, yawDelta);
     }
 
 
@@ -145,7 +144,16 @@ private:
         glm::quat rotation = glm::quat(glm::radians(rotationVector));
         this->getParent()->Rotate(rotation);
     }
-    
+
+    void rotateAxis(glm::vec3 axis, float yaw, float roll, float pitch){
+        float yawVelocity = yaw * rotationSensitivity * ResourceManager::getDeltaTime();
+        float rollVelocity = roll * rotationSensitivity * ResourceManager::getDeltaTime();
+        float pitchVelocity = pitch * rotationSensitivity * ResourceManager::getDeltaTime();
+        glm::vec3 rotationVector = glm::vec3(pitchVelocity, yawVelocity, rollVelocity);
+        glm::quat rotation = glm::quat(glm::radians(rotationVector));
+        this->getParent()->Rotate(rotation);
+    }
+
 
 };
 #endif // CONTROLLER_MODULE_H

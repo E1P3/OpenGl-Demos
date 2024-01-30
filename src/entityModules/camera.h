@@ -68,6 +68,10 @@ public:
         return this->projectionMatrix;
     }
 
+    glm::vec3 getFront(){
+        return front;
+    }
+
 private:
     Camera_Projection projection;
     glm::mat4 projectionMatrix;

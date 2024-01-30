@@ -84,6 +84,8 @@ add_executable(graphics
     src/entityModules/controllerModule.h
     src/shaders/forwardPass/forwardShader.h
     src/shaders/forwardPass/blinnPhongShader.h
+    src/shaders/forwardPass/toonShader.h
+    src/shaders/forwardPass/pbrShader.h
     src/utils/stb_image.h
     src/utils/stb_image.cpp
     src/utils/animData.h

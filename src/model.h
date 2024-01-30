@@ -32,7 +32,7 @@ public:
 	//auto& GetBoneInfoMap() { return m_BoneInfoMap; }
 	int& GetBoneCount() { return m_BoneCounter; }
 
-	void Model::Draw(Shader* shader);
+	void Draw(Shader* shader);
 
 private:
     unsigned int ID;

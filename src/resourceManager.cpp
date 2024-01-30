@@ -198,6 +198,10 @@ void ResourceManager::initialize(){
 }
 
 void ResourceManager::runGameLoop(){
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+
     updateDeltaTime();
     updateKeysPressed();
     updateMousePosition();
@@ -210,9 +214,7 @@ void ResourceManager::runGameLoop(){
     }
 
     for(Shader* shader : shaders){
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, screenWidth, screenHeight);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         shader->Render();
     }
 }
