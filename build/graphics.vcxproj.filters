@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\resourceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\utils\stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\imgui\imguiWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\gameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\entityModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\lights.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\resourceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\entityModules\renderModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\entityModules\gameplayModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\entityModules\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\entityModules\controllerModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\shaders\forwardPass\forwardShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\shaders\forwardPass\blinnPhongShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\shaders\forwardPass\toonShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\shaders\forwardPass\pbrShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\shaders\forwardPass\testShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\utils\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\utils\animData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\utils\assimpHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\utils\programInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\imgui\imguiWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\materials\pbrMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\src\materials\basicMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\demos\rendering1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{DFE970B5-4F26-3AFC-B428-D2A2AA7820CD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{BC8DF084-44D7-3011-9274-9935B999F73C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

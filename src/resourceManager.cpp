@@ -3,7 +3,6 @@
 
 std::vector<Shader*> ResourceManager::shaders;
 std::vector<Texture*> ResourceManager::textures;
-std::vector<Material*> ResourceManager::materials;
 std::vector<Mesh*> ResourceManager::meshes;
 std::vector<Model*> ResourceManager::models;
 std::vector<GameObject*> ResourceManager::gameObjects;
@@ -60,19 +59,9 @@ Mesh* ResourceManager::loadMesh(std::vector<Vertex> vertices, std::vector<unsign
     meshes.push_back(mesh);
     return mesh;
 }
+
 Mesh* ResourceManager::getMesh(unsigned int ID){
     return meshes[ID];
-}
-
-Material* ResourceManager::loadMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess){
-    Material* material = new Material(ambient, diffuse, specular, shininess);
-    material->setID(materials.size());
-    materials.push_back(material);
-    return material;
-}
-
-Material* ResourceManager::getMaterial(unsigned int ID){
-    return materials[ID];
 }
 
 GameObject* ResourceManager::loadGameObject(){

@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\libs\imgui\imgui\imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\libs\imgui\imgui\imgui_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\libs\imgui\imgui\imgui_draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\libs\imgui\imgui\imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\libs\imgui\imgui\imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\libs\imgui\imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\libs\imgui\imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\HOW TO SPOON\Desktop\beans\code\graphics-year5\libs\imgui\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{BC8DF084-44D7-3011-9274-9935B999F73C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

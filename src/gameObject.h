@@ -39,6 +39,14 @@ public:
         module->setParent(this);
     }
 
+    std::string getName() {
+        return name;
+    }
+
+    void setName(std::string name) {
+        this->name = name;
+    }
+
     void OnUpdate() {
         for (auto module : modules) {
             module->OnUpdate();
@@ -58,6 +66,7 @@ public:
     }
     
 private:
+    std::string name;
     unsigned int ID;
     std::vector<GameObject*> children;
     GameObject* parent;

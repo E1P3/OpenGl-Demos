@@ -27,11 +27,14 @@ int main() {
 
     GLFWwindow* window = ResourceManager::createWindow(1920, 1080);
 
-    setUpScene();
+    ImGuiWrapper* imguiWrapper = new ImGuiWrapper();
+    setUpScene(imguiWrapper);
 
     ResourceManager::initialize();
 
-    ImGuiWrapper imguiWrapper;
+
+
+
 
     float timer = 0;
 
@@ -51,8 +54,8 @@ int main() {
 
         // Update
         ResourceManager::runGameLoop();
-        imguiWrapper.update();
-        imguiWrapper.render();
+        imguiWrapper->update();
+        imguiWrapper->render();
 
         // Swap buffers
         glfwSwapBuffers(window);

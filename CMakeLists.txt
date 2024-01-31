@@ -89,6 +89,7 @@ add_executable(graphics
     src/shaders/forwardPass/blinnPhongShader.h
     src/shaders/forwardPass/toonShader.h
     src/shaders/forwardPass/pbrShader.h
+    src/shaders/forwardPass/testShader.h
     src/utils/stb_image.h
     src/utils/stb_image.cpp
     src/utils/animData.h
@@ -96,6 +97,8 @@ add_executable(graphics
     src/utils/programInfo.h
     src/imgui/imguiWrapper.h
     src/imgui/imguiWrapper.cpp
+    src/materials/PBRMaterial.h
+    src/materials/basicMaterial.h
     demos/rendering1.h
     )
 

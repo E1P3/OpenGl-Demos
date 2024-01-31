@@ -7,12 +7,15 @@
 #include "../src/entityModules/controllerModule.h"
 #include "../src/entityModules/renderModule.h"
 #include "../src/entityModules/gameplayModule.h"
+#include "../src/materials/basicMaterial.h"
+#include "../src/materials/pbrMaterial.h"
 #include "../src/shaders/forwardPass/forwardShader.h"
 #include "../src/shaders/forwardPass/blinnPhongShader.h"
 #include "../src/shaders/forwardPass/toonShader.h"
 #include "../src/shaders/forwardPass/pbrShader.h"
+#include "../src/imgui/imguiWrapper.h"
 
-void setUpScene(){
+void setUpScene(ImGuiWrapper* imguiWrapper){
 
     std::string modelPath = std::string(ASSET_DIR) + "/models/teapot.fbx";
     std::string planePath = std::string(ASSET_DIR) + "/models/defaultPlane.fbx";
@@ -35,8 +38,11 @@ void setUpScene(){
     ResourceManager::addShader(toonShader);
     ResourceManager::addShader(pbrShader);
 
-    Material *material = ResourceManager::loadMaterial(glm::vec3(1.0f,1.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f);
-    
+    BasicMaterial *phongMaterial = new BasicMaterial(glm::vec3(1.0f,1.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f);
+    BasicMaterial *toonMaterial = new BasicMaterial(glm::vec3(1.0f,1.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f);
+    BasicMaterial *floorMaterial = new BasicMaterial(glm::vec3(1.0f,1.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f);
+    PBRMaterial *pbrMaterial = new PBRMaterial(glm::vec3(1.0f,1.0f,1.0f), 0.1f, 0.3f, 0.1f);
+
     Model* model = ResourceManager::loadModel(modelPath.c_str());
     Model* plane = ResourceManager::loadModel(planePath.c_str());
 
@@ -48,23 +54,23 @@ void setUpScene(){
     ResourceManager::setActiveCamera(camera);
 
     GameObject* pot1 = ResourceManager::loadGameObject();
-    RenderModule* renderModule = new RenderModule(model, material, shader);
+    RenderModule* renderModule = new RenderModule(model, phongMaterial, shader);
     pot1->addModule(renderModule);
     pot1->Translate(glm::vec3(0.0f, 0.0f, -10.0f));
 
     GameObject* pot2 = ResourceManager::loadGameObject();
-    RenderModule* renderModule1 = new RenderModule(model, material, toonShader);
+    RenderModule* renderModule1 = new RenderModule(model, toonMaterial, toonShader);
     pot2->addModule(renderModule1);
     pot2->Translate(glm::vec3(3.0f, 0.0f, -10.0f));
     
 
     GameObject* pot3 = ResourceManager::loadGameObject();
-    RenderModule* renderModule2 = new RenderModule(model, material, pbrShader);
+    RenderModule* renderModule2 = new RenderModule(model, pbrMaterial, pbrShader);
     pot3->addModule(renderModule2);
     pot3->Translate(glm::vec3(-3.0f, 0.0f, -10.0f));
 
     GameObject* floor = ResourceManager::loadGameObject();
-    RenderModule* renderModule3 = new RenderModule(plane, material, shader);
+    RenderModule* renderModule3 = new RenderModule(plane, floorMaterial, shader);
     floor->addModule(renderModule3);
     floor->setRotation(glm::vec3 (-90.0f, 0.0f, 0.0f));
     floor->setScale(glm::vec3(20.0f, 20.0f, 20.0f));
@@ -73,6 +79,10 @@ void setUpScene(){
 
     player->Translate(glm::vec3(0.0f, 0.0f, 10.0f));
     camera->lookAt(pot1->getPosition());
+
+    imguiWrapper->attachGuiFunction("Phong Shader", [phongMaterial](){phongMaterial->OnGui();});
+    imguiWrapper->attachGuiFunction("PBR Shader", [pbrMaterial](){pbrMaterial->OnGui();});
+    imguiWrapper->attachGuiFunction("Toon Shader", [toonMaterial](){toonMaterial->OnGui();});
 }
 
 #endif // RENDERING1_H

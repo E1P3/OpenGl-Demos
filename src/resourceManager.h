@@ -36,8 +36,6 @@ public:
     static Mesh* getMesh(unsigned int ID);
     static Model* loadModel(const char* modelFile);
     static Model* getModel(unsigned int ID);
-    static Material* loadMaterial(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess);
-    static Material* getMaterial(unsigned int ID);
     static GameObject* loadGameObject();
     static GameObject* getGameObject(unsigned int ID);
     static DirectionalLight* loadDirectionalLight(float strength, glm::vec3 position, glm::quat rotation);
@@ -78,7 +76,6 @@ private:
     static std::unordered_map<int, keyData> mouseStates;
     static std::vector<Shader*> shaders;
     static std::vector<Texture*> textures;
-    static std::vector<Material*> materials;
     static std::vector<Mesh*> meshes;
     static std::vector<Model*> models;
     static std::vector<GameObject*> gameObjects;
