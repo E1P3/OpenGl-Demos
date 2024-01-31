@@ -17,10 +17,16 @@
 
 class Model;
 
+struct keyData{
+    float pressDuration;
+    bool isPressed;
+};
+
 class ResourceManager {
 public:
     static GLFWwindow* createWindow(int width = 800, int height = 600, const char* title = "Graphics");
     static GLFWwindow* getWindow();
+
     //Resource management
     static Shader* addShader(Shader* shader);
     static Shader* getShader(unsigned int ID);
@@ -45,6 +51,10 @@ public:
     static void updateMousePosition();
     static void updateMousePressed();
     static bool isMousePressed(int button);
+    static keyData getKeyData(int key);
+    static keyData getMouseData(int button);
+    static void setMouseEnabled(bool enabled);
+    static bool getIsMouseEnabled();
     static double getMouseX();
     static double getMouseY();
     static double getMouseDeltaX();
@@ -58,13 +68,14 @@ public:
 
 private:
     static bool isDebug;
+    static bool isMouseEnabled;
     static GLFWwindow* window;
     static int screenWidth, screenHeight;
     static float deltaTime, previousTime;
     static double mouseX, mouseY, lastMouseX, lastMouseY;
     static Camera* activeCamera;
-    static std::unordered_map<int, bool> keyStates;
-    static std::unordered_map<int, bool> mouseStates;
+    static std::unordered_map<int, keyData> keyStates;
+    static std::unordered_map<int, keyData> mouseStates;
     static std::vector<Shader*> shaders;
     static std::vector<Texture*> textures;
     static std::vector<Material*> materials;

@@ -30,8 +30,14 @@ public:
     }
 
     void OnUpdate() override{
+
+        ResourceManager::setMouseEnabled(ResourceManager::isMousePressed(GLFW_MOUSE_BUTTON_RIGHT));
+
         if (enableRotation) {
-            rotate();
+            if(ResourceManager::getIsMouseEnabled())
+            {
+                rotate();
+            }
         }
         if (enableMovement) {
             move();
@@ -41,7 +47,22 @@ public:
         }
 
     }
-    
+    void setDebug(bool debug){
+        this->debug = debug;
+    }
+
+    void setEnableRotation(bool enableRotation){
+        this->enableRotation = enableRotation;
+    }
+
+    void setEnableMovement(bool enableMovement){
+        this->enableMovement = enableMovement;
+    }
+
+    void setEnableVerticalMovement(bool enableVerticalMovement){
+        this->enableVerticalMovement = enableVerticalMovement;
+    }
+
     void OnStart() override{}
 
 private:

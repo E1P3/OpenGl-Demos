@@ -14,12 +14,13 @@ double ResourceManager::mouseX = 0.0;
 double ResourceManager::mouseY = 0.0;
 double ResourceManager::lastMouseX = 0.0;
 double ResourceManager::lastMouseY = 0.0;
-std::unordered_map<int, bool> ResourceManager::keyStates;
-std::unordered_map<int, bool> ResourceManager::mouseStates;
+std::unordered_map<int, keyData> ResourceManager::keyStates;
+std::unordered_map<int, keyData> ResourceManager::mouseStates;
 Camera* ResourceManager::activeCamera;
 std::vector<PointLight*> ResourceManager::pointLights;
 std::vector<DirectionalLight*> ResourceManager::directionalLights;
 bool ResourceManager::isDebug = false;
+bool ResourceManager::isMouseEnabled = false;
 int ResourceManager::screenWidth, ResourceManager::screenHeight;
 
 Model* ResourceManager::loadModel(const char* modelFile){
@@ -98,19 +99,21 @@ void ResourceManager::updateDeltaTime(){
 void ResourceManager::updateKeysPressed(){
     for (int i = 0; i < 1024; i++) {
         if (glfwGetKey(window, i) == GLFW_PRESS) {
-            keyStates[i] = true;
+            keyStates[i].isPressed = true;
+            keyStates[i].pressDuration += deltaTime;
             if (i == GLFW_KEY_ESCAPE) {
                 glfwSetWindowShouldClose(window, true);
             }
         }
         else {
-            keyStates[i] = false;
+            keyStates[i].isPressed = false;
+            keyStates[i].pressDuration = 0.0f;
         }
     }
 }
 
 bool ResourceManager::isKeyPressed(int key){
-    return keyStates[key];
+    return keyStates[key].isPressed;
 }
 
 GLFWwindow* ResourceManager::createWindow(int width, int height, const char* title){
@@ -118,7 +121,6 @@ GLFWwindow* ResourceManager::createWindow(int width, int height, const char* tit
     screenWidth = width;
     screenHeight = height;
 
-    // Initialize GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
         return nullptr;
@@ -129,7 +131,6 @@ GLFWwindow* ResourceManager::createWindow(int width, int height, const char* tit
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    // Create a window
     window = glfwCreateWindow(screenWidth, screenHeight, title, nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
@@ -137,17 +138,13 @@ GLFWwindow* ResourceManager::createWindow(int width, int height, const char* tit
         return nullptr;
     }
 
-    // Make the window's context current
     glfwMakeContextCurrent(window);
 
-    // Initialize GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to initialize Glad" << std::endl;
         glfwTerminate();
         return nullptr;
     }
-
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     std::cout << "OpenGL Version: " << GLVersion.major << "." << GLVersion.minor << std::endl;
 
@@ -205,6 +202,7 @@ void ResourceManager::runGameLoop(){
 
     updateDeltaTime();
     updateKeysPressed();
+    updateMousePressed();
     updateMousePosition();
     
     if(isDebug)
@@ -231,16 +229,18 @@ Camera* ResourceManager::getActiveCamera(){
 void ResourceManager::updateMousePressed(){
     for (int i = 0; i < 8; i++) {
         if (glfwGetMouseButton(window, i) == GLFW_PRESS) {
-            mouseStates[i] = true;
+            mouseStates[i].isPressed = true;
+            mouseStates[i].pressDuration += deltaTime;
         }
         else {
-            mouseStates[i] = false;
+            mouseStates[i].isPressed = false;
+            mouseStates[i].pressDuration = 0.0f;
         }
     }
 }
 
 bool ResourceManager::isMousePressed(int button){
-    return mouseStates[button];
+    return mouseStates[button].isPressed;
 }
 
 DirectionalLight* ResourceManager::loadDirectionalLight(float strength, glm::vec3 position, glm::quat rotation){
@@ -255,3 +255,23 @@ PointLight* ResourceManager::loadPointLight(float strength ,glm::vec3 position, 
     return light;
 }
 
+void ResourceManager::setMouseEnabled(bool isEnabled){
+    if(isEnabled){
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    } else {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+    isMouseEnabled = isEnabled;
+}
+
+bool ResourceManager::getIsMouseEnabled(){
+    return isMouseEnabled;
+}
+
+keyData ResourceManager::getKeyData(int key){
+    return keyStates[key];
+}
+
+keyData ResourceManager::getMouseData(int button){
+    return mouseStates[button];
+}

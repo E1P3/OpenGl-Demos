@@ -23,6 +23,7 @@ endif()
 
 set(GLAD_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad)
 set(GLM_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/glm)
+set(IMGUI_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui)
 
 include_directories("${GLFW_HOME}/include")
 include_directories("${GLAD_HOME}/include")
@@ -63,6 +64,8 @@ add_library(glm INTERFACE)
 
 add_library(glad STATIC "${GLAD_HOME}/src/glad.c")
 
+add_subdirectory("${IMGUI_HOME}")
+
 add_executable(graphics
     main.cpp
     src/shader.h
@@ -91,11 +94,13 @@ add_executable(graphics
     src/utils/animData.h
     src/utils/assimpHelper.h
     src/utils/programInfo.h
+    src/imgui/imguiWrapper.h
+    src/imgui/imguiWrapper.cpp
     demos/rendering1.h
     )
 
 if (APPLE)
-    target_link_libraries(graphics glfw glad assimp glm "-framework OpenGL")
+    target_link_libraries(graphics glfw glad assimp glm imgui "-framework OpenGL")
 elseif (WIN32)
-    target_link_libraries(graphics glfw glad assimp glm opengl32) # Link to opengl32 on Windows
+    target_link_libraries(graphics glfw glad assimp glm imgui opengl32) # Link to opengl32 on Windows
 endif()

@@ -5,6 +5,7 @@
 #include "src/resourceManager.h"
 #include <string>
 #include "demos/rendering1.h"
+#include "src/imgui/imguiWrapper.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -30,6 +31,8 @@ int main() {
 
     ResourceManager::initialize();
 
+    ImGuiWrapper imguiWrapper;
+
     float timer = 0;
 
     // Main loop
@@ -38,13 +41,18 @@ int main() {
         // Process events
         glfwPollEvents();
 
-        if (timer < 1.0f) {
+        
+
+        // center camera on start
+        if (timer < 0.5f) {
             ResourceManager::getActiveCamera()->getParent()->setRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
             timer += ResourceManager::getDeltaTime();
         }
 
         // Update
         ResourceManager::runGameLoop();
+        imguiWrapper.update();
+        imguiWrapper.render();
 
         // Swap buffers
         glfwSwapBuffers(window);
