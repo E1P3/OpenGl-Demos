@@ -2,3 +2,8 @@
 	path = libs/imgui/imgui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
+
+[submodule "libs/APPLE/assimp"]
+	path = libs/APPLE/assimp
+	url = https://github.com/assimp/assimp.git
+	branch = master

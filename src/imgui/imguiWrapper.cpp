@@ -9,9 +9,15 @@ void ImGuiWrapper::init() {
     ImGui::CreateContext();
     io = ImGui::GetIO();
 
+    #ifdef _WIN32
+        char* glsl_version = "#version 130";
+    #else
+        char* glsl_version = "#version 330";
+    #endif
+
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(ResourceManager::getWindow(), true);
-    ImGui_ImplOpenGL3_Init("#version 130");
+    ImGui_ImplOpenGL3_Init(glsl_version);
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
     // Setup Dear ImGui style
