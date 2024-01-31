@@ -1,6 +1,0 @@
-C:/Users/HOW TO SPOON/Desktop/beans/code/graphics-year5/build/CMakeFiles/glad.dir
-C:/Users/HOW TO SPOON/Desktop/beans/code/graphics-year5/build/CMakeFiles/graphics.dir
-C:/Users/HOW TO SPOON/Desktop/beans/code/graphics-year5/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/HOW TO SPOON/Desktop/beans/code/graphics-year5/build/CMakeFiles/ZERO_CHECK.dir
-C:/Users/HOW TO SPOON/Desktop/beans/code/graphics-year5/build/libs/imgui/CMakeFiles/imgui.dir
-C:/Users/HOW TO SPOON/Desktop/beans/code/graphics-year5/build/libs/imgui/CMakeFiles/ALL_BUILD.dir
