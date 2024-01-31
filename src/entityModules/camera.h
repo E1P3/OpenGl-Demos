@@ -90,8 +90,14 @@ private:
 
     void updateViewMatrix(){
         if(this->getParent() != nullptr){
-            this->viewMatrix = glm::lookAt(this->getParent()->getPosition(), this->getParent()->getPosition() + this->front, this->up);
+            this->viewMatrix = glm::lookAt(this->getParent()->getPosition(), this->getParent()->getPosition() + this->front, glm::vec3(0.0f, 1.0f, 0.0f));
         }
+    }
+
+    void printInfo(){
+        std::cout << "Front: " << this->front.x << " " << this->front.y << " " << this->front.z << " | ";
+        std::cout << "Up: " << this->up.x << " " << this->up.y << " " << this->up.z << " | ";
+        std::cout << "Right: " << this->right.x << " " << this->right.y << " " << this->right.z << std::endl;
     }
 };
 

@@ -90,7 +90,9 @@ add_executable(graphics
     src/utils/stb_image.cpp
     src/utils/animData.h
     src/utils/assimpHelper.h
-    src/utils/programInfo.h)
+    src/utils/programInfo.h
+    demos/rendering1.h
+    )
 
 if (APPLE)
     target_link_libraries(graphics glfw glad assimp glm "-framework OpenGL")

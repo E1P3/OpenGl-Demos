@@ -30,11 +30,11 @@ public:
     }
 
     void OnUpdate() override{
-        if (enableMovement) {
-            move();
-        }
         if (enableRotation) {
             rotate();
+        }
+        if (enableMovement) {
+            move();
         }
         if (debug) {
             printInfo();
@@ -50,17 +50,19 @@ private:
     bool enableVerticalMovement = true;
     bool debug = false;
     float velocity = 10.0f;
-    float rotationSensitivity = 0.6f;
+    float rotationSensitivity = 0.3f;
     float currentPitch = 0.0f;
 
     void move(){
-        GameObject* parent = this->getParent();
-        
-        glm::quat orientation = parent->getRotation(); 
+        GameObject* parent = this->getParent(); 
 
-        glm::vec3 forward = orientation * glm::vec3(0, 0, -1); 
-        glm::vec3 right = orientation * glm::vec3(1, 0, 0);   
-        glm::vec3 up = orientation * glm::vec3(0, 1, 0);      
+        glm::quat rotation = parent->getRotation();
+        rotation.x = 0.0f;
+        rotation.z = 0.0f;
+        
+        glm::vec3 forward = glm::rotate(rotation, glm::vec3(0.0f, 0.0f, -1.0f));
+        glm::vec3 right = glm::rotate(rotation, glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
         glm::vec3 direction(0.0f);
 
@@ -95,16 +97,38 @@ private:
 
     void rotate() {
         GameObject* parent = this->getParent();
+        glm::quat orientation = parent->getRotation();
 
         float yawDelta = ResourceManager::getMouseDeltaX();
         float pitchDelta = ResourceManager::getMouseDeltaY();
 
-        rotateAxis(glm::vec3(0, 1, 0), -yawDelta);
-        rotateAxis(glm::vec3(1, 0, 0), -pitchDelta);
+        // Calculate the current up vector
+        glm::vec3 currentUp = glm::rotate(orientation, glm::vec3(0, 1, 0));
+
+        // Apply yaw and pitch rotations
+        glm::quat yawRotation = glm::angleAxis(glm::radians(-yawDelta * rotationSensitivity), glm::vec3(0, 1, 0));
+        glm::quat pitchRotation = glm::angleAxis(glm::radians(-pitchDelta * rotationSensitivity), glm::vec3(1, 0, 0));
+        orientation = glm::normalize(pitchRotation * yawRotation * orientation);
+
+        // Calculate the new up vector
+        glm::vec3 newUp = glm::rotate(orientation, glm::vec3(0, 1, 0));
+
+        // Check if the up vector flipped
+        if (glm::dot(currentUp, newUp) < 0.0f) {
+            // The up vector has flipped, you can choose to handle this situation here
+            // For example, you can negate pitchDelta to avoid flipping
+            pitchDelta = -pitchDelta;
+        }
+
+        parent->setRotation(orientation);
     }
+
+
 
     void rotateWSAD(){
         GameObject* parent = this->getParent();
+
+        glm::quat orientation = parent->getRotation();
 
         float yawDelta = 0.0f; 
         float pitchDelta = 0.0f;
@@ -122,37 +146,39 @@ private:
             yawDelta = -1.0f * ResourceManager::getDeltaTime() * rotationSensitivity;
         }
 
-        rotateAxis(glm::vec3(1, 1, 1), -pitchDelta, 0.0f, yawDelta);
+        glm::quat yawRotation = glm::angleAxis(glm::radians(-yawDelta * rotationSensitivity), glm::vec3(0, 1, 0));
+        glm::quat pitchRotation = glm::angleAxis(glm::radians(-pitchDelta * rotationSensitivity), glm::vec3(1, 0, 0));
+
+        orientation = glm::normalize(yawRotation * pitchRotation * orientation);
+        parent->setRotation(orientation);
     }
 
 
     void printInfo() {
         GameObject* parent = this->getParent();
-        glm::vec3 position = parent->getPosition();
         glm::quat rotation = parent->getRotation();
+        glm::vec3 rotationEuler= glm::degrees(glm::eulerAngles(rotation));
 
-        float deltaTime = ResourceManager::getDeltaTime();
-
-        std::cout << "DeltaTime: " << deltaTime << std::endl;
-        std::cout << "Position: (" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
-        std::cout << "Rotation: (" << rotation.x << ", " << rotation.y << ", " << rotation.z << ", " << rotation.w << ")" << std::endl;
+        std::cout << "Quaternion: " << rotation.x << " " << rotation.y << " " << rotation.z << " " << rotation.w << " | ";
+        std::cout << "Euler: " << rotationEuler.x << " " << rotationEuler.y << " " << rotationEuler.z << " | ";
+        
     }
 
-    void rotateAxis(glm::vec3 axis, float angle){
-        float angleVelocity = angle * rotationSensitivity * ResourceManager::getDeltaTime();
-        glm::vec3 rotationVector = axis * angleVelocity;
-        glm::quat rotation = glm::quat(glm::radians(rotationVector));
-        this->getParent()->Rotate(rotation);
-    }
+    // void rotateAxis(glm::vec3 axis, float angle){
+    //     float angleVelocity = angle * rotationSensitivity * ResourceManager::getDeltaTime();
+    //     glm::vec3 rotationVector = axis * angleVelocity;
+    //     glm::quat rotation = glm::quat(glm::radians(rotationVector));
+    //     this->getParent()->Rotate(rotation);
+    // }
 
-    void rotateAxis(glm::vec3 axis, float yaw, float roll, float pitch){
-        float yawVelocity = yaw * rotationSensitivity * ResourceManager::getDeltaTime();
-        float rollVelocity = roll * rotationSensitivity * ResourceManager::getDeltaTime();
-        float pitchVelocity = pitch * rotationSensitivity * ResourceManager::getDeltaTime();
-        glm::vec3 rotationVector = glm::vec3(pitchVelocity, yawVelocity, rollVelocity);
-        glm::quat rotation = glm::quat(glm::radians(rotationVector));
-        this->getParent()->Rotate(rotation);
-    }
+    // void rotateAxis(glm::vec3 axis, float yaw, float roll, float pitch){
+    //     float yawVelocity = yaw * rotationSensitivity * ResourceManager::getDeltaTime();
+    //     float rollVelocity = roll * rotationSensitivity * ResourceManager::getDeltaTime();
+    //     float pitchVelocity = pitch * rotationSensitivity * ResourceManager::getDeltaTime();
+    //     glm::vec3 rotationVector = glm::vec3(pitchVelocity, yawVelocity, rollVelocity);
+    //     glm::quat rotation = glm::quat(glm::radians(rotationVector));
+    //     this->getParent()->Rotate(rotation);
+    // }
 
 
 };
