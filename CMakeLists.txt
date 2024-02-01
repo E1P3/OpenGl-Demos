@@ -85,11 +85,10 @@ add_executable(graphics
     src/entityModules/gameplayModule.h
     src/entityModules/camera.h
     src/entityModules/controllerModule.h
-    src/shaders/forwardPass/forwardShader.h
-    src/shaders/forwardPass/blinnPhongShader.h
-    src/shaders/forwardPass/toonShader.h
-    src/shaders/forwardPass/pbrShader.h
-    src/shaders/forwardPass/testShader.h
+    src/shaders/forwardPass/phong/blinnPhongShader.h
+    src/shaders/forwardPass/toon/toonShader.h
+    src/shaders/forwardPass/toon/outlineShader.h
+    src/shaders/forwardPass/cook-torrace/pbrShader.h
     src/utils/stb_image.h
     src/utils/stb_image.cpp
     src/utils/animData.h
@@ -99,6 +98,7 @@ add_executable(graphics
     src/imgui/imguiWrapper.cpp
     src/materials/PBRMaterial.h
     src/materials/basicMaterial.h
+    src/materials/toonMaterial.h
     demos/rendering1.h
     )
 

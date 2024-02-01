@@ -1,3 +1,6 @@
+#ifndef PBR_MATERIAL_H
+#define PBR_MATERIAL_H
+
 #include "../material.h"
 #include "imgui.h"
 
@@ -42,3 +45,5 @@ public:
     float roughness;
     float ao;
 };
+
+#endif // PBR_MATERIAL_H

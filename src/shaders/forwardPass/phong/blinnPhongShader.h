@@ -1,9 +1,9 @@
 #ifndef BLINN_PHONG_SHADER_H
 #define BLINN_PHONG_SHADER_H
 
-#include "../../shader.h"
-#include "../../resourceManager.h"
-#include "../../entityModules/renderModule.h"
+#include "../../../shader.h"
+#include "../../../resourceManager.h"
+#include "../../../entityModules/renderModule.h"
 
 
 class blinnPhongShader : public Shader {

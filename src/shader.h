@@ -35,7 +35,7 @@ public:
     void Delete();
     virtual void Render();
 
-    void bindRenderModule(RenderModule* object);
+    virtual void bindRenderModule(RenderModule* object);
     void bindDirectionalLight(DirectionalLight* light);
     void bindPointLight(PointLight* light);
 

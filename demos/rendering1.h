@@ -9,10 +9,10 @@
 #include "../src/entityModules/gameplayModule.h"
 #include "../src/materials/basicMaterial.h"
 #include "../src/materials/pbrMaterial.h"
-#include "../src/shaders/forwardPass/forwardShader.h"
-#include "../src/shaders/forwardPass/blinnPhongShader.h"
-#include "../src/shaders/forwardPass/toonShader.h"
-#include "../src/shaders/forwardPass/pbrShader.h"
+#include "../src/materials/toonMaterial.h"
+#include "../src/shaders/forwardPass/phong/blinnPhongShader.h"
+#include "../src/shaders/forwardPass/toon/toonShader.h"
+#include "../src/shaders/forwardPass/cook-torrace/pbrShader.h"
 #include "../src/imgui/imguiWrapper.h"
 
 void setUpScene(ImGuiWrapper* imguiWrapper){
@@ -20,12 +20,12 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
     std::string modelPath = std::string(ASSET_DIR) + "/models/teapot.fbx";
     std::string planePath = std::string(ASSET_DIR) + "/models/defaultPlane.fbx";
 
-    std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/blinnPhong.vert";
-    std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/blinnPhong.frag";
-    std::string vToonShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/toonShader.vert";
-    std::string fToonShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/toonShader.frag";
-    std::string vPBRShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/pbrShader.vert";
-    std::string fPBRShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/pbrShader.frag";
+    std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.vert";
+    std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.frag";
+    std::string vToonShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/toon/toonShader.vert";
+    std::string fToonShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/toon/toonShader.frag";
+    std::string vPBRShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/cook-torrace/pbrShader.vert";
+    std::string fPBRShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/cook-torrace/pbrShader.frag";
 
     DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
@@ -39,7 +39,7 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
     ResourceManager::addShader(pbrShader);
 
     BasicMaterial *phongMaterial = new BasicMaterial(glm::vec3(1.0f,1.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f);
-    BasicMaterial *toonMaterial = new BasicMaterial(glm::vec3(1.0f,1.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f);
+    ToonMaterial *toonMaterial = new ToonMaterial(glm::vec3(1.0f,1.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 1.0f, 4, 0.5f);
     BasicMaterial *floorMaterial = new BasicMaterial(glm::vec3(1.0f,1.0f,1.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f);
     PBRMaterial *pbrMaterial = new PBRMaterial(glm::vec3(1.0f,1.0f,1.0f), 0.1f, 0.3f, 0.1f);
 
@@ -55,18 +55,24 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
 
     GameObject* pot1 = ResourceManager::loadGameObject();
     RenderModule* renderModule = new RenderModule(model, phongMaterial, shader);
+    GameplayModule* gameplayModule = new GameplayModule();
     pot1->addModule(renderModule);
+    pot1->addModule(gameplayModule);
     pot1->Translate(glm::vec3(0.0f, 0.0f, -10.0f));
 
     GameObject* pot2 = ResourceManager::loadGameObject();
     RenderModule* renderModule1 = new RenderModule(model, toonMaterial, toonShader);
+    GameplayModule* gameplayModule1 = new GameplayModule();
     pot2->addModule(renderModule1);
+    pot2->addModule(gameplayModule1);
     pot2->Translate(glm::vec3(3.0f, 0.0f, -10.0f));
     
 
     GameObject* pot3 = ResourceManager::loadGameObject();
     RenderModule* renderModule2 = new RenderModule(model, pbrMaterial, pbrShader);
+    GameplayModule* gameplayModule2 = new GameplayModule();
     pot3->addModule(renderModule2);
+    pot3->addModule(gameplayModule2);
     pot3->Translate(glm::vec3(-3.0f, 0.0f, -10.0f));
 
     GameObject* floor = ResourceManager::loadGameObject();

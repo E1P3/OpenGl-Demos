@@ -1,15 +1,19 @@
 #ifndef TOON_SHADER_H
 #define TOON_SHADER_H
 
-#include "../../shader.h"
-#include "../../resourceManager.h"
-#include "../../entityModules/renderModule.h"
+#include "../../../shader.h"
+#include "../../../resourceManager.h"
+#include "../../../entityModules/renderModule.h"
+#include "outlineShader.h"
 
 
 class ToonShader : public Shader {
 public:
     ToonShader(const char* PVS, const char* PFS) {
         this->Compile(this->readShaderSource(PVS), this->readShaderSource(PFS));
+        std::string vshaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/toon/outlineShader.vert";
+        std::string fshaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/toon/outlineShader.frag";
+        outlineShader = new OutlineShader(vshaderPath.c_str(), fshaderPath.c_str());
     }
 
     void Render() override {        
@@ -27,15 +31,22 @@ public:
             this->SetVector3f("light.specular", pointLightsToRender[0]->getSpecular());
         }
 
-
-        // Load RenderModule uniforms
-
         for(RenderModule* module : objectsToRender){
             this->SetMatrix4("model", module->getParent()->getTransform());
             module->material->Draw(this);
             module->model->Draw(this);
         }
+
+        outlineShader->Render();
     }
+
+    void bindRenderModule(RenderModule* object) override{
+        objectsToRender.push_back(object);
+        outlineShader->bindRenderModule(object);
+    }
+    
+private:
+    Shader* outlineShader;
 
 };
 

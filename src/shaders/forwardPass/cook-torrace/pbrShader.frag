@@ -10,6 +10,8 @@ uniform float metallic;
 uniform float roughness;
 uniform float ao;
 
+uniform int numPointLights;
+
 // lights
 uniform vec3 lightPositions[1];
 uniform vec3 lightColors[1];
@@ -70,7 +72,7 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 4; ++i) 
+    for(int i = 0; i < numPointLights; ++i) 
     {
         // calculate per-light radiance
         vec3 L = normalize(lightPositions[i] - WorldPos);

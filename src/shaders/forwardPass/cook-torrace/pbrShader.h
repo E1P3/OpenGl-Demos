@@ -1,9 +1,9 @@
 #ifndef PBR_SHADER_H
 #define PBR_SHADER_H
 
-#include "../../shader.h"
-#include "../../resourceManager.h"
-#include "../../entityModules/renderModule.h"
+#include "../../../shader.h"
+#include "../../../resourceManager.h"
+#include "../../../entityModules/renderModule.h"
 
 
 class PBRShader : public Shader {
@@ -21,11 +21,12 @@ public:
         this->SetMatrix4("projection", ResourceManager::getActiveCamera()->getProjectionMatrix());
         this->SetVector3f("camPos", ResourceManager::getActiveCamera()->getParent()->getPosition());
 
-        if(pointLightsToRender[0] != nullptr){
-            this->SetVector3f("lightPositions[" + std::to_string(0) + "]", pointLightsToRender[0]->getPosition());
-            this->SetVector3f("lightColors[" + std::to_string(0) + "]", glm::vec3(20.0f,20.0f,20.0f));
+        for(int i = 0; i < pointLightsToRender.size(); i++){
+            this->SetVector3f("lightPositions[" + std::to_string(i) + "]", pointLightsToRender[i]->getPosition());
+            this->SetVector3f("lightColors[" + std::to_string(i) + "]", glm::vec3(155.0f,155.0f,155.0f));
         }
 
+        this->SetInteger("numPointLights", pointLightsToRender.size());
 
         // Load RenderModule uniforms
 
