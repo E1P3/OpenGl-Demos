@@ -53,10 +53,13 @@ void Model::setID(unsigned int ID) {
 
 	void Model::Draw(Shader* shader) 
 	{
+<<<<<<< HEAD
 		shader->SetInteger("hasDiffuseMap", hasDiffuseMap, true);
 		shader->SetInteger("hasSpecularMap", hasSpecularMap, true);
 		shader->SetInteger("hasNormalMap", hasNormalMap, true);
 		shader->SetInteger("hasHeightMap", hasHeightMap, true);
+=======
+>>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
 		for (unsigned int i = 0; i < meshes.size(); i++)
 			meshes[i]->Draw(shader);
 	}

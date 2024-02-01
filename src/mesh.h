@@ -67,22 +67,34 @@ public:
             if (type == DIFFUSE){
                 number = std::to_string(diffuseNr++);
                 name = "texture_diffuse";
+<<<<<<< HEAD
                 shader->SetInteger("hasDiffuse", 1, false);
+=======
+>>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
             }
             else if (type == SPECULAR){
                 number = std::to_string(specularNr++); // transfer unsigned int to string
                 name = "texture_specular";
+<<<<<<< HEAD
                 shader->SetInteger("hasSpecular", 1, false);
+=======
+>>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
             }
             else if (type == NORMAL){
                 number = std::to_string(normalNr++); // transfer unsigned int to string
                 name = "texture_normal";
+<<<<<<< HEAD
                 shader->SetInteger("hasNormal", 1, false);
+=======
+>>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
             }
             else if (type == HEIGHT){
                 number = std::to_string(heightNr++); // transfer unsigned int to string
                 name = "texture_height";
+<<<<<<< HEAD
                 shader->SetInteger("hasHeight", 1, false);
+=======
+>>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
             }  
             //std::cout << name << number <<" " << i + 1 << "\n";
             // now set the sampler to the correct texture unit
