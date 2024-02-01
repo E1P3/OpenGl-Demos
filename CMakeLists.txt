@@ -81,7 +81,6 @@ add_executable(graphics
     src/lights.h
     src/resourceManager.h
     src/resourceManager.cpp
-<<<<<<< HEAD
     src/entityModules/renderModule.h
     src/entityModules/gameplayModule.h
     src/entityModules/camera.h
@@ -90,10 +89,6 @@ add_executable(graphics
     src/shaders/forwardPass/toon/toonShader.h
     src/shaders/forwardPass/toon/outlineShader.h
     src/shaders/forwardPass/cook-torrace/pbrShader.h
-=======
-    src/entityModules/renderModelModule.h
-    src/entityModules/gameplayModule.h
->>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
     src/utils/stb_image.h
     src/utils/stb_image.cpp
     src/utils/animData.h

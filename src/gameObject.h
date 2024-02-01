@@ -21,7 +21,6 @@ public:
         }
     }
 
-<<<<<<< HEAD
     unsigned int getID() {
         return ID;
     }
@@ -30,38 +29,22 @@ public:
         this->ID = ID;
     }
 
-=======
->>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
     void addChild(GameObject* child) {
         children.push_back(child);
         child->parent = this;
     }
 
-<<<<<<< HEAD
     void addModule(EntityModule* module) {
-=======
-    void addModule(entityModule* module) {
->>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
         modules.push_back(module);
         module->setParent(this);
     }
 
-<<<<<<< HEAD
     std::string getName() {
         return name;
     }
 
     void setName(std::string name) {
         this->name = name;
-=======
-    void OnRenderPass() {
-        for (auto module : modules) {
-            module->OnRenderPass();
-        }
-        for (auto child : children) {
-            child->OnRenderPass();
-        }
->>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
     }
 
     void OnUpdate() {
@@ -81,7 +64,6 @@ public:
             child->OnStart();
         }
     }
-<<<<<<< HEAD
     
 private:
     std::string name;
@@ -89,12 +71,6 @@ private:
     std::vector<GameObject*> children;
     GameObject* parent;
     std::vector<EntityModule*> modules;
-=======
-private:
-    std::vector<GameObject*> children;
-    GameObject* parent;
-    std::vector<entityModule*> modules;
->>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
 };
 
 #endif // GAMEOBJECT_H

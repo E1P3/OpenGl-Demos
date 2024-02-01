@@ -5,7 +5,6 @@
 #include "../shader.h"
 #include "../resourceManager.h"
 
-<<<<<<< HEAD
 // Module template
 
 class GameplayModule : public EntityModule {
@@ -26,30 +25,6 @@ class GameplayModule : public EntityModule {
         void OnStart(){
 
         }
-=======
-class GameplayModule : public entityModule {
-    public:
-        GameplayModule(int id){
-            this->id = id;
-        }
-        
-        ~GameplayModule();
-        
-        void OnRenderPass(){
-            std::cout << "GameplayModule" << id << "::OnRenderPass()" << std::endl;
-        }
-
-        void OnUpdate(){
-            std::cout << "GameplayModule" << id << "::OnUpdate()" << std::endl;
-        }
-
-        void OnStart(){
-            std::cout << "GameplayModule" << id << "::OnStart()" << std::endl;
-        }
-        
-    private:
-      int id;
->>>>>>> 951bcb1f6a5306fddea8d34d5400f199987be5e5
 };
 
 #endif // GAMEPLAY_MODULE_H
