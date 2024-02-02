@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "../../utils/stb_image.h"
+#include "utils/stb_image.h"
 
 class Cubemap {
 public:

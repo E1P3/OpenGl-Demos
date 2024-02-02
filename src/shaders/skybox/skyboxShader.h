@@ -3,7 +3,7 @@
 
 #include "../../shader.h"
 #include "../../resourceManager.h"
-#include "cubemap.h"
+#include "../../cubemap.h"
 #include <vector>
 
 class SkyboxShader : public Shader {
