@@ -89,6 +89,8 @@ add_executable(graphics
     src/shaders/forwardPass/toon/toonShader.h
     src/shaders/forwardPass/toon/outlineShader.h
     src/shaders/forwardPass/cook-torrace/pbrShader.h
+    src/shaders/skybox/skyboxShader.h
+    src/shaders/skybox/cubemap.h
     src/utils/stb_image.h
     src/utils/stb_image.cpp
     src/utils/animData.h
@@ -100,6 +102,7 @@ add_executable(graphics
     src/materials/basicMaterial.h
     src/materials/toonMaterial.h
     demos/rendering1.h
+    demos/animation1.h
     )
 
 if (APPLE)
