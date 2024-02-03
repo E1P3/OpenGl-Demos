@@ -26,6 +26,8 @@ void OnGui(){
 void setUpScene(ImGuiWrapper* imguiWrapper){
 
     std::string dragonPath = std::string(ASSET_DIR) + "/models/dragon.fbx";
+    std::string potPath = std::string(ASSET_DIR) + "/models/teapot.fbx";
+    std::string spherePath = std::string(ASSET_DIR) + "/models/sphere.fbx";
 
     std::string vSkyShaderPath = std::string(SRC_DIR) + "/shaders/skybox/skyboxShader.vert";
     std::string fSkyShaderPath = std::string(SRC_DIR) + "/shaders/skybox/skyboxShader.frag";
@@ -50,6 +52,8 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
 
     Model* dragon = ResourceManager::loadModel(dragonPath.c_str());
+    Model* pot = ResourceManager::loadModel(potPath.c_str());
+    Model* sphere = ResourceManager::loadModel(spherePath.c_str());
 
     GlassShader* glassShader = new GlassShader(vGlassShaderPath.c_str(), fGlassShaderPath.c_str(), skybox);
     SkyboxShader* skyboxShader = new SkyboxShader(vSkyShaderPath.c_str(), fSkyShaderPath.c_str(), skyboxes);
@@ -75,10 +79,25 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
     GameplayModule* dragonGameplayModule = new GameplayModule();
     dragonObject->addModule(dragonRenderModule);
     dragonObject->addModule(dragonGameplayModule);
-    dragonObject->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
+    dragonObject->setPosition(glm::vec3(-3.0f, 0.0f, -5.0f));
     dragonObject->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
 
-    camera->lookAt(dragonObject->getPosition());
+    GameObject* potObject = ResourceManager::loadGameObject();
+    RenderModule* potRenderModule = new RenderModule(pot, glassMaterial, glassShader);
+    GameplayModule* potGameplayModule = new GameplayModule();
+    potObject->addModule(potRenderModule);
+    potObject->addModule(potGameplayModule);
+    potObject->setPosition(glm::vec3(3.0f, 0.0f, -5.0f));
+
+    GameObject* sphereObject = ResourceManager::loadGameObject();
+    RenderModule* sphereRenderModule = new RenderModule(sphere, glassMaterial, glassShader);
+    GameplayModule* sphereGameplayModule = new GameplayModule();
+    sphereObject->addModule(sphereRenderModule);
+    sphereObject->addModule(sphereGameplayModule);
+    sphereObject->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
+
+
+    camera->lookAt(sphereObject->getPosition());
 
 
     imguiWrapper->attachGuiFunction("Material Properties", [glassMaterial](){glassMaterial->OnGui();});

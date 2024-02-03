@@ -71,7 +71,7 @@ private:
     bool enableVerticalMovement = true;
     bool debug = false;
     float velocity = 10.0f;
-    float rotationSensitivity = 0.3f;
+    float rotationSensitivity = 0.01f;
     float currentPitch = 0.0f;
 
     void move(){
@@ -117,31 +117,27 @@ private:
     }
 
     void rotate() {
-        GameObject* parent = this->getParent();
-        glm::quat orientation = parent->getRotation();
+        glm::quat orientation = this->getParent()->getRotation();
 
-        float yawDelta = ResourceManager::getMouseDeltaX();
-        float pitchDelta = ResourceManager::getMouseDeltaY();
+        float yawDelta = ResourceManager::getMouseDeltaX() * rotationSensitivity;
+        float pitchDelta = ResourceManager::getMouseDeltaY() * rotationSensitivity;
 
-        // Calculate the current up vector
-        glm::vec3 currentUp = glm::rotate(orientation, glm::vec3(0, 1, 0));
+        float newPitch = glm::pitch(orientation) + pitchDelta;
+        float newYaw = glm::yaw(orientation) + yawDelta;
 
-        // Apply yaw and pitch rotations
-        glm::quat yawRotation = glm::angleAxis(glm::radians(-yawDelta * rotationSensitivity), glm::vec3(0, 1, 0));
-        glm::quat pitchRotation = glm::angleAxis(glm::radians(-pitchDelta * rotationSensitivity), glm::vec3(1, 0, 0));
-        orientation = glm::normalize(pitchRotation * yawRotation * orientation);
-
-        // Calculate the new up vector
-        glm::vec3 newUp = glm::rotate(orientation, glm::vec3(0, 1, 0));
-
-        // Check if the up vector flipped
-        if (glm::dot(currentUp, newUp) < 0.0f) {
-            // The up vector has flipped, you can choose to handle this situation here
-            // For example, you can negate pitchDelta to avoid flipping
-            pitchDelta = -pitchDelta;
+        if (newPitch > glm::radians(89.0f)) {
+            newPitch = glm::radians(89.0f);
+        }
+        if (newPitch < glm::radians(-89.0f)) {
+            newPitch = glm::radians(-89.0f);
         }
 
-        parent->setRotation(orientation);
+        glm::quat pitchRotation = glm::normalize(glm::angleAxis(newPitch, glm::vec3(1, 0, 0)));
+        glm::quat yawRotation = glm::normalize(glm::angleAxis(newYaw, glm::vec3(0, 1, 0)));
+
+        orientation = glm::normalize(pitchRotation * yawRotation * orientation);
+
+        this->getParent()->setRotation(orientation);
     }
 
 
