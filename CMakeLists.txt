@@ -104,7 +104,7 @@ add_executable(graphics
     src/materials/toonMaterial.h
     src/materials/glassMaterial.h
     demos/rendering1.h
-    demos/animation1.h
+    demos/rendering2.h
     )
 
 if (APPLE)

@@ -8,9 +8,9 @@
 
 class SkyboxShader : public Shader {
 public:
-    SkyboxShader(const char* PVS, const char* PFS, std::vector<Cubemap*> cubemaps) {
+    SkyboxShader(const char* PVS, const char* PFS, Cubemap* skybox) {
         this->Compile(this->readShaderSource(PVS), this->readShaderSource(PFS));
-        this->cubemaps = cubemaps;
+        this->skybox = skybox;
         this->setupBox();
     }
 
@@ -81,18 +81,24 @@ public:
     void DrawBox(){
         glDepthFunc(GL_LEQUAL);
         glBindVertexArray(VAO);
-        for (int i = 0; i < cubemaps.size(); i++) {
-            glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, cubemaps[i]->getID());
-        }
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, skybox->getID());
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glDepthFunc(GL_LESS);
     }
 
+    void setCubeMap(Cubemap* skybox) {
+        this->skybox = skybox;
+    }
+
+    Cubemap* getCubeMap() {
+        return this->skybox;
+    }
+
 private:
     unsigned int VAO, VBO, EBO;
-    std::vector<Cubemap*> cubemaps;
+    Cubemap* skybox;
     
 };
 

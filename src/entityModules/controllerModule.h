@@ -71,7 +71,7 @@ private:
     bool enableVerticalMovement = true;
     bool debug = false;
     float velocity = 10.0f;
-    float rotationSensitivity = 0.01f;
+    float rotationSensitivity = 0.1f;
     float currentPitch = 0.0f;
 
     void move(){
@@ -117,28 +117,22 @@ private:
     }
 
     void rotate() {
-        glm::quat orientation = this->getParent()->getRotation();
+        GameObject* parent = this->getParent();
+        glm::quat rotation = parent->getRotation();
+        glm::vec3 right = parent->getRight();
 
         float yawDelta = ResourceManager::getMouseDeltaX() * rotationSensitivity;
         float pitchDelta = ResourceManager::getMouseDeltaY() * rotationSensitivity;
 
-        float newPitch = glm::pitch(orientation) + pitchDelta;
-        float newYaw = glm::yaw(orientation) + yawDelta;
+        glm::quat yawRotation = glm::angleAxis(glm::radians(-yawDelta), glm::vec3(0, 1, 0));
+        glm::quat pitchRotation = glm::angleAxis(glm::radians(-pitchDelta), right);
 
-        if (newPitch > glm::radians(89.0f)) {
-            newPitch = glm::radians(89.0f);
-        }
-        if (newPitch < glm::radians(-89.0f)) {
-            newPitch = glm::radians(-89.0f);
-        }
+        rotation = glm::normalize(yawRotation * pitchRotation * rotation);
 
-        glm::quat pitchRotation = glm::normalize(glm::angleAxis(newPitch, glm::vec3(1, 0, 0)));
-        glm::quat yawRotation = glm::normalize(glm::angleAxis(newYaw, glm::vec3(0, 1, 0)));
-
-        orientation = glm::normalize(pitchRotation * yawRotation * orientation);
-
-        this->getParent()->setRotation(orientation);
+        parent->setRotation(rotation);
     }
+
+
 
 
 
@@ -180,22 +174,6 @@ private:
         std::cout << "Euler: " << rotationEuler.x << " " << rotationEuler.y << " " << rotationEuler.z << " | ";
         
     }
-
-    // void rotateAxis(glm::vec3 axis, float angle){
-    //     float angleVelocity = angle * rotationSensitivity * ResourceManager::getDeltaTime();
-    //     glm::vec3 rotationVector = axis * angleVelocity;
-    //     glm::quat rotation = glm::quat(glm::radians(rotationVector));
-    //     this->getParent()->Rotate(rotation);
-    // }
-
-    // void rotateAxis(glm::vec3 axis, float yaw, float roll, float pitch){
-    //     float yawVelocity = yaw * rotationSensitivity * ResourceManager::getDeltaTime();
-    //     float rollVelocity = roll * rotationSensitivity * ResourceManager::getDeltaTime();
-    //     float pitchVelocity = pitch * rotationSensitivity * ResourceManager::getDeltaTime();
-    //     glm::vec3 rotationVector = glm::vec3(pitchVelocity, yawVelocity, rollVelocity);
-    //     glm::quat rotation = glm::quat(glm::radians(rotationVector));
-    //     this->getParent()->Rotate(rotation);
-    // }
 
 
 };

@@ -36,6 +36,15 @@ public:
 
     }
 
+
+    void setCubeMap(Cubemap* cubemap) {
+        this->cubemap = cubemap;
+    }
+
+    Cubemap* getCubeMap() {
+        return this->cubemap;
+    }
+    
 private:
     Cubemap* cubemap;
 

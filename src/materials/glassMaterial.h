@@ -18,7 +18,7 @@ public:
     float getFresnelPower() const { return this->fresnelPower; }
     float getChromaticAberrationFactor() const { return this->chromaticAberrationFactor; }
 
-    // Setters
+    // Setters  
     void setEta(float eta) { this->eta = eta; }
     void setFresnelPower(float fresnelPower) { this->fresnelPower = fresnelPower; }
     void setChromaticAberrationFactor(float chromaticAberrationFactor) { this->chromaticAberrationFactor = chromaticAberrationFactor; }
