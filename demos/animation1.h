@@ -28,12 +28,13 @@ void OnGui(){
 
 void setUpScene(ImGuiWrapper* imguiWrapper){
 
-    std::string dragonPath = std::string(ASSET_DIR) + "/models/dragon.fbx";
+    std::string modelPath = std::string(ASSET_DIR) + "/models/bateman.dae";
+
 
     std::string vSkyShaderPath = std::string(SRC_DIR) + "/shaders/skybox/skyboxShader.vert";
     std::string fSkyShaderPath = std::string(SRC_DIR) + "/shaders/skybox/skyboxShader.frag";
-    std::string vGlassShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/transmittance/glassShader.vert";
-    std::string fGlassShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/transmittance/glassShader.frag";
+    std::string vPhongShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.vert";
+    std::string fPhongShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.frag";
 
     std::string cubePath = std::string(ASSET_DIR) + "/textures/skybox/clouds_";
     Cubemap* skybox = new Cubemap(cubePath, ".bmp");
@@ -41,15 +42,15 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
     DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
 
-    Model* dragon = ResourceManager::loadModel(dragonPath.c_str());
+    Model* dragon = ResourceManager::loadModel(modelPath.c_str());
 
-    GlassShader* glassShader = new GlassShader(vGlassShaderPath.c_str(), fGlassShaderPath.c_str(), skybox);
+    blinnPhongShader* phongShader = new blinnPhongShader(vPhongShaderPath.c_str(), fPhongShaderPath.c_str());\
     SkyboxShader* skyboxShader = new SkyboxShader(vSkyShaderPath.c_str(), fSkyShaderPath.c_str(), skybox);
 
-    GlassMaterial* glassMaterial = new GlassMaterial(1.5f, 5.0f, 0.01f);
+    BasicMaterial* basicMaterial = new BasicMaterial(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f) , 32.0f);
 
     ResourceManager::addShader(skyboxShader);
-    ResourceManager::addShader(glassShader);
+    ResourceManager::addShader(phongShader);
 
     GameObject* player = ResourceManager::loadGameObject();
     Camera* camera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f), Camera_Projection::PERSP, 45.0f, 16.0f / 9.0f, 0.1f, 100.0f);
@@ -62,13 +63,15 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
     RenderModule* skyboxRenderModule = new RenderModule(nullptr, nullptr, skyboxShader);
     skyboxObject->addModule(skyboxRenderModule);
 
-    GameObject* dragonObject = ResourceManager::loadGameObject();
-    RenderModule* dragonRenderModule = new RenderModule(dragon, glassMaterial, glassShader);
-    dragonObject->addModule(dragonRenderModule);
-    dragonObject->setPosition(glm::vec3(-3.0f, 0.0f, -5.0f));
-    dragonObject->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
+    GameObject* gameObject = ResourceManager::loadGameObject();
+    RenderModule* dragonRenderModule = new RenderModule(dragon, basicMaterial, phongShader);
+    GameplayModule* gameplayModule = new GameplayModule();
+    gameObject->addModule(gameplayModule);
+    gameObject->addModule(dragonRenderModule);
+    gameObject->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
 
-    camera->lookAt(dragonObject->getPosition());
+
+    camera->lookAt(glm::vec3(0.0f, 0.0f, -5.0f));
 
 
     imguiWrapper->attachGuiFunction("Camera Properties", OnGui);

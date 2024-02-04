@@ -130,10 +130,10 @@ void Model::setID(unsigned int ID) {
 		
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		bool hasDiffuseMaps = loadTextureMaps(material, aiTextureType_DIFFUSE, DIFFUSE, textures);
-		bool hasNormalMaps = loadTextureMaps(material, aiTextureType_HEIGHT, HEIGHT, textures);
-		bool hasSpecularMaps = loadTextureMaps(material, aiTextureType_SPECULAR, SPECULAR, textures);
-		bool hasHeightMaps = loadTextureMaps(material, aiTextureType_AMBIENT, NORMAL, textures);
+		this->hasDiffuseMap = loadTextureMaps(material, aiTextureType_DIFFUSE, DIFFUSE, textures);
+		this->hasNormalMap = loadTextureMaps(material, aiTextureType_HEIGHT, HEIGHT, textures);
+		this->hasSpecularMap = loadTextureMaps(material, aiTextureType_SPECULAR, SPECULAR, textures);
+		this->hasHeightMap = loadTextureMaps(material, aiTextureType_AMBIENT, NORMAL, textures);
 
 		std::cout << " Verticies size: " << vertices.size() << "\n";
 

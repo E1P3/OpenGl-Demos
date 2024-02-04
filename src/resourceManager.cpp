@@ -119,6 +119,7 @@ GLFWwindow* ResourceManager::createWindow(int width, int height, const char* tit
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
     window = glfwCreateWindow(screenWidth, screenHeight, title, nullptr, nullptr);
     if (!window) {
@@ -188,6 +189,7 @@ void ResourceManager::runGameLoop(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
 
     updateDeltaTime();
     updateKeysPressed();

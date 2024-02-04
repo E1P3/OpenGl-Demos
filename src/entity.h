@@ -2,15 +2,22 @@
 #define ENTITY_H
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <vector>
 
 class Entity {
 public:
-    Entity() : position(glm::vec3(0.0f)), rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f)), scale(glm::vec3(1.0f)) {
+    Entity() : position(glm::vec3(0.0f)), rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f)), scale(glm::vec3(1.0f)), entityParent(nullptr) {
         updateTransform();
     }
 
-    ~Entity() = default;
+    ~Entity() {
+        for (Entity* child : entityChildren) {
+            delete child;
+        }
+        this->entityParent->removeChildEntity(this);
+    }
 
     glm::mat4 getTransform() const {
         return transform;
@@ -81,17 +88,50 @@ public:
         return glm::normalize(rotation * glm::vec3(0.0f, 1.0f, 0.0f));
     }
 
+    void addChildEntity(Entity* child) {
+        if (entityParent) {
+            entityParent->removeChildEntity(this);
+        }
+        child->entityParent = this;
+        entityChildren.push_back(child);
+        updateTransform();
+    }
+
+    void removeChildEntity(Entity* child) {
+        auto it = std::find(entityChildren.begin(), entityChildren.end(), child);
+        if (it != entityChildren.end()) {
+            entityChildren.erase(it);
+            child->entityParent = nullptr;
+            child->updateTransform();
+        }
+    }
+
 private:
     glm::mat4 transform;
     glm::vec3 position;
     glm::quat rotation;
     glm::vec3 scale;
+    Entity* entityParent;
+    std::vector<Entity*> entityChildren; 
 
     void updateTransform() {
+        glm::mat4 localTransform = calculateLocalTransform();
+        if (entityParent) {
+            transform = entityParent->getTransform() * localTransform;
+        } else {
+            transform = localTransform;
+        }
+
+        for (Entity* child : entityChildren) {
+            child->updateTransform();
+        }
+    }
+
+    glm::mat4 calculateLocalTransform() const {
         glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
         glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
         glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
-        transform = translationMatrix * rotationMatrix * scaleMatrix;
+        return translationMatrix * rotationMatrix * scaleMatrix;
     }
 };
 

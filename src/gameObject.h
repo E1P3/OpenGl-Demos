@@ -4,6 +4,7 @@
 #include "entity.h"
 #include "entityModule.h"
 #include <vector>
+#include <string>
 
 class GameObject : public Entity {
 
@@ -32,6 +33,18 @@ public:
     void addChild(GameObject* child) {
         children.push_back(child);
         child->parent = this;
+        this->addChildEntity(child);
+    }
+
+    void removeChild(GameObject* child) {
+        for (int i = 0; i < children.size(); i++) {
+            if (children[i] == child) {
+                children.erase(children.begin() + i);
+                child->parent = nullptr;
+                this->removeChildEntity(child);
+                break;
+            }
+        }
     }
 
     void addModule(EntityModule* module) {

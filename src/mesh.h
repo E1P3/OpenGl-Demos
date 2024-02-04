@@ -6,6 +6,7 @@
 #include <string>
 #include <glm/glm.hpp>
 #include "texture.h"
+#include "shader.h"
 
 #define MAX_BONE_INFLUENCE 4
 
@@ -67,27 +68,19 @@ public:
             if (type == DIFFUSE){
                 number = std::to_string(diffuseNr++);
                 name = "texture_diffuse";
-                shader->SetInteger("hasDiffuse", 1, false);
             }
             else if (type == SPECULAR){
                 number = std::to_string(specularNr++); // transfer unsigned int to string
                 name = "texture_specular";
-                shader->SetInteger("hasSpecular", 1, false);
             }
             else if (type == NORMAL){
                 number = std::to_string(normalNr++); // transfer unsigned int to string
                 name = "texture_normal";
-                shader->SetInteger("hasNormal", 1, false);
             }
             else if (type == HEIGHT){
                 number = std::to_string(heightNr++); // transfer unsigned int to string
                 name = "texture_height";
-                shader->SetInteger("hasHeight", 1, false);
             }  
-            //std::cout << name << number <<" " << i + 1 << "\n";
-            // now set the sampler to the correct texture unit
-            shader->SetInteger((name + number).c_str(), i+1, false);
-            // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, textures[i]->getID());
         }
 
