@@ -96,7 +96,8 @@ void Camera::updateCameraRotation(){
 
 void Camera::updateCameraPosition(){
     float fPress = ResourceManager::getKeyData(GLFW_KEY_F).pressDuration;
-    if(fPress < 0.01f && fPress > 0.0f){
+    float deltaTime = ResourceManager::getDeltaTime();
+    if(fPress < 2 * deltaTime && fPress > 0.0f){
         currentMode = (currentMode + 1) % 3;
         if(currentMode == 0){
             mode = FPS;
