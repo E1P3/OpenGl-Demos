@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <vector>
+#include <imgui.h>
+#include <iostream>
 
 class Entity {
 public:
@@ -33,6 +35,10 @@ public:
 
     glm::vec3 getScale() const {
         return scale;
+    }
+
+    glm::vec3 getWorldPosition() const {
+        return glm::vec3(transform[3]);
     }
 
     void setPosition(const glm::vec3& newPosition) {
@@ -76,8 +82,8 @@ public:
         updateTransform();
     }
 
-    glm::vec3 getForward() const {
-        return glm::normalize(rotation * glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::vec3 getFront() const {
+        return glm::normalize(rotation * glm::vec3(0.0f, 0.0f, -1.0f));
     }
 
     glm::vec3 getRight() const {
@@ -104,6 +110,17 @@ public:
             child->entityParent = nullptr;
             child->updateTransform();
         }
+    }
+
+    void OnGui() {
+        ImGui::DragFloat3("Position", &position[0], 0.1f);
+    
+        glm::vec3 rotationEuler = glm::degrees(glm::eulerAngles(rotation));
+        ImGui::DragFloat3("Rotation", &rotationEuler[0], 0.1f);
+        setRotation(glm::radians(rotationEuler));
+
+        ImGui::DragFloat3("Scale", &scale[0], 0.1f);
+        updateTransform();
     }
 
 private:

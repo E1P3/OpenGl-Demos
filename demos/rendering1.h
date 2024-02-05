@@ -15,10 +15,10 @@
 #include "../src/shaders/forwardPass/cook-torrace/pbrShader.h"
 #include "../src/imgui/imguiWrapper.h"
 
-void setUpScene(ImGuiWrapper* imguiWrapper){
+void setUpScene(){
 
     std::string potPath = std::string(ASSET_DIR) + "/models/teapot.fbx";
-    std::string spherePath = std::string(ASSET_DIR) + "/models/sphere.fbx";
+    std::string spherePath = std::string(ASSET_DIR) + "/models/defaultSphere.fbx";
     std::string dragonPath = std::string(ASSET_DIR) + "/models/dragon.fbx";
     std::string planePath = std::string(ASSET_DIR) + "/models/defaultPlane.fbx";
 
@@ -50,12 +50,9 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
     Model* dragon = ResourceManager::loadModel(dragonPath.c_str());
     Model* plane = ResourceManager::loadModel(planePath.c_str());
 
-    GameObject* player = ResourceManager::loadGameObject();
     Camera* camera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f), Camera_Projection::PERSP, 45.0f, 16.0f / 9.0f, 0.1f, 100.0f);
-    ControllerModule* controllerModule = new ControllerModule(true, true, true);
-    player->addModule(controllerModule);
-    player->addModule(camera);
     ResourceManager::setActiveCamera(camera);
+    camera->setMode(Camera_Mode::FREE);
 
     GameObject* pot1 = ResourceManager::loadGameObject();
     RenderModule* renderModule = new RenderModule(pot, phongMaterial, shader);
@@ -133,13 +130,9 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
     floor->setScale(glm::vec3(20.0f, 20.0f, 20.0f));
     floor->Translate(glm::vec3(0.0f, -4.0f, 0.0f));
 
-
-    player->Translate(glm::vec3(0.0f, 0.0f, 10.0f));
-    camera->lookAt(pot1->getPosition());
-
-    imguiWrapper->attachGuiFunction("Phong Shader", [phongMaterial](){phongMaterial->OnGui();});
-    imguiWrapper->attachGuiFunction("PBR Shader", [pbrMaterial](){pbrMaterial->OnGui();});
-    imguiWrapper->attachGuiFunction("Toon Shader", [toonMaterial](){toonMaterial->OnGui();});
+    ImGuiWrapper::attachGuiFunction("Phong Shader", [phongMaterial](){phongMaterial->OnGui();});
+    ImGuiWrapper::attachGuiFunction("PBR Shader", [pbrMaterial](){pbrMaterial->OnGui();});
+    ImGuiWrapper::attachGuiFunction("Toon Shader", [toonMaterial](){toonMaterial->OnGui();});
 }
 
 #endif // RENDERING1_H

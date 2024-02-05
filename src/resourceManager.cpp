@@ -1,12 +1,12 @@
 #include "resourceManager.h"
 #include "utils/programInfo.h"
 
-std::vector<Shader*> ResourceManager::shaders;
-std::vector<Texture*> ResourceManager::textures;
-std::vector<Mesh*> ResourceManager::meshes;
-std::vector<Model*> ResourceManager::models;
-std::vector<GameObject*> ResourceManager::gameObjects;
-GLFWwindow* ResourceManager::window;
+std::vector<Shader *> ResourceManager::shaders;
+std::vector<Texture *> ResourceManager::textures;
+std::vector<Mesh *> ResourceManager::meshes;
+std::vector<Model *> ResourceManager::models;
+std::vector<GameObject *> ResourceManager::gameObjects;
+GLFWwindow *ResourceManager::window;
 float ResourceManager::deltaTime = 0.0f;
 float ResourceManager::previousTime = 0.0f;
 double ResourceManager::mouseX = 0.0;
@@ -15,102 +15,124 @@ double ResourceManager::lastMouseX = 0.0;
 double ResourceManager::lastMouseY = 0.0;
 std::unordered_map<int, keyData> ResourceManager::keyStates;
 std::unordered_map<int, keyData> ResourceManager::mouseStates;
-Camera* ResourceManager::activeCamera;
-std::vector<PointLight*> ResourceManager::pointLights;
-std::vector<DirectionalLight*> ResourceManager::directionalLights;
+Camera *ResourceManager::activeCamera;
+std::vector<PointLight *> ResourceManager::pointLights;
+std::vector<DirectionalLight *> ResourceManager::directionalLights;
 bool ResourceManager::isDebug = false;
 bool ResourceManager::isMouseEnabled = false;
 int ResourceManager::screenWidth, ResourceManager::screenHeight;
 
-Model* ResourceManager::loadModel(const char* modelFile){
-        Model* model = new Model(modelFile);
-        model->setID(models.size());
-        models.push_back(model);
-        return model;
-    }
+Model *ResourceManager::loadModel(const char *modelFile)
+{
+    Model *model = new Model(modelFile);
+    model->setID(models.size());
+    models.push_back(model);
+    return model;
+}
 
-Model* ResourceManager::getModel(unsigned int ID){
+Model *ResourceManager::getModel(unsigned int ID)
+{
     return models[ID];
 }
 
-Shader* ResourceManager::addShader(Shader* shader){
-        shaders.push_back(shader);
-        return shader;
+Shader *ResourceManager::addShader(Shader *shader)
+{
+    shaders.push_back(shader);
+    return shader;
 }
-Shader* ResourceManager::getShader(unsigned int ID){
+Shader *ResourceManager::getShader(unsigned int ID)
+{
     return shaders[ID];
 }
-Texture* ResourceManager::loadTexture( TextureType type, const char* textureFile){
-    for (Texture* texture : textures) {
-        if (strcmp(texture->getFilePath().c_str(), textureFile) == 0) {
+Texture *ResourceManager::loadTexture(TextureType type, const char *textureFile)
+{
+    for (Texture *texture : textures)
+    {
+        if (strcmp(texture->getFilePath().c_str(), textureFile) == 0)
+        {
             return texture;
         }
     }
-    Texture* texture = new Texture(type, textureFile);
+    Texture *texture = new Texture(type, textureFile);
     textures.push_back(texture);
     return texture;
 }
-Texture* ResourceManager::getTexture(unsigned int ID){
+Texture *ResourceManager::getTexture(unsigned int ID)
+{
     return textures[ID];
 }
-Mesh* ResourceManager::loadMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures){
-    Mesh* mesh = new Mesh(vertices, indices, textures);
+Mesh *ResourceManager::loadMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture *> textures)
+{
+    Mesh *mesh = new Mesh(vertices, indices, textures);
     mesh->setID(meshes.size());
     meshes.push_back(mesh);
     return mesh;
 }
 
-Mesh* ResourceManager::getMesh(unsigned int ID){
+Mesh *ResourceManager::getMesh(unsigned int ID)
+{
     return meshes[ID];
 }
 
-GameObject* ResourceManager::loadGameObject(){
-    GameObject* gameObject = new GameObject();
+GameObject *ResourceManager::loadGameObject()
+{
+    GameObject *gameObject = new GameObject();
     gameObject->setID(gameObjects.size());
     gameObjects.push_back(gameObject);
     return gameObject;
 }
 
-GameObject* ResourceManager::getGameObject(unsigned int ID){
+GameObject *ResourceManager::getGameObject(unsigned int ID)
+{
     return gameObjects[ID];
 }
 
-float ResourceManager::getDeltaTime(){
+float ResourceManager::getDeltaTime()
+{
     return deltaTime;
 }
 
-void ResourceManager::updateDeltaTime(){
+void ResourceManager::updateDeltaTime()
+{
     float currentTime = glfwGetTime();
     deltaTime = currentTime - previousTime;
     previousTime = currentTime;
 }
 
-void ResourceManager::updateKeysPressed(){
-    for (int i = 0; i < 1024; i++) {
-        if (glfwGetKey(window, i) == GLFW_PRESS) {
+void ResourceManager::updateKeysPressed()
+{
+    for (int i = 0; i < 1024; i++)
+    {
+        if (glfwGetKey(window, i) == GLFW_PRESS)
+        {
             keyStates[i].isPressed = true;
             keyStates[i].pressDuration += deltaTime;
-            if (i == GLFW_KEY_ESCAPE) {
+            if (i == GLFW_KEY_ESCAPE)
+            {
                 glfwSetWindowShouldClose(window, true);
             }
         }
-        else {
+        else
+        {
             keyStates[i].isPressed = false;
             keyStates[i].pressDuration = 0.0f;
         }
     }
 }
 
-bool ResourceManager::isKeyPressed(int key){
+bool ResourceManager::isKeyPressed(int key)
+{
     return keyStates[key].isPressed;
 }
 
-GLFWwindow* ResourceManager::createWindow(int width, int height, const char* title){
+GLFWwindow *ResourceManager::createWindow(int width, int height, const char *title)
+{
 
     screenWidth = width;
     screenHeight = height;
 
-    if (!glfwInit()) {
+    if (!glfwInit())
+    {
         std::cerr << "Failed to initialize GLFW" << std::endl;
         return nullptr;
     }
@@ -122,7 +144,8 @@ GLFWwindow* ResourceManager::createWindow(int width, int height, const char* tit
     glfwWindowHint(GLFW_SAMPLES, 4);
 
     window = glfwCreateWindow(screenWidth, screenHeight, title, nullptr, nullptr);
-    if (!window) {
+    if (!window)
+    {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return nullptr;
@@ -130,7 +153,8 @@ GLFWwindow* ResourceManager::createWindow(int width, int height, const char* tit
 
     glfwMakeContextCurrent(window);
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
         std::cerr << "Failed to initialize Glad" << std::endl;
         glfwTerminate();
         return nullptr;
@@ -141,50 +165,62 @@ GLFWwindow* ResourceManager::createWindow(int width, int height, const char* tit
     return window;
 }
 
-GLFWwindow* ResourceManager::getWindow(){
+GLFWwindow *ResourceManager::getWindow()
+{
     return window;
 }
 
-double ResourceManager::getMouseX(){
+double ResourceManager::getMouseX()
+{
     return mouseX;
 }
 
-double ResourceManager::getMouseY(){
+double ResourceManager::getMouseY()
+{
     return mouseY;
 }
 
-double ResourceManager::getMouseDeltaX(){
+double ResourceManager::getMouseDeltaX()
+{
     return mouseX - lastMouseX;
 }
 
-double ResourceManager::getMouseDeltaY(){
+double ResourceManager::getMouseDeltaY()
+{
     return mouseY - lastMouseY;
 }
 
-void ResourceManager::updateMousePosition(){
+void ResourceManager::updateMousePosition()
+{
     lastMouseX = mouseX;
     lastMouseY = mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);
-    //glfwSetCursorPos(window, screenWidth / 2, screenHeight / 2);
+    // glfwSetCursorPos(window, screenWidth / 2, screenHeight / 2);
 }
 
-void ResourceManager::initialize(){
-    for(GameObject* gameObject : gameObjects){
+void ResourceManager::initialize()
+{
+    for (GameObject *gameObject : gameObjects)
+    {
         gameObject->OnStart();
     }
 
     // All lights in the scene have to be accessible to all shaders
-    for(Shader* shader : shaders){
-        for(PointLight* light : pointLights){
+    for (Shader *shader : shaders)
+    {
+        for (PointLight *light : pointLights)
+        {
             shader->bindPointLight(light);
         }
-        for(DirectionalLight* light : directionalLights){
+        for (DirectionalLight *light : directionalLights)
+        {
             shader->bindDirectionalLight(light);
         }
     }
 }
 
-void ResourceManager::runGameLoop(){
+void ResourceManager::runGameLoop()
+{
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -195,74 +231,99 @@ void ResourceManager::runGameLoop(){
     updateKeysPressed();
     updateMousePressed();
     updateMousePosition();
-    
-    if(isDebug)
+
+    activeCamera->OnUpdate();
+
+    if (isDebug)
         ProgramInfo::printAllInfo();
 
-    for(GameObject* gameObject : gameObjects){
+    for (GameObject *gameObject : gameObjects)
+    {
         gameObject->OnUpdate();
     }
 
-    for(Shader* shader : shaders){
+    for (Shader *shader : shaders)
+    {
 
         shader->Render();
     }
 }
 
-void ResourceManager::setActiveCamera(Camera* camera){
+void ResourceManager::setActiveCamera(Camera *camera)
+{
+    if (activeCamera != nullptr)
+    {
+        activeCamera->setActive(false);
+    }
     activeCamera = camera;
+    activeCamera->setActive(true);
 }
 
-Camera* ResourceManager::getActiveCamera(){
+Camera *ResourceManager::getActiveCamera()
+{
     return activeCamera;
 }
 
-void ResourceManager::updateMousePressed(){
-    for (int i = 0; i < 8; i++) {
-        if (glfwGetMouseButton(window, i) == GLFW_PRESS) {
+void ResourceManager::updateMousePressed()
+{
+    for (int i = 0; i < 8; i++)
+    {
+        if (glfwGetMouseButton(window, i) == GLFW_PRESS)
+        {
             mouseStates[i].isPressed = true;
             mouseStates[i].pressDuration += deltaTime;
         }
-        else {
+        else
+        {
             mouseStates[i].isPressed = false;
             mouseStates[i].pressDuration = 0.0f;
         }
     }
 }
 
-bool ResourceManager::isMousePressed(int button){
+bool ResourceManager::isMousePressed(int button)
+{
     return mouseStates[button].isPressed;
 }
 
-DirectionalLight* ResourceManager::loadDirectionalLight(float strength, glm::vec3 position, glm::quat rotation){
-    DirectionalLight* light = new DirectionalLight(strength, position, rotation);
+DirectionalLight *ResourceManager::loadDirectionalLight(float strength, glm::vec3 rotation)
+{
+    DirectionalLight *light = new DirectionalLight(strength, rotation, glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
     directionalLights.push_back(light);
     return light;
 }
 
-PointLight* ResourceManager::loadPointLight(float strength ,glm::vec3 position, float constant, float linear, float quadratic){
-    PointLight* light = new PointLight(strength, position, constant, linear, quadratic);
+PointLight *ResourceManager::loadPointLight(float strength, glm::vec3 position, float constant, float linear, float quadratic)
+{
+    PointLight *light = new PointLight(strength, position, constant, linear, quadratic, glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
     pointLights.push_back(light);
     return light;
 }
 
-void ResourceManager::setMouseEnabled(bool isEnabled){
-    if(isEnabled){
+void ResourceManager::setMouseEnabled(bool isEnabled)
+{
+    if (isEnabled)
+    {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    } else {
+    }
+    else
+    {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
     isMouseEnabled = isEnabled;
 }
 
-bool ResourceManager::getIsMouseEnabled(){
+bool ResourceManager::getIsMouseEnabled()
+{
     return isMouseEnabled;
 }
 
-keyData ResourceManager::getKeyData(int key){
+keyData ResourceManager::getKeyData(int key)
+{
     return keyStates[key];
 }
 
-keyData ResourceManager::getMouseData(int button){
+keyData ResourceManager::getMouseData(int button)
+{
     return mouseStates[button];
 }

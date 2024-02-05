@@ -27,12 +27,10 @@ int main() {
 
     GLFWwindow* window = ResourceManager::createWindow(1920, 1080);
 
-    ImGuiWrapper* imguiWrapper = new ImGuiWrapper();
-    setUpScene(imguiWrapper);
+    ImGuiWrapper::init();
+    setUpScene();
 
     ResourceManager::initialize();
-
-    float timer = 0;
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
@@ -40,23 +38,16 @@ int main() {
         // Process events
         glfwPollEvents();
 
-        
-
-        // center camera on start
-        if (timer < 0.5f) {
-            ResourceManager::getActiveCamera()->getParent()->setRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
-            timer += ResourceManager::getDeltaTime();
-        }
-
         // Update
         ResourceManager::runGameLoop();
-        imguiWrapper->update();
-        imguiWrapper->render();
+        ImGuiWrapper::update();
+        ImGuiWrapper::render();
 
         // Swap buffers
         glfwSwapBuffers(window);
     }
 
+    ImGuiWrapper::shutdown();
     // Clean up
     glfwTerminate();
     return 0;

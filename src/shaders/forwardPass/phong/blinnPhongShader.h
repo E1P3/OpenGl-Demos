@@ -21,10 +21,17 @@ public:
         this->SetMatrix4("projection", ResourceManager::getActiveCamera()->getProjectionMatrix());
 
         if(pointLightsToRender[0] != nullptr){
-            this->SetVector3f("light.position", pointLightsToRender[0]->getPosition());
-            this->SetVector3f("light.ambient", pointLightsToRender[0]->getAmbient());
-            this->SetVector3f("light.diffuse", pointLightsToRender[0]->getDiffuse());
-            this->SetVector3f("light.specular", pointLightsToRender[0]->getSpecular());
+            this->SetVector3f("pointLight.position", pointLightsToRender[0]->getPosition());
+            this->SetVector3f("pointLight.ambient", pointLightsToRender[0]->getAmbient());
+            this->SetVector3f("pointLight.diffuse", pointLightsToRender[0]->getDiffuse());
+            this->SetVector3f("pointLight.specular", pointLightsToRender[0]->getSpecular());
+        }
+
+        if(dirLightsToRender[0] != nullptr){
+            this->SetVector3f("dirLight.direction", glm::eulerAngles(dirLightsToRender[0]->getRotation()));
+            this->SetVector3f("dirLight.ambient", dirLightsToRender[0]->getAmbient());
+            this->SetVector3f("dirLight.diffuse", dirLightsToRender[0]->getDiffuse());
+            this->SetVector3f("dirLight.specular", dirLightsToRender[0]->getSpecular());
         }
 
 

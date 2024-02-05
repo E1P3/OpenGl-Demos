@@ -5,12 +5,14 @@
 #include "entityModule.h"
 #include <vector>
 #include <string>
+#include <imgui.h>
 
 class GameObject : public Entity {
 
 public:
     GameObject() {
         parent = nullptr;
+        name = "GameObject";
     }
 
     ~GameObject() {
@@ -28,6 +30,7 @@ public:
 
     void setID(unsigned int ID) {
         this->ID = ID;
+        name = name + " " + std::to_string(ID);
     }
 
     void addChild(GameObject* child) {
@@ -76,6 +79,11 @@ public:
         for (auto child : children) {
             child->OnStart();
         }
+    }
+
+    void OnGui(){
+        ImGui::Text(name.c_str());
+        Entity::OnGui();
     }
     
 private:

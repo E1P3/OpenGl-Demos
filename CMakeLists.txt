@@ -83,7 +83,8 @@ add_executable(graphics
     src/resourceManager.cpp
     src/entityModules/renderModule.h
     src/entityModules/gameplayModule.h
-    src/entityModules/camera.h
+    src/camera.h
+    src/camera.cpp
     src/entityModules/controllerModule.h
     src/shaders/forwardPass/phong/blinnPhongShader.h
     src/shaders/forwardPass/toon/toonShader.h

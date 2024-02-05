@@ -19,7 +19,7 @@ public:
 
         this->SetMatrix4("view", ResourceManager::getActiveCamera()->getViewMatrix());
         this->SetMatrix4("projection", ResourceManager::getActiveCamera()->getProjectionMatrix());
-        this->SetVector3f("camPos", ResourceManager::getActiveCamera()->getParent()->getPosition());
+        this->SetVector3f("camPos", ResourceManager::getActiveCamera()->getPosition());
 
         for(int i = 0; i < pointLightsToRender.size(); i++){
             this->SetVector3f("lightPositions[" + std::to_string(i) + "]", pointLightsToRender[i]->getPosition());

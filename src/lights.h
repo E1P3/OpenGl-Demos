@@ -1,5 +1,5 @@
-#ifndef LIGHTS_H
-#define LIGHTS_H
+#ifndef LIGHT_H
+#define LIGHT_H
 
 #include <glm/glm.hpp>
 #include "entity.h"
@@ -55,20 +55,27 @@ private:
     int index;
     LightType type = NOT_SET;
     float strength = 1.0f;
-    glm::vec3 diffuse = glm::vec3(0.5f);
-	glm::vec3 ambient = glm::vec3(0.01f);
-	glm::vec3 specular = glm::vec3(0.22f);
+    glm::vec3 diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::vec3 ambient = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::vec3 specular = glm::vec3(0.5f, 0.5f, 0.5f);
 };
+
+#endif // LIGHT_H
+
+#ifndef DIR_LIGHT_H
+#define DIR_LIGHT_H
 
 class DirectionalLight : public Light{
 public:
     // Constructor
     DirectionalLight(){this->setType(LightType::DIRECTIONAL_LIGHT);}
 
-    DirectionalLight(float strength, glm::vec3 position, glm::quat rotation){
+    DirectionalLight(float strength, glm::vec3 rotation, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular){
         this->setStrength(strength);
-        this->setPosition(position);
         this->setRotation(rotation);
+        this->setAmbient(ambient);
+        this->setDiffuse(diffuse);
+        this->setSpecular(specular);
         this->setType(LightType::DIRECTIONAL_LIGHT);
     }
 
@@ -82,14 +89,22 @@ private:
 
 };
 
+#endif // DIR_LIGHT_H
+
+#ifndef POINT_LIGHT_H
+#define POINT_LIGHT_H
+
 class PointLight : public Light{
 public:
     // Constructor
     PointLight(){this->setType(LightType::POINT_LIGHT);}
 
-    PointLight(float strength, glm::vec3 position, float constant, float linear, float quadratic){
+    PointLight(float strength, glm::vec3 position, float constant, float linear, float quadratic, glm::vec3 ambient = glm::vec3(0.5f,0.5f,0.5f) , glm::vec3 diffuse = glm::vec3(0.5f,0.5f,0.5f), glm::vec3 specular = glm::vec3(0.5f,0.5f,0.5f)){
         this->setStrength(strength);
         this->setPosition(position);
+        this->setAmbient(ambient);
+        this->setDiffuse(diffuse);
+        this->setSpecular(specular);
         this->constant = constant;
         this->linear = linear;
         this->quadratic = quadratic;
@@ -115,5 +130,5 @@ private:
 };
 
 
-#endif // LIGHTS_H
+#endif // POINT_LIGHT_H
 

@@ -31,11 +31,11 @@ void OnGui(){
     }
 }
 
-void setUpScene(ImGuiWrapper* imguiWrapper){
+void setUpScene(){
 
     std::string dragonPath = std::string(ASSET_DIR) + "/models/dragon.fbx";
     std::string potPath = std::string(ASSET_DIR) + "/models/teapot.fbx";
-    std::string spherePath = std::string(ASSET_DIR) + "/models/sphere.fbx";
+    std::string spherePath = std::string(ASSET_DIR) + "/models/defaultSphere.fbx";
 
     std::string vSkyShaderPath = std::string(SRC_DIR) + "/shaders/skybox/skyboxShader.vert";
     std::string fSkyShaderPath = std::string(SRC_DIR) + "/shaders/skybox/skyboxShader.frag";
@@ -81,12 +81,9 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
     ResourceManager::addShader(skyboxShader);
     ResourceManager::addShader(glassShader);
 
-    GameObject* player = ResourceManager::loadGameObject();
     Camera* camera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f), Camera_Projection::PERSP, 45.0f, 16.0f / 9.0f, 0.1f, 100.0f);
-    ControllerModule* controllerModule = new ControllerModule(true, true, true);
-    player->addModule(controllerModule);
-    player->addModule(camera);
     ResourceManager::setActiveCamera(camera);
+    camera->setMode(Camera_Mode::FREE);
 
     GameObject* skyboxObject = ResourceManager::loadGameObject();
     RenderModule* skyboxRenderModule = new RenderModule(nullptr, nullptr, skyboxShader);
@@ -115,11 +112,8 @@ void setUpScene(ImGuiWrapper* imguiWrapper){
     sphereObject->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
 
 
-    camera->lookAt(sphereObject->getPosition());
-
-
-    imguiWrapper->attachGuiFunction("Material Properties", [glassMaterial](){glassMaterial->OnGui();});
-    imguiWrapper->attachGuiFunction("Skybox Properties", OnGui);
+    ImGuiWrapper::attachGuiFunction("Material Properties", [glassMaterial](){glassMaterial->OnGui();});
+    ImGuiWrapper::attachGuiFunction("Skybox Properties", OnGui);
 
 }
 

@@ -11,23 +11,17 @@
 class ImGuiWrapper
 {
 public:
-    ImGuiWrapper();
-    ~ImGuiWrapper();
-
     using GuiFunction = std::function<void()>;
 
-    void init();
-    void update();
-    void render();
-    void shutdown();
-    void attachGuiFunction(std::string name, GuiFunction guiFunction);
-    bool show_demo_window = true;
-    bool show_another_window = false;
-    float clear_color[3] = { 0.45f, 0.55f, 0.60f };
+    static void init();
+    static void update();
+    static void render();
+    static void shutdown();
+    static void attachGuiFunction(std::string name, GuiFunction guiFunction);
 
 private:
-    ImGuiIO io; // Add this line to initialize the reference member
-    std::map<std::string, GuiFunction> guiFunctions;
+    static ImGuiIO io; // Add this line to initialize the reference member
+    static std::map<std::string, GuiFunction> guiFunctions;
 };
 
 #endif // !IMGUI_WRAPPER_H

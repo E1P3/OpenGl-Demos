@@ -13,7 +13,7 @@
 #include "model.h"
 #include "gameObject.h"
 #include "lights.h"
-#include "./entityModules/camera.h"
+#include "camera.h"
 
 class Model;
 
@@ -38,7 +38,7 @@ public:
     static Model* getModel(unsigned int ID);
     static GameObject* loadGameObject();
     static GameObject* getGameObject(unsigned int ID);
-    static DirectionalLight* loadDirectionalLight(float strength, glm::vec3 position, glm::quat rotation);
+    static DirectionalLight* loadDirectionalLight(float strength, glm::vec3 rotation);
     static PointLight* loadPointLight(float strength ,glm::vec3 position, float constant, float linear, float quadratic);
 
     //IO events

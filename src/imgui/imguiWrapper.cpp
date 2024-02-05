@@ -3,7 +3,8 @@
 
 #include "../resourceManager.h"
 
-
+ImGuiIO ImGuiWrapper::io; // Add this line to initialize the reference member
+std::map<std::string, ImGuiWrapper::GuiFunction> ImGuiWrapper::guiFunctions;
 
 void ImGuiWrapper::init() {
     // Setup Dear ImGui context
@@ -52,12 +53,4 @@ void ImGuiWrapper::shutdown() {
 
 void ImGuiWrapper::attachGuiFunction(std::string name, GuiFunction guiFunction) {
     guiFunctions[name] = guiFunction;
-}
-
-ImGuiWrapper::ImGuiWrapper() {
-    init();
-}
-
-ImGuiWrapper::~ImGuiWrapper() {
-    shutdown();
 }

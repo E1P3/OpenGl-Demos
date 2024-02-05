@@ -31,8 +31,6 @@ public:
 
     void OnUpdate() override{
 
-        ResourceManager::setMouseEnabled(ResourceManager::isMousePressed(GLFW_MOUSE_BUTTON_RIGHT));
-
         if (enableRotation) {
             if(ResourceManager::getIsMouseEnabled())
             {
@@ -65,7 +63,12 @@ public:
 
     void OnStart() override{}
 
+    void setActive(bool isActive){
+        this->isActive = isActive;
+    }
+
 private:
+    bool isActive = false;
     bool enableRotation = false;
     bool enableMovement = false;
     bool enableVerticalMovement = true;
@@ -81,8 +84,8 @@ private:
         rotation.x = 0.0f;
         rotation.z = 0.0f;
         
-        glm::vec3 forward = glm::rotate(rotation, glm::vec3(0.0f, 0.0f, -1.0f));
-        glm::vec3 right = glm::rotate(rotation, glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::vec3 forward = this->getParent()->getFront();
+        glm::vec3 right = this->getParent()->getRight();
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
         glm::vec3 direction(0.0f);
@@ -120,50 +123,28 @@ private:
         GameObject* parent = this->getParent();
         glm::quat rotation = parent->getRotation();
         glm::vec3 right = parent->getRight();
+        glm::vec3 up = parent->getUp();
 
         float yawDelta = ResourceManager::getMouseDeltaX() * rotationSensitivity;
         float pitchDelta = ResourceManager::getMouseDeltaY() * rotationSensitivity;
 
-        glm::quat yawRotation = glm::angleAxis(glm::radians(-yawDelta), glm::vec3(0, 1, 0));
+        glm::quat yawRotation = glm::angleAxis(glm::radians(-yawDelta), up);
         glm::quat pitchRotation = glm::angleAxis(glm::radians(-pitchDelta), right);
 
-        rotation = glm::normalize(yawRotation * pitchRotation * rotation);
+        float currentPitch = glm::degrees(glm::pitch(rotation));
+        float newPitch = currentPitch - pitchDelta;
+        if(
+            ((currentPitch <= 89.0f && currentPitch >= 0.0f) && newPitch > 89.0f) || 
+            ((currentPitch <= 0.0f && currentPitch >= -89.0f) && newPitch < -89.0f) ||
+            ((currentPitch <= 91.0f && currentPitch >= 180.0f) && newPitch > 91.0f) ||
+            ((currentPitch <= 180.0f && currentPitch >= -91.0f) && newPitch < -91.0f)
+        ){
+            pitchRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+        }
+        rotation = glm::normalize(yawRotation * rotation);
 
         parent->setRotation(rotation);
     }
-
-
-
-
-
-    void rotateWSAD(){
-        GameObject* parent = this->getParent();
-
-        glm::quat orientation = parent->getRotation();
-
-        float yawDelta = 0.0f; 
-        float pitchDelta = 0.0f;
-
-        if (ResourceManager::isKeyPressed(GLFW_KEY_W)) {
-            pitchDelta = 1.0f * ResourceManager::getDeltaTime() * rotationSensitivity;
-        }
-        if (ResourceManager::isKeyPressed(GLFW_KEY_S)) {
-            pitchDelta = -1.0f * ResourceManager::getDeltaTime() * rotationSensitivity;
-        }
-        if (ResourceManager::isKeyPressed(GLFW_KEY_D)) {
-            yawDelta = 1.0f * ResourceManager::getDeltaTime() * rotationSensitivity;
-        }
-        if (ResourceManager::isKeyPressed(GLFW_KEY_A)) {
-            yawDelta = -1.0f * ResourceManager::getDeltaTime() * rotationSensitivity;
-        }
-
-        glm::quat yawRotation = glm::angleAxis(glm::radians(-yawDelta * rotationSensitivity), glm::vec3(0, 1, 0));
-        glm::quat pitchRotation = glm::angleAxis(glm::radians(-pitchDelta * rotationSensitivity), glm::vec3(1, 0, 0));
-
-        orientation = glm::normalize(yawRotation * pitchRotation * orientation);
-        parent->setRotation(orientation);
-    }
-
 
     void printInfo() {
         GameObject* parent = this->getParent();

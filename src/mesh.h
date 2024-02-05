@@ -58,6 +58,11 @@ public:
         unsigned int normalNr = 1;
         unsigned int heightNr = 1;
 
+        shader->SetInteger("hasDiffuse", 0);
+        shader->SetInteger("hasSpecular", 0);
+        shader->SetInteger("hasNormal", 0);
+        shader->SetInteger("hasHeight", 0);
+
         for (unsigned int i = 0; i < textures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i + 1); // active proper texture unit before binding
@@ -68,18 +73,26 @@ public:
             if (type == DIFFUSE){
                 number = std::to_string(diffuseNr++);
                 name = "texture_diffuse";
+                shader->SetInteger((name).c_str(), i + 1);
+                shader->SetInteger("hasDiffuse", 1);
             }
             else if (type == SPECULAR){
                 number = std::to_string(specularNr++); // transfer unsigned int to string
                 name = "texture_specular";
+                shader->SetInteger((name).c_str(), i + 1);
+                shader->SetInteger("hasSpecular", 1);
             }
             else if (type == NORMAL){
                 number = std::to_string(normalNr++); // transfer unsigned int to string
                 name = "texture_normal";
+                shader->SetInteger((name).c_str(), i + 1);
+                shader->SetInteger("hasNormal", 1);
             }
             else if (type == HEIGHT){
                 number = std::to_string(heightNr++); // transfer unsigned int to string
                 name = "texture_height";
+                shader->SetInteger((name).c_str(), i + 1);
+                shader->SetInteger("hasHeight", 1);
             }  
             glBindTexture(GL_TEXTURE_2D, textures[i]->getID());
         }

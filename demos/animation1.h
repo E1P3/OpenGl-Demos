@@ -17,64 +17,109 @@
 #include "../src/cubemap.h"
 #include "../src/shaders/skybox/skyboxShader.h"
 
-ControllerModule* controllerModule;
+GameObject* plane_body;
+GameObject* pilot;
+DirectionalLight* directionalLight;
+PointLight* pointLight;
+BasicMaterial* surfaceMaterial;
 
 void OnGui(){
-    glm::quat orientation = ResourceManager::getActiveCamera()->getParent()->getRotation();
-    glm::vec3 orientationEuler = glm::degrees(glm::eulerAngles(orientation));
-    ImGui::Text("Camera Orientation (Euler): (%f, %f, %f)", orientationEuler.x, orientationEuler.y, orientationEuler.z);
-    ImGui::Text("Camera Orientation (Quaternion): (%f, %f, %f, %f)", orientation.x, orientation.y, orientation.z, orientation.w);
+    ImGui::Text("Controls:\nF - Switch camera (First Person, Third Person, Free)\nQ/E = Roll\nW/S = Pitch\nA/D = Yaw\n\n");
+
+    ImGui::Text("Camera Properties\n");
+    glm::vec3 cameraRotation = ResourceManager::getActiveCamera()->getRotationEuler();
+    glm::vec3 cameraPosition = ResourceManager::getActiveCamera()->getPosition();
+    glm::quat cameraRotationQuat = glm::quat(cameraRotation);
+    glm::vec3 cameraForward = ResourceManager::getActiveCamera()->getFront();
+    glm::vec3 cameraUp = ResourceManager::getActiveCamera()->getUp();
+    glm::vec3 cameraRight = ResourceManager::getActiveCamera()->getRight();
+    ImGui::Text("Camera Rotation: (%f, %f, %f)", cameraRotation.x, cameraRotation.y, cameraRotation.z);
+    ImGui::Text("Camera Rotation Quat: (%f, %f, %f, %f)", cameraRotationQuat.x, cameraRotationQuat.y, cameraRotationQuat.z, cameraRotationQuat.w);
+    ImGui::Text("Camera Position: (%f, %f, %f)", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    ImGui::Text("Camera Forward: (%f, %f, %f)", cameraForward.x, cameraForward.y, cameraForward.z);
+    ImGui::Text("Camera Up: (%f, %f, %f)", cameraUp.x, cameraUp.y, cameraUp.z);
+    ImGui::Text("Camera Right: (%f, %f, %f)", cameraRight.x, cameraRight.y, cameraRight.z);
+
+    ImGui::Text("\nPlane Properties\n");
+    glm::vec3 planePosition = plane_body->getPosition();
+    glm::quat planeRotationQuat = plane_body->getRotation();
+    glm::vec3 planeRotation = glm::degrees(glm::eulerAngles(planeRotationQuat));
+    ImGui::Text("Plane Rotation: (%f, %f, %f)", planeRotation.x, planeRotation.y, planeRotation.z);
+    ImGui::Text("Plane Rotation Quat: (%f, %f, %f, %f)", planeRotationQuat.x, planeRotationQuat.y, planeRotationQuat.z, planeRotationQuat.w);
 }
 
-void setUpScene(ImGuiWrapper* imguiWrapper){
+void setUpScene(){
 
-    std::string modelPath = std::string(ASSET_DIR) + "/models/bateman.dae";
+    std::string planeBodyPath = std::string(ASSET_DIR) + "/models/plane/plane_body.obj";
+    std::string planePropellerPath = std::string(ASSET_DIR) + "/models/plane/plane_propeller.obj";
+    std::string surfacePath = std::string(ASSET_DIR) + "/models/defaultPlane.fbx";
 
 
     std::string vSkyShaderPath = std::string(SRC_DIR) + "/shaders/skybox/skyboxShader.vert";
     std::string fSkyShaderPath = std::string(SRC_DIR) + "/shaders/skybox/skyboxShader.frag";
-    std::string vPhongShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.vert";
-    std::string fPhongShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.frag";
+    std::string vPhongShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhongTex.vert";
+    std::string fPhongShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhongTex.frag";
 
-    std::string cubePath = std::string(ASSET_DIR) + "/textures/skybox/clouds_";
-    Cubemap* skybox = new Cubemap(cubePath, ".bmp");
+    std::string cubePath = std::string(ASSET_DIR) + "/textures/skybox/bluecloud_";
+    Cubemap* skybox = new Cubemap(cubePath, ".jpg");
     
-    DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
-    PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
+    directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::degrees(glm::vec3(90.0f, 0.0f, 0.0f)));
+    pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
 
-    Model* dragon = ResourceManager::loadModel(modelPath.c_str());
+    Model* planeBodyModel = ResourceManager::loadModel(planeBodyPath.c_str());
+    Model* planePropellerModel = ResourceManager::loadModel(planePropellerPath.c_str());
+    Model* surfaceModel = ResourceManager::loadModel(surfacePath.c_str());
 
-    blinnPhongShader* phongShader = new blinnPhongShader(vPhongShaderPath.c_str(), fPhongShaderPath.c_str());\
+    blinnPhongShader* phongShader = new blinnPhongShader(vPhongShaderPath.c_str(), fPhongShaderPath.c_str());
     SkyboxShader* skyboxShader = new SkyboxShader(vSkyShaderPath.c_str(), fSkyShaderPath.c_str(), skybox);
 
-    BasicMaterial* basicMaterial = new BasicMaterial(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f) , 32.0f);
+    phongShader->setDebug(false);
+
+    BasicMaterial* basicMaterial = new BasicMaterial(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f) , 32.0f);
+    surfaceMaterial = new BasicMaterial(glm::vec3(0.0f, 0.3f, 0.4f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.55f, 0.55f, 0.55f) , 0.76f);
 
     ResourceManager::addShader(skyboxShader);
     ResourceManager::addShader(phongShader);
 
-    GameObject* player = ResourceManager::loadGameObject();
-    Camera* camera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f), Camera_Projection::PERSP, 45.0f, 16.0f / 9.0f, 0.1f, 100.0f);
-    controllerModule = new ControllerModule(true, true, true);
-    player->addModule(controllerModule);
-    player->addModule(camera);
+    Camera* camera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f), Camera_Projection::PERSP, 45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
     ResourceManager::setActiveCamera(camera);
 
     GameObject* skyboxObject = ResourceManager::loadGameObject();
     RenderModule* skyboxRenderModule = new RenderModule(nullptr, nullptr, skyboxShader);
     skyboxObject->addModule(skyboxRenderModule);
 
-    GameObject* gameObject = ResourceManager::loadGameObject();
-    RenderModule* dragonRenderModule = new RenderModule(dragon, basicMaterial, phongShader);
-    GameplayModule* gameplayModule = new GameplayModule();
-    gameObject->addModule(gameplayModule);
-    gameObject->addModule(dragonRenderModule);
-    gameObject->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
+    GameObject* surface = ResourceManager::loadGameObject();
+    RenderModule* surfaceRenderModule = new RenderModule(surfaceModel, surfaceMaterial, phongShader);
+    surface->addModule(surfaceRenderModule);
+    surface->setPosition(glm::vec3(0.0f, -100.0f, 0.0f));
+    surface->setScale(glm::vec3(10000.0f, 10000.0f, 10000.0f));
+    surface->setRotation(glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
+    plane_body = ResourceManager::loadGameObject();
+    RenderModule* gameModelRenderModule = new RenderModule(planeBodyModel, basicMaterial, phongShader);
+    GameplayModule* gameplayModule1 = new GameplayModule();
+    gameplayModule1->setControlled(true);
+    plane_body->addModule(gameplayModule1);
+    plane_body->addModule(gameModelRenderModule);
+    plane_body->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
+    plane_body->setScale(glm::vec3(0.1f, 0.1f, 0.1f));
 
-    camera->lookAt(glm::vec3(0.0f, 0.0f, -5.0f));
+    GameObject* plane_propeller = ResourceManager::loadGameObject();
+    RenderModule* propellerRenderModule = new RenderModule(planePropellerModel, basicMaterial, phongShader);
+    GameplayModule* gameplayModule = new GameplayModule(glm::vec3(1.0f, 0.0f, 0.0f), 100.0f);
+    plane_propeller->addModule(propellerRenderModule);
+    plane_propeller->addModule(gameplayModule);
 
+    pilot = ResourceManager::loadGameObject();
+    pilot->setPosition(glm::vec3(-5.9, 2.6, 2.7));
 
-    imguiWrapper->attachGuiFunction("Camera Properties", OnGui);
+    plane_body->addChild(plane_propeller);
+    plane_body->addChild(pilot);
+
+    camera->setTarget(pilot);
+    camera->setMode(Camera_Mode::TPS);
+
+    ImGuiWrapper::attachGuiFunction("Camera Properties", OnGui);
 
 }
 
