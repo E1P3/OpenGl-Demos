@@ -30,7 +30,7 @@ void main()
 
     // Diffuse
     vec3 normal = normalize(Normal);
-    vec3 lightDir = normalize(light.position - FragPos);
+    vec3 lightDir = normalize(pointLight.position - FragPos);
     float diff = max(dot(normal, lightDir), 0.0);
     vec3 diffuse = pointLight.diffuse * (diff * material.diffuse);
 

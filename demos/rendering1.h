@@ -29,7 +29,7 @@ void setUpScene(){
     std::string vPBRShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/cook-torrace/pbrShader.vert";
     std::string fPBRShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/cook-torrace/pbrShader.frag";
 
-    DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 1.0f));
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
 
     Shader* shader = new blinnPhongShader(vShaderPath.c_str(), fShaderPath.c_str());
@@ -129,6 +129,9 @@ void setUpScene(){
     floor->setRotation(glm::vec3 (-90.0f, 0.0f, 0.0f));
     floor->setScale(glm::vec3(20.0f, 20.0f, 20.0f));
     floor->Translate(glm::vec3(0.0f, -4.0f, 0.0f));
+
+    camera->setTarget(pot1);
+    camera->setMode(Camera_Mode::TPS);
 
     ImGuiWrapper::attachGuiFunction("Phong Shader", [phongMaterial](){phongMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("PBR Shader", [pbrMaterial](){pbrMaterial->OnGui();});

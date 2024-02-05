@@ -46,6 +46,22 @@ void OnGui(){
     glm::vec3 planeRotation = glm::degrees(glm::eulerAngles(planeRotationQuat));
     ImGui::Text("Plane Rotation: (%f, %f, %f)", planeRotation.x, planeRotation.y, planeRotation.z);
     ImGui::Text("Plane Rotation Quat: (%f, %f, %f, %f)", planeRotationQuat.x, planeRotationQuat.y, planeRotationQuat.z, planeRotationQuat.w);
+
+    std::string cameraMode = "";
+    switch(ResourceManager::getActiveCamera()->getMode()){
+        case Camera_Mode::FREE:
+            cameraMode = "Free";
+            break;
+        case Camera_Mode::FPS:
+            cameraMode = "First Person";
+            break;
+        case Camera_Mode::TPS:
+            cameraMode = "Third Person";
+            break;
+    }
+
+    ImGui::Text("\nCamera Mode: %s", cameraMode.c_str());
+
 }
 
 void setUpScene(){

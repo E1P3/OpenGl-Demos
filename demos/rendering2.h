@@ -66,7 +66,7 @@ void setUpScene(){
     Cubemap* skybox5 = new Cubemap(cubePath, ".jpg");
     skyboxes.push_back(skybox5);
 
-    DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(1.0f, glm::vec3(0.0f, -1.0f, 0.0f));
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
 
     Model* dragon = ResourceManager::loadModel(dragonPath.c_str());
@@ -76,7 +76,7 @@ void setUpScene(){
     glassShader = new GlassShader(vGlassShaderPath.c_str(), fGlassShaderPath.c_str(), skybox);
     skyboxShader = new SkyboxShader(vSkyShaderPath.c_str(), fSkyShaderPath.c_str(), skybox);
 
-    GlassMaterial* glassMaterial = new GlassMaterial(1.5f, 5.0f, 0.01f);
+    GlassMaterial* glassMaterial = new GlassMaterial(0.66f, 5.0f, 0.02f);
 
     ResourceManager::addShader(skyboxShader);
     ResourceManager::addShader(glassShader);
@@ -111,6 +111,8 @@ void setUpScene(){
     sphereObject->addModule(sphereGameplayModule);
     sphereObject->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
 
+    camera->setTarget(sphereObject);
+    camera->setMode(Camera_Mode::FREE);
 
     ImGuiWrapper::attachGuiFunction("Material Properties", [glassMaterial](){glassMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Skybox Properties", OnGui);

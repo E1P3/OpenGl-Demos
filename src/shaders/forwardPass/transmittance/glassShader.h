@@ -21,7 +21,7 @@ public:
 
         this->SetMatrix4("view", ResourceManager::getActiveCamera()->getViewMatrix());
         this->SetMatrix4("projection", ResourceManager::getActiveCamera()->getProjectionMatrix());
-        this->SetVector3f("viewPos", ResourceManager::getActiveCamera()->getPosition());
+        this->SetVector3f("camPos", ResourceManager::getActiveCamera()->getPosition());
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->getID());

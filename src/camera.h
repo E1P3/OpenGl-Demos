@@ -37,6 +37,7 @@ public:
     void setActive(bool active);
     void setTarget(Entity* target);
     void setMode(Camera_Mode mode);
+    Camera_Mode getMode();
 
 private:
     void updateCameraRotation();

@@ -26,13 +26,13 @@ public:
     void Draw(Shader* shader) override {
         shader->SetFloat("eta", this->eta);
         shader->SetFloat("fresnelPower", this->fresnelPower);
-        shader->SetFloat("chromaticFactor", this->chromaticAberrationFactor);
+        shader->SetFloat("chromaticOffset", this->chromaticAberrationFactor);
     }
 
     void OnGui() override {
         ImGui::SliderFloat("Eta", &eta, 0.0f, 3.0f);
         ImGui::SliderFloat("Fresnel Power", &fresnelPower, 0.0f, 10.0f);
-        ImGui::SliderFloat("Chromatic Factor", &chromaticAberrationFactor, 0.0f, 10.0f);
+        ImGui::SliderFloat("Chromatic Offset", &chromaticAberrationFactor, 0.0f, 10.0f);
     }
 
 private:

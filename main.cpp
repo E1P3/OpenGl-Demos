@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include "src/resourceManager.h"
 #include <string>
-#include "demos/animation1.h"
+#include "demos/rendering1.h"
 #include "src/imgui/imguiWrapper.h"
 
 #ifdef _WIN32

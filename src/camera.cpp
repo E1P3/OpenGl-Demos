@@ -79,6 +79,10 @@ void Camera::setMode(Camera_Mode mode){
     currentMode = mode;
 }
 
+Camera_Mode Camera::getMode(){
+    return mode;
+}
+
 void Camera::updateCameraRotation(){
     float yawDelta = ResourceManager::getMouseDeltaX() * rotationSpeed;
     float pitchDelta = ResourceManager::getMouseDeltaY() * rotationSpeed;
