@@ -27,7 +27,7 @@ glm::quat planeRotationQuat = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
 bool rotationSwitch = true; //euler enabled
 
 void OnGui(){
-    ImGui::Text("Controls:\nF - Switch camera (First Person, Third Person, Free)\nQ/E = Roll\nW/S = Pitch\nA/D = Yaw\n\n");
+    ImGui::Text("Controls:\nF - Switch camera (First Person, Third Person, Free)\nQ/E = Yaw\nW/S = Pitch\nA/D = Roll\n\n");
 
     ImGui::Text("Camera Properties\n");
     glm::vec3 cameraRotation = ResourceManager::getActiveCamera()->getRotationEuler();
@@ -54,7 +54,7 @@ void OnGui(){
     }
     if(rotationSwitch){
         planeRotationEuler = plane_body->getRotationEuler();
-        ImGui::DragFloat3("Plane Rotation", &planeRotationEuler[0], 1.0f, -90.0f, 90.0f);
+        ImGui::DragFloat3("Plane Rotation (roll, yaw, pitch)", &planeRotationEuler[0], 1.0f, -180.0f, 180.0f);
         plane_body->setRotation(planeRotationEuler);
     } else {
         planeRotationQuat = plane_body->getRotation();
