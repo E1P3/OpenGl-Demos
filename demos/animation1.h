@@ -22,6 +22,9 @@ GameObject* pilot;
 DirectionalLight* directionalLight;
 PointLight* pointLight;
 BasicMaterial* surfaceMaterial;
+glm::vec3 planeRotationEuler = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::quat planeRotationQuat = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
+bool rotationSwitch = true; //euler enabled
 
 void OnGui(){
     ImGui::Text("Controls:\nF - Switch camera (First Person, Third Person, Free)\nQ/E = Roll\nW/S = Pitch\nA/D = Yaw\n\n");
@@ -41,11 +44,24 @@ void OnGui(){
     ImGui::Text("Camera Right: (%f, %f, %f)", cameraRight.x, cameraRight.y, cameraRight.z);
 
     ImGui::Text("\nPlane Properties\n");
-    glm::vec3 planePosition = plane_body->getPosition();
     glm::quat planeRotationQuat = plane_body->getRotation();
     glm::vec3 planeRotation = glm::degrees(glm::eulerAngles(planeRotationQuat));
     ImGui::Text("Plane Rotation: (%f, %f, %f)", planeRotation.x, planeRotation.y, planeRotation.z);
     ImGui::Text("Plane Rotation Quat: (%f, %f, %f, %f)", planeRotationQuat.x, planeRotationQuat.y, planeRotationQuat.z, planeRotationQuat.w);
+
+    if(ImGui::Button("Switch Rotation Type")){
+        rotationSwitch = !rotationSwitch;
+    }
+    if(rotationSwitch){
+        planeRotationEuler = plane_body->getRotationEuler();
+        ImGui::DragFloat3("Plane Rotation", &planeRotationEuler[0], 1.0f, -90.0f, 90.0f);
+        plane_body->setRotation(planeRotationEuler);
+    } else {
+        planeRotationQuat = plane_body->getRotation();
+        ImGui::DragFloat4("Plane Rotation Quaternion", &planeRotationQuat[0], 0.01f, -1.0f, 1.0f);
+        plane_body->setRotation(planeRotationQuat);
+    }
+
 
     std::string cameraMode = "";
     switch(ResourceManager::getActiveCamera()->getMode()){

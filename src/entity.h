@@ -33,6 +33,10 @@ public:
         return rotation;
     }
 
+    glm::vec3 getRotationEuler() const {
+        return glm::degrees(glm::eulerAngles(rotation));
+    }
+
     glm::vec3 getScale() const {
         return scale;
     }
@@ -113,14 +117,12 @@ public:
     }
 
     void OnGui() {
+        ImGui::Text("\nTransform\n");
         ImGui::DragFloat3("Position", &position[0], 0.1f);
-    
-        glm::vec3 rotationEuler = glm::degrees(glm::eulerAngles(rotation));
-        ImGui::DragFloat3("Rotation", &rotationEuler[0], 0.1f);
-        setRotation(glm::radians(rotationEuler));
-
+        glm::vec3 rotationEuler = getRotationEuler();
+        ImGui::DragFloat3("Rotation", &rotationEuler[0], 1.0f, -90.0f, 90.0);
+        setRotation(rotationEuler);
         ImGui::DragFloat3("Scale", &scale[0], 0.1f);
-        updateTransform();
     }
 
 private:
