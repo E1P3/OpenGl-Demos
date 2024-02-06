@@ -31,7 +31,7 @@ public:
     
 	int& GetBoneCount() { return m_BoneCounter; }
 
-	void Draw(Shader* shader);
+	void Draw(Shader* shader, bool useOwnTextures = true);
 
 private:
     unsigned int ID;

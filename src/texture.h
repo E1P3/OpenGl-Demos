@@ -10,7 +10,8 @@ enum TextureType {
     DIFFUSE,
     SPECULAR,
     NORMAL,
-    HEIGHT
+    HEIGHT,
+    ROUGHNESS
 };
 
 class Texture {
