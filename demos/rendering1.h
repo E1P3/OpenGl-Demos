@@ -132,7 +132,7 @@ void setUpScene(){
 
     camera->setTarget(pot1);
     camera->setMode(Camera_Mode::TPS);
-
+    
     ImGuiWrapper::attachGuiFunction("Phong Shader", [phongMaterial](){phongMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("PBR Shader", [pbrMaterial](){pbrMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Toon Shader", [toonMaterial](){toonMaterial->OnGui();});

@@ -60,12 +60,6 @@ glm::vec3 Camera::getRotationEuler(){
     return this->rotationEuler;
 }
 
-void Camera::lookAt(glm::vec3 target){
-    this->front = glm::normalize(target - this->position);
-    this->rotationEuler.y = glm::degrees(atan2(this->front.z, this->front.x));
-    this->rotationEuler.x = glm::degrees(asin(this->front.y));
-}
-
 void Camera::setActive(bool active){
     this->isActive = active;
 }
@@ -137,6 +131,13 @@ void Camera::updateCameraPosition(){
             this->position = target->getWorldPosition();
         }
     }
+}
+
+void Camera::lookAt(glm::vec3 target, glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f)){
+    this->front = glm::normalize(target - this->position);
+    this->rotationEuler.y = glm::degrees(atan2(this->front.z, this->front.x));
+    this->rotationEuler.x = glm::degrees(asin(this->front.y));
+    this->up = up;
 }
 
 void Camera::updateCameraVectors(){

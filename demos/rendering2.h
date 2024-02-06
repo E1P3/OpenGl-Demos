@@ -94,25 +94,27 @@ void setUpScene(){
     GameplayModule* dragonGameplayModule = new GameplayModule();
     dragonObject->addModule(dragonRenderModule);
     dragonObject->addModule(dragonGameplayModule);
-    dragonObject->setPosition(glm::vec3(-3.0f, 0.0f, -5.0f));
-    dragonObject->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
+    dragonObject->setPosition(glm::vec3(-3.0f, 0.0f, -10.0f));
+    dragonObject->Scale(glm::vec3(0.15f, 0.15f, 0.15f));
 
     GameObject* potObject = ResourceManager::loadGameObject();
     RenderModule* potRenderModule = new RenderModule(pot, glassMaterial, glassShader);
     GameplayModule* potGameplayModule = new GameplayModule();
     potObject->addModule(potRenderModule);
     potObject->addModule(potGameplayModule);
-    potObject->setPosition(glm::vec3(3.0f, 0.0f, -5.0f));
+    potObject->setPosition(glm::vec3(3.0f, 0.0f, -10.0f));
 
     GameObject* sphereObject = ResourceManager::loadGameObject();
     RenderModule* sphereRenderModule = new RenderModule(sphere, glassMaterial, glassShader);
     GameplayModule* sphereGameplayModule = new GameplayModule();
     sphereObject->addModule(sphereRenderModule);
     sphereObject->addModule(sphereGameplayModule);
-    sphereObject->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
+    sphereObject->setPosition(glm::vec3(0.0f, 0.5f, -10.0f));
+    sphereObject->Scale(glm::vec3(0.7f, 0.7f, 0.7f));
 
     camera->setTarget(sphereObject);
     camera->setMode(Camera_Mode::FREE);
+    camera->lookAt(sphereObject->getPosition(), glm::vec3(0.0f, 1.0f, 0.0f));
 
     ImGuiWrapper::attachGuiFunction("Material Properties", [glassMaterial](){glassMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Skybox Properties", OnGui);

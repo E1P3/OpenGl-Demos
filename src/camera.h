@@ -33,7 +33,7 @@ public:
     glm::vec3 getUp();
     glm::vec3 getRight();
     glm::vec3 getRotationEuler();
-    void lookAt(glm::vec3 target);
+    void lookAt(glm::vec3 target, glm::vec3 up);
     void setActive(bool active);
     void setTarget(Entity* target);
     void setMode(Camera_Mode mode);
