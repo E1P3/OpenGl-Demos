@@ -86,12 +86,12 @@ add_executable(graphics
     src/camera.h
     src/camera.cpp
     src/entityModules/controllerModule.h
-    src/shaders/forwardPass/textured/texturedShader.h
     src/shaders/forwardPass/phong/blinnPhongShader.h
     src/shaders/forwardPass/toon/toonShader.h
     src/shaders/forwardPass/toon/outlineShader.h
     src/shaders/forwardPass/cook-torrace/pbrShader.h
     src/shaders/forwardPass/transmittance/glassShader.h
+    src/shaders/forwardPass/textured/texturedShader.h
     src/shaders/skybox/skyboxShader.h
     src/cubemap.h
     src/utils/stb_image.h
@@ -105,8 +105,10 @@ add_executable(graphics
     src/materials/basicMaterial.h
     src/materials/toonMaterial.h
     src/materials/glassMaterial.h
+    src/materials/texturedMaterial.h
     demos/rendering1.h
     demos/rendering2.h
+    demos/rendering3.h
     demos/animation1.h
     )
 

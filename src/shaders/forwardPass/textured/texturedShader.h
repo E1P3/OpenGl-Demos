@@ -15,33 +15,22 @@ public:
     void Render() override {
         this->Use();
 
-
-
+        bindTextures();
 
         this->SetMatrix4("view", ResourceManager::getActiveCamera()->getViewMatrix());
         this->SetMatrix4("projection", ResourceManager::getActiveCamera()->getProjectionMatrix());
+        this->SetVector3f("viewPos", ResourceManager::getActiveCamera()->getPosition());
 
         if(pointLightsToRender[0] != nullptr){
-            this->SetVector3f("pointLight.position", pointLightsToRender[0]->getPosition());
-            this->SetVector3f("pointLight.ambient", pointLightsToRender[0]->getAmbient());
-            this->SetVector3f("pointLight.diffuse", pointLightsToRender[0]->getDiffuse());
-            this->SetVector3f("pointLight.specular", pointLightsToRender[0]->getSpecular());
+            this->SetVector3f("lightPos", pointLightsToRender[0]->getPosition());
         }
-
-        if(dirLightsToRender[0] != nullptr){
-            this->SetVector3f("dirLight.direction", glm::eulerAngles(dirLightsToRender[0]->getRotation()));
-            this->SetVector3f("dirLight.ambient", dirLightsToRender[0]->getAmbient());
-            this->SetVector3f("dirLight.diffuse", dirLightsToRender[0]->getDiffuse());
-            this->SetVector3f("dirLight.specular", dirLightsToRender[0]->getSpecular());
-        }
-
 
         // Load RenderModule uniforms
 
         for(RenderModule* module : objectsToRender){
             this->SetMatrix4("model", module->getParent()->getTransform());
-            module->material->Draw(this);
-            module->model->Draw(this);
+            module->material->Draw(this); // use basic matrial
+            module->model->Draw(this, false);
         }
 
     }
