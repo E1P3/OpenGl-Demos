@@ -69,6 +69,40 @@ public:
     
     }
 
+    Cubemap(std::string filePath){
+        glGenTextures(1, &ID);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
+
+        std::string faces[] = {
+            filePath + "posx.jpg",
+            filePath + "negx.jpg",
+            filePath + "posy.jpg",
+            filePath + "negy.jpg",
+            filePath + "posz.jpg",
+            filePath + "negz.jpg"
+        };
+
+        int width, height, channels;
+        for (unsigned int i = 0; i < 6; i++) {
+            std::cout << "Loading texture: " << faces[i];
+            unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &channels, 0);
+            if (data) {
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                stbi_image_free(data);
+                std::cout << "          Done" << std::endl;
+            } else {
+                stbi_image_free(data);
+                std::cout << "          Failed" << std::endl;
+            }
+        }
+
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    }
+
     ~Cubemap() = default;
 
     unsigned int getID() const {

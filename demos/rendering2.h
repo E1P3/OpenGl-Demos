@@ -42,29 +42,61 @@ void setUpScene(){
     std::string vGlassShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/transmittance/glassShader.vert";
     std::string fGlassShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/transmittance/glassShader.frag";
 
-    std::string cubePath = std::string(ASSET_DIR) + "/textures/skybox/clouds_";
+    std::string cubePath = std::string(ASSET_DIR) + "/textures/skybox/clouds/clouds_";
     Cubemap* skybox = new Cubemap(cubePath, ".bmp");
     skyboxes.push_back(skybox);
     
-    cubePath = std::string(ASSET_DIR) + "/textures/skybox/night_";
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/night/night_";
     Cubemap* skybox1 = new Cubemap(cubePath, ".png");
     skyboxes.push_back(skybox1);
 
-    cubePath = std::string(ASSET_DIR) + "/textures/skybox/bluecloud_";
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/colorclouds/bluecloud_";
     Cubemap* skybox2 = new Cubemap(cubePath, ".jpg");
     skyboxes.push_back(skybox2);
 
-    cubePath = std::string(ASSET_DIR) + "/textures/skybox/browncloud_";
-    Cubemap* skybox3 = new Cubemap(cubePath, ".jpg");
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/CNTower/";
+    Cubemap* skybox3 = new Cubemap(cubePath);
     skyboxes.push_back(skybox3);
 
-    cubePath = std::string(ASSET_DIR) + "/textures/skybox/graycloud_";
-    Cubemap* skybox4 = new Cubemap(cubePath, ".jpg");
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/ForbiddenCity/";
+    Cubemap* skybox4 = new Cubemap(cubePath);
     skyboxes.push_back(skybox4);
 
-    cubePath = std::string(ASSET_DIR) + "/textures/skybox/yellowcloud_";
-    Cubemap* skybox5 = new Cubemap(cubePath, ".jpg");
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/GamlaStan/";
+    Cubemap* skybox5 = new Cubemap(cubePath);
     skyboxes.push_back(skybox5);
+
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/GamlaStan2/";
+    Cubemap* skybox6 = new Cubemap(cubePath);
+    skyboxes.push_back(skybox6);
+
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/Medborgarplatsen/";
+    Cubemap* skybox7 = new Cubemap(cubePath);
+    skyboxes.push_back(skybox7);
+
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/SaintLazarusChurch/";
+    Cubemap* skybox8 = new Cubemap(cubePath);
+    skyboxes.push_back(skybox8);
+
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/SaintLazarusChurch2/";
+    Cubemap* skybox9 = new Cubemap(cubePath);
+    skyboxes.push_back(skybox9);
+
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/SaintLazarusChurch3/";
+    Cubemap* skybox10 = new Cubemap(cubePath);
+    skyboxes.push_back(skybox10);
+
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/Sodermalmsallen/";
+    Cubemap* skybox11 = new Cubemap(cubePath);
+    skyboxes.push_back(skybox11);
+
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/Sodermalmsallen2/";
+    Cubemap* skybox12 = new Cubemap(cubePath);
+    skyboxes.push_back(skybox12);
+
+    cubePath = std::string(ASSET_DIR) + "/textures/skybox/urban/UnionSquare/";
+    Cubemap* skybox13 = new Cubemap(cubePath);
+    skyboxes.push_back(skybox13);
 
     DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(1.0f, glm::vec3(0.0f, -1.0f, 0.0f));
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
