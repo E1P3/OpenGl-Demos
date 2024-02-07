@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/euler_angles.hpp>
 #include <vector>
 #include <imgui.h>
 #include <iostream>
@@ -34,7 +35,7 @@ public:
     }
 
     glm::vec3 getRotationEuler() const {
-        return glm::degrees(glm::eulerAngles(rotation));
+        return eulerRotation;
     }
 
     glm::vec3 getScale() const {
@@ -56,8 +57,8 @@ public:
     }
 
     void setRotation(const glm::vec3& rotationEuler) {
-        rotation = glm::normalize(glm::quat(glm::radians(rotationEuler)));
-        updateTransform();
+        eulerRotation = rotationEuler;
+        updateTransform(rotationEuler);
     }
 
     void setScale(const glm::vec3& newScale) {
@@ -76,9 +77,8 @@ public:
     }
 
     void Rotate(const glm::vec3& rotationEuler) {
-        glm::quat deltaRotation = glm::quat(glm::radians(rotationEuler));
-        rotation = glm::normalize(rotation * deltaRotation);
-        updateTransform();
+        eulerRotation += rotationEuler;
+        updateTransform(rotationEuler);
     }
 
     void Scale(const glm::vec3& deltaScale) {
@@ -129,6 +129,7 @@ private:
     glm::mat4 transform;
     glm::vec3 position;
     glm::quat rotation;
+    glm::vec3 eulerRotation;
     glm::vec3 scale;
     Entity* entityParent;
     std::vector<Entity*> entityChildren; 
@@ -149,6 +150,27 @@ private:
     glm::mat4 calculateLocalTransform() const {
         glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
         glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
+        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
+        return translationMatrix * rotationMatrix * scaleMatrix;
+    }
+
+    void updateTransform(glm::vec3 eulerAngles) {
+        glm::mat4 localTransform = calculateLocalTransform(eulerAngles);
+        rotation = glm::quat(glm::radians(eulerAngles));
+        if (entityParent) {
+            transform = entityParent->getTransform() * localTransform;
+        } else {
+            transform = localTransform;
+        }
+
+        for (Entity* child : entityChildren) {
+            child->updateTransform();
+        }
+    }
+
+    glm::mat4 calculateLocalTransform(glm::vec3 eulerAngles) const {
+        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
+        glm::mat4 rotationMatrix = glm::yawPitchRoll(glm::radians(eulerAngles.y), glm::radians(eulerAngles.x), glm::radians(eulerAngles.z));
         glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
         return translationMatrix * rotationMatrix * scaleMatrix;
     }
