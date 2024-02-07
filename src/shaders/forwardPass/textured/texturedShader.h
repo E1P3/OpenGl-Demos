@@ -9,7 +9,7 @@
 class TexturedShader : public Shader {
 public:
     TexturedShader(const char* PVS, const char* PFS) {
-        this->Compile(this->readShaderSource(PVS), this->readShaderSource(PFS));
+        this->Compile(this->readShaderSource(PVS), this->readShaderSource(PFS), nullptr, nullptr, nullptr);
     }
 
     void Render() override {

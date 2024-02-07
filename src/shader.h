@@ -15,7 +15,7 @@ class PointLight;
 class Shader {
 public:
     Shader();
-    Shader(const char* PVS, const char* PFS);
+    Shader(const char* PVS, const char* PFS, const char* PGS = nullptr, const char* PTS = nullptr, const char* TES = nullptr);
     Shader& Use();
     unsigned int getID() const;
 
@@ -31,7 +31,7 @@ public:
     void SetVector4f(const std::string& name, const glm::vec4& value, bool useShader = false);
     void SetMatrix4(const std::string& name, const glm::mat4& matrix, bool useShader = false);
 
-    void Compile(const char* PVS, const char* PFS);
+    void Compile(const char* PVS, const char* PFS, const char* PGS = nullptr, const char* PTS = nullptr, const char* TES = nullptr);
     void Delete();
     virtual void Render();
 

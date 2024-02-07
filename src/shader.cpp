@@ -3,9 +3,9 @@
 #include "lights.h"
 
 	Shader::Shader() {}
-	
-	Shader::Shader(const char* PVS, const char* PFS) {
-		this->Compile(this->readShaderSource(PVS), this->readShaderSource(PFS));
+
+	Shader::Shader(const char* PVS, const char* PFS, const char* PGS, const char* PTS, const char* TES) {
+		this->Compile(this->readShaderSource(PVS), this->readShaderSource(PFS), this->readShaderSource(PGS), this->readShaderSource(PTS), this->readShaderSource(TES));
 	}
 	
 	Shader& Shader::Use() {
@@ -118,8 +118,7 @@
 		}
 	}
 
-	void Shader::Compile(const char* PVS, const char* PFS) {
-		
+	void Shader::Compile(const char* PVS, const char* PFS, const char* PGS, const char* PTS, const char* TES) {
 		if (!PVS || !PFS) {
 			#ifdef __APPLE__
 				throw "SHADER_LINKING_ERROR: Shader data is empty";
@@ -135,10 +134,19 @@
 			exit(1);
 		}
 
-		unsigned int vertex, fragment;
+		unsigned int vertex, fragment, geometry, tessControl, tessEval;
 
 		vertex = this->AddShader(PVS, GL_VERTEX_SHADER);
 		fragment = this->AddShader(PFS, GL_FRAGMENT_SHADER);
+		if (PGS) {
+			geometry = this->AddShader(PGS, GL_GEOMETRY_SHADER);
+		}
+		if (PTS) {
+			tessControl = this->AddShader(PTS, GL_TESS_CONTROL_SHADER);
+		}
+		if (TES) {
+			tessEval = this->AddShader(TES, GL_TESS_EVALUATION_SHADER);
+		}
 
 		GLint Success = 0;
 		GLchar ErrorLog[1024] = { 0 };
@@ -155,9 +163,17 @@
 
 		glDeleteShader(vertex);
 		glDeleteShader(fragment);
+		if (PGS) {
+			glDeleteShader(geometry);
+		}
+		if (PTS) {
+			glDeleteShader(tessControl);
+		}
+		if (TES) {
+			glDeleteShader(tessEval);
+		}
+	
 	}
-
-
 
 	void Shader::Delete()
 	{

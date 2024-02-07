@@ -226,6 +226,7 @@ void ResourceManager::runGameLoop()
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
+    glEnable(GL_FRAMEBUFFER_SRGB); 
 
     updateDeltaTime();
     updateKeysPressed();

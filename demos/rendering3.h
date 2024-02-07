@@ -67,9 +67,9 @@ void setUpScene(){
     ResourceManager::addShader(snowShader);
     ResourceManager::addShader(woodShader);
 
-    TexturedMaterial *rockMaterial = new TexturedMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, 0.0f);
-    TexturedMaterial *snowMaterial = new TexturedMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, 0.0f);
-    TexturedMaterial *woodMaterial = new TexturedMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, 0.0f);
+    TexturedMaterial *rockMaterial = new TexturedMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, -0.012f);
+    TexturedMaterial *snowMaterial = new TexturedMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, -0.012f);
+    TexturedMaterial *woodMaterial = new TexturedMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, -0.012f);
 
     Model* sphereModel = ResourceManager::loadModel(spherePath.c_str());
     Model* potModel = ResourceManager::loadModel(potPath.c_str());
@@ -84,19 +84,19 @@ void setUpScene(){
     GameplayModule* potGameplayModule = new GameplayModule();
     pot->addModule(potRenderModule);
     pot->addModule(potGameplayModule);
-    pot->setPosition(glm::vec3(0.0f, -0.5f, 3.0f));
+    pot->setPosition(glm::vec3(10.0f, -0.5f, 3.0f));
 
     GameObject* sphere = ResourceManager::loadGameObject();
     RenderModule* sphereRenderModule = new RenderModule(sphereModel, rockMaterial, rockShader);
     GameplayModule* sphereGameplayModule = new GameplayModule();
     sphere->addModule(sphereRenderModule);
     sphere->addModule(sphereGameplayModule);
-    sphere->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    sphere->setPosition(glm::vec3(10.0f, 0.0f, 0.0f));
 
     GameObject* surface = ResourceManager::loadGameObject();
     RenderModule* surfaceRenderModule = new RenderModule(surfaceModel, rockMaterial, rockShader);
     surface->addModule(surfaceRenderModule);
-    surface->setPosition(glm::vec3(0.0f, 0.0f, -3.0f));
+    surface->setPosition(glm::vec3(10.0f, 0.0f, -3.0f));
     surface->setRotation(glm::vec3(0.0f, 270.0f, 0.0f));
 
     GameObject* pot2 = ResourceManager::loadGameObject();
@@ -104,19 +104,19 @@ void setUpScene(){
     GameplayModule* pot2GameplayModule = new GameplayModule();
     pot2->addModule(pot2RenderModule);
     pot2->addModule(pot2GameplayModule);
-    pot2->setPosition(glm::vec3(0.0f, 2.5f, 3.0f));
+    pot2->setPosition(glm::vec3(10.0f, 2.5f, 3.0f));
 
     GameObject* sphere2 = ResourceManager::loadGameObject();
     RenderModule* sphere2RenderModule = new RenderModule(sphereModel, snowMaterial, snowShader);
     GameplayModule* sphere2GameplayModule = new GameplayModule();
     sphere2->addModule(sphere2RenderModule);
     sphere2->addModule(sphere2GameplayModule);
-    sphere2->setPosition(glm::vec3(0.0f, 3.0f, 0.0f));
+    sphere2->setPosition(glm::vec3(10.0f, 3.0f, 0.0f));
 
     GameObject* surface2 = ResourceManager::loadGameObject();
     RenderModule* surface2RenderModule = new RenderModule(surfaceModel, snowMaterial, snowShader);
     surface2->addModule(surface2RenderModule);
-    surface2->setPosition(glm::vec3(0.0f, 3.0f, -3.0f));
+    surface2->setPosition(glm::vec3(10.0f, 3.0f, -3.0f));
     surface2->setRotation(glm::vec3(0.0f, 270.0f, 0.0f));
 
     GameObject* pot3 = ResourceManager::loadGameObject();
@@ -124,23 +124,22 @@ void setUpScene(){
     GameplayModule* pot3GameplayModule = new GameplayModule();
     pot3->addModule(pot3RenderModule);
     pot3->addModule(pot3GameplayModule);
-    pot3->setPosition(glm::vec3(0.0f, -3.5f, 3.0f));
+    pot3->setPosition(glm::vec3(10.0f, -3.5f, 3.0f));
 
     GameObject* sphere3 = ResourceManager::loadGameObject();
     RenderModule* sphere3RenderModule = new RenderModule(sphereModel, woodMaterial, woodShader);
     GameplayModule* sphere3GameplayModule = new GameplayModule();
     sphere3->addModule(sphere3RenderModule);
     sphere3->addModule(sphere3GameplayModule);
-    sphere3->setPosition(glm::vec3(0.0f, -3.0f, 0.0f));
+    sphere3->setPosition(glm::vec3(10.0f, -3.0f, 0.0f));
 
     GameObject* surface3 = ResourceManager::loadGameObject();
     RenderModule* surface3RenderModule = new RenderModule(surfaceModel, woodMaterial, woodShader);
     surface3->addModule(surface3RenderModule);
-    surface3->setPosition(glm::vec3(0.0f, -3.0f, -3.0f));
+    surface3->setPosition(glm::vec3(10.0f, -3.0f, -3.0f));
     surface3->setRotation(glm::vec3(0.0f, 270.0f, 0.0f));
 
     camera->setTarget(sphere);
-    camera->setMode(Camera_Mode::TPS);
     
     ImGuiWrapper::attachGuiFunction("Rock Properties", [rockMaterial](){rockMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Snow Properties", [snowMaterial](){snowMaterial->OnGui();});
