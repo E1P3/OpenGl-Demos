@@ -17,6 +17,7 @@
 #include "../src/cubemap.h"
 #include "../src/shaders/skybox/skyboxShader.h"
 
+GameplayModule* gameplayModule1;
 GameObject* plane_body;
 GameObject* pilot;
 DirectionalLight* directionalLight;
@@ -52,6 +53,7 @@ void OnGui(){
     if(ImGui::Button("Switch Rotation Type")){
         rotationSwitch = !rotationSwitch;
     }
+    gameplayModule1->setEuler(rotationSwitch);
     if(rotationSwitch){
         planeRotationEuler = plane_body->getRotationEuler();
         ImGui::DragFloat3("Plane Rotation (roll, yaw, pitch)", &planeRotationEuler[0], 1.0f, -180.0f, 180.0f);
@@ -129,7 +131,7 @@ void setUpScene(){
 
     plane_body = ResourceManager::loadGameObject();
     RenderModule* gameModelRenderModule = new RenderModule(planeBodyModel, basicMaterial, phongShader);
-    GameplayModule* gameplayModule1 = new GameplayModule();
+    gameplayModule1 = new GameplayModule();
     gameplayModule1->setControlled(true);
     plane_body->addModule(gameplayModule1);
     plane_body->addModule(gameModelRenderModule);

@@ -45,7 +45,11 @@ class GameplayModule : public EntityModule {
                 }
             }
 
-            this->getParent()->Rotate(glm::quat(rotationAxis * rotationSpeed * deltaTime));
+            if(isEuler){
+                this->getParent()->Rotate(glm::degrees(rotationAxis * rotationSpeed * deltaTime));
+            } else {
+                this->getParent()->Rotate(glm::quat(rotationAxis * rotationSpeed * deltaTime));
+            }
         }
 
         void OnStart(){
@@ -56,8 +60,12 @@ class GameplayModule : public EntityModule {
             this->isControlled = isControlled;
         }
 
+        void setEuler(bool isEuler){
+            this->isEuler = isEuler;
+        }
     private:
         bool isControlled = false;
+        bool isEuler = false;
         glm::vec3 rotationAxis;
         float rotationSpeed;
 };

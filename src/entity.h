@@ -78,7 +78,7 @@ public:
 
     void Rotate(const glm::vec3& rotationEuler) {
         eulerRotation += rotationEuler;
-        updateTransform(rotationEuler);
+        updateTransform(eulerRotation);
     }
 
     void Scale(const glm::vec3& deltaScale) {
@@ -136,6 +136,7 @@ private:
 
     void updateTransform() {
         glm::mat4 localTransform = calculateLocalTransform();
+        eulerRotation = glm::degrees(glm::eulerAngles(rotation));
         if (entityParent) {
             transform = entityParent->getTransform() * localTransform;
         } else {
