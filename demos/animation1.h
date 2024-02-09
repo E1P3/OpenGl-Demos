@@ -84,17 +84,17 @@ void OnGui(){
 
 void setUpScene(){
 
-    std::string planeBodyPath = std::string(ASSET_DIR) + "/models/plane/plane_body.obj";
-    std::string planePropellerPath = std::string(ASSET_DIR) + "/models/plane/plane_propeller.obj";
-    std::string surfacePath = std::string(ASSET_DIR) + "/models/defaultPlane.fbx";
+    std::string planeBodyPath = "../../assets/models/plane/plane_body.obj";
+    std::string planePropellerPath = "../../assets/models/plane/plane_propeller.obj";
+    std::string surfacePath = "../../assets/models/defaultPlane.fbx";
 
 
-    std::string vSkyShaderPath = std::string(SRC_DIR) + "/shaders/skybox/skyboxShader.vert";
-    std::string fSkyShaderPath = std::string(SRC_DIR) + "/shaders/skybox/skyboxShader.frag";
-    std::string vPhongShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhongTex.vert";
-    std::string fPhongShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhongTex.frag";
+    std::string vSkyShaderPath = "../../src/shaders/skybox/skyboxShader.vert";
+    std::string fSkyShaderPath = "../../src/shaders/skybox/skyboxShader.frag";
+    std::string vPhongShaderPath = "../../src/shaders/forwardPass/phong/blinnPhongTex.vert";
+    std::string fPhongShaderPath = "../../src/shaders/forwardPass/phong/blinnPhongTex.frag";
 
-    std::string cubePath = std::string(ASSET_DIR) + "/textures/skybox/colorclouds/bluecloud_";
+    std::string cubePath = "../../assets/textures/skybox/colorclouds/bluecloud_";
     Cubemap* skybox = new Cubemap(cubePath, ".jpg");
     
     directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::degrees(glm::vec3(90.0f, 0.0f, 0.0f)));

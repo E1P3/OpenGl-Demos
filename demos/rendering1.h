@@ -17,17 +17,17 @@
 
 void setUpScene(){
 
-    std::string potPath = std::string(ASSET_DIR) + "/models/teapot.fbx";
-    std::string spherePath = std::string(ASSET_DIR) + "/models/defaultSphere.fbx";
-    std::string dragonPath = std::string(ASSET_DIR) + "/models/dragon.fbx";
-    std::string planePath = std::string(ASSET_DIR) + "/models/defaultPlane.fbx";
+    std::string potPath = "../../assets/models/teapot.fbx";
+    std::string spherePath = "../../assets/models/defaultSphere.fbx";
+    std::string dragonPath = "../../assets/models/dragon.fbx";
+    std::string planePath = "../../assets/models/defaultPlane.fbx";
 
-    std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.vert";
-    std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.frag";
-    std::string vToonShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/toon/toonShader.vert";
-    std::string fToonShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/toon/toonShader.frag";
-    std::string vPBRShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/cook-torrace/pbrShader.vert";
-    std::string fPBRShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/cook-torrace/pbrShader.frag";
+    std::string vShaderPath = "../../src/shaders/forwardPass/phong/blinnPhong.vert";
+    std::string fShaderPath = "../../src/shaders/forwardPass/phong/blinnPhong.frag";
+    std::string vToonShaderPath = "../../src/shaders/forwardPass/toon/toonShader.vert";
+    std::string fToonShaderPath = "../../src/shaders/forwardPass/toon/toonShader.frag";
+    std::string vPBRShaderPath = "../../src/shaders/forwardPass/cook-torrace/pbrShader.vert";
+    std::string fPBRShaderPath = "../../src/shaders/forwardPass/cook-torrace/pbrShader.frag";
 
     DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 1.0f));
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
