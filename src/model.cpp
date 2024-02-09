@@ -51,10 +51,10 @@ void Model::setID(unsigned int ID) {
 
 	}
 
-	void Model::Draw(Shader* shader, bool useOwnTextures) 
+	void Model::Draw(Shader* shader, bool useOwnTextures, bool drawTessalated) 
 	{
 		for (unsigned int i = 0; i < meshes.size(); i++)
-			meshes[i]->Draw(shader, useOwnTextures);
+			meshes[i]->Draw(shader, useOwnTextures, drawTessalated);
 	}
 
 	void Model::SetVertexBoneDataToDefault(Vertex& vertex)

@@ -7,7 +7,7 @@
 #include "../src/entityModules/controllerModule.h"
 #include "../src/entityModules/renderModule.h"
 #include "../src/entityModules/gameplayModule.h"
-#include "../src/materials/texturedMaterial.h"
+#include "../src/materials/tessMaterial.h"
 #include "../src/shaders/forwardPass/tessalation/tessShader.h"
 #include "../src/imgui/imguiWrapper.h"
 
@@ -18,8 +18,8 @@ void setUpScene(){
     std::string planePath = std::string(ASSET_DIR) + "/models/defaultPlane.fbx";
 
     std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.vert";
-    std::string tcsShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.tcs";
-    std::string tesShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.tes";
+    std::string tcsShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.tesc";
+    std::string tesShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.tese";
     std::string gShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.geom";
     std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.frag";
 
@@ -70,9 +70,9 @@ void setUpScene(){
     ResourceManager::addShader(snowShader);
     ResourceManager::addShader(woodShader);
 
-    TexturedMaterial *rockMaterial = new TexturedMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, -0.012f);
-    TexturedMaterial *snowMaterial = new TexturedMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, -0.012f);
-    TexturedMaterial *woodMaterial = new TexturedMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, -0.012f);
+    TessalationMaterial *rockMaterial = new TessalationMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, -0.012f, 10.0f, 5.0f);
+    TessalationMaterial *snowMaterial = new TessalationMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, -0.012f, 10.0f, 5.0f);
+    TessalationMaterial *woodMaterial = new TessalationMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, -0.012f, 10.0f, 5.0f);
 
     Model* sphereModel = ResourceManager::loadModel(spherePath.c_str());
     Model* potModel = ResourceManager::loadModel(potPath.c_str());
@@ -147,6 +147,7 @@ void setUpScene(){
     ImGuiWrapper::attachGuiFunction("Rock Properties", [rockMaterial](){rockMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Snow Properties", [snowMaterial](){snowMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Wood Properties", [woodMaterial](){woodMaterial->OnGui();});
+    ImGuiWrapper::attachGuiFunction("Point Light", [pointLight](){pointLight->OnGui();});
     
 }
 

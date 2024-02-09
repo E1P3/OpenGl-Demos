@@ -50,7 +50,7 @@ public:
         this->ID = ID;
     }
 
-    void Draw(Shader* shader, bool useOwnTextures = true)
+    void Draw(Shader* shader, bool useOwnTextures = true, bool drawTessalated = false)
     {
         if(useOwnTextures){        // bind appropriate textures
             unsigned int diffuseNr = 1;
@@ -99,7 +99,14 @@ public:
         }
         // draw mesh
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+        if(drawTessalated){
+            glPatchParameteri(GL_PATCH_VERTICES, 3);
+            glDrawElements(GL_PATCHES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+        }
+        else{
+            glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+        }
+        //glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         // always good practice to set everything back to defaults once configured.

@@ -21,9 +21,6 @@ public:
         this->SetMatrix4("projection", ResourceManager::getActiveCamera()->getProjectionMatrix());
         this->SetVector3f("viewPos", ResourceManager::getActiveCamera()->getPosition());
 
-        this->SetFloat("outerTessLevel", outerTessLevel);
-        this->SetFloat("innerTessLevel", innerTessLevel);
-
         if(pointLightsToRender[0] != nullptr){
             this->SetVector3f("lightPos", pointLightsToRender[0]->getPosition());
         }
@@ -33,7 +30,7 @@ public:
         for(RenderModule* module : objectsToRender){
             this->SetMatrix4("model", module->getParent()->getTransform());
             module->material->Draw(this); // use basic matrial
-            module->model->Draw(this, false);
+            module->model->Draw(this, false, true);
         }
 
     }
@@ -116,8 +113,6 @@ private:
     bool hasNormal = false;
     bool hasHeight = false;
     bool hasRoughness = false;
-    float outerTessLevel = 1.0f;
-    float innerTessLevel = 1.0f;
 };
 
 #endif // TESS_SHADER_H

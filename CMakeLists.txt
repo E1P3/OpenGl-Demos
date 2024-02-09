@@ -115,6 +115,7 @@ add_executable(graphics
     src/materials/toonMaterial.h
     src/materials/glassMaterial.h
     src/materials/texturedMaterial.h
+    src/materials/tessMaterial.h
     demos/rendering1.h
     demos/rendering2.h
     demos/rendering3.h
