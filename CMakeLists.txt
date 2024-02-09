@@ -35,12 +35,20 @@ message("GLAD_HOME: ${GLAD_HOME}")
 message("ASSIMP_HOME: ${ASSIMP_HOME}")
 message("GLM_HOME: ${GLM_HOME}")
 
-# Reference asset directory
-set(ASSET_DIR "${PROJECT_SOURCE_DIR}/assets")
-add_definitions(-DASSET_DIR="${ASSET_DIR}")
+if(APPLE)
+    set(ASSET_DIR "../assets")
+    add_definitions(-DASSET_DIR="${ASSET_DIR}")
 
-set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
-add_definitions(-DSRC_DIR="${SRC_DIR}")
+    set(SRC_DIR "../src")
+    add_definitions(-DSRC_DIR="${SRC_DIR}")
+elseif(WIN32)
+    set(ASSET_DIR "../../assets")
+    add_definitions(-DASSET_DIR="${ASSET_DIR}")
+
+    set(SRC_DIR "../../src")
+    add_definitions(-DSRC_DIR="${SRC_DIR}")
+endif()
+
 
 add_library(glfw SHARED IMPORTED)
 if (APPLE)
