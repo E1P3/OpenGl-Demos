@@ -100,6 +100,7 @@ add_executable(graphics
     src/shaders/forwardPass/cook-torrace/pbrShader.h
     src/shaders/forwardPass/transmittance/glassShader.h
     src/shaders/forwardPass/textured/texturedShader.h
+    src/shaders/forwardPass/tessalation/tessShader.h
     src/shaders/skybox/skyboxShader.h
     src/cubemap.h
     src/utils/stb_image.h
@@ -118,6 +119,7 @@ add_executable(graphics
     demos/rendering2.h
     demos/rendering3.h
     demos/animation1.h
+    demos/test.h
     )
 
 if (APPLE)
