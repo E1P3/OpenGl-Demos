@@ -49,14 +49,24 @@ void main(){
     vec2 tc2 = gl_TessCoord.z * tcTexCoord[2];  
     teTexCoord = tc0 + tc1 + tc2;
 
+    vec3 tg0 = gl_TessCoord.x * tcTangent[0];
+    vec3 tg1 = gl_TessCoord.y * tcTangent[1];
+    vec3 tg2 = gl_TessCoord.z * tcTangent[2];
+    vec3 tangent = normalize(tg0 + tg1 + tg2);
+
+    vec3 btg0 = gl_TessCoord.x * tcBitangent[0];
+    vec3 btg1 = gl_TessCoord.y * tcBitangent[1];
+    vec3 btg2 = gl_TessCoord.z * tcBitangent[2];
+    vec3 bitangent = normalize(btg0 + btg1 + btg2);
+
     float height = texture(texture_height, teTexCoord).x;
     pos += normal * (height * material.height_scale);
     tePosition = vec3(model * vec4(pos, 1.0));
     teNormal = mat3(transpose(inverse(model))) * normal;
 
-    vec3 T = normalize(vec3(model * vec4(tcTangent[0], 0.0f)));
-    vec3 B = normalize(vec3(model * vec4(tcBitangent[0], 0.0f)));
-    vec3 N = normalize(vec3(model * vec4(tcNormal[0], 0.0f)));
+    vec3 T = normalize(vec3(model * vec4(tangent, 0.0f)));
+    vec3 B = normalize(vec3(model * vec4(bitangent, 0.0f)));
+    vec3 N = normalize(vec3(model * vec4(normal, 0.0f)));
     mat3 TBN = transpose(mat3(T, B, N));
 
     teTangentLightPos = TBN * lightPos;

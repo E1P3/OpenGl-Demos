@@ -27,9 +27,9 @@ void setUpScene(){
     std::string rock_normal_path = std::string(ASSET_DIR) + "/textures/materials/rock_cliff/normal.jpg";
     std::string rock_height_path = std::string(ASSET_DIR) + "/textures/materials/rock_cliff/displacement.jpg";
 
-    std::string snow_diffuse_path = std::string(ASSET_DIR) + "/textures/materials/snow_mixed/albedo.jpg";
-    std::string snow_normal_path = std::string(ASSET_DIR) + "/textures/materials/snow_mixed/normal.jpg";
-    std::string snow_height_path = std::string(ASSET_DIR) + "/textures/materials/snow_mixed/displacement.jpg";
+    std::string snow_diffuse_path = std::string(ASSET_DIR) + "/textures/materials/snow_pure/albedo.jpg";
+    std::string snow_normal_path = std::string(ASSET_DIR) + "/textures/materials/snow_pure/normal.jpg";
+    std::string snow_height_path = std::string(ASSET_DIR) + "/textures/materials/snow_pure/displacement.jpg";
 
     std::string wood_diffuse_path = std::string(ASSET_DIR) + "/textures/materials/wood_bark/albedo.jpg";
     std::string wood_normal_path = std::string(ASSET_DIR) + "/textures/materials/wood_bark/normal.jpg";
