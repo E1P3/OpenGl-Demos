@@ -53,6 +53,16 @@ void Model::setID(unsigned int ID) {
 
 	void Model::Draw(Shader* shader, bool useOwnTextures, bool drawTessalated) 
 	{
+		if(rootBone){
+			std::vector<glm::mat4> boneTransforms = getBoneMatrices(rootBone);
+			shader->SetInteger("hasBones", 1);
+			shader->SetInteger("numBones", boneTransforms.size());
+			for (unsigned int i = 0; i < boneTransforms.size(); i++){
+				std::string uniformName = "boneTransforms[" + std::to_string(i) + "]";
+				shader->SetMatrix4(uniformName.c_str(), boneTransforms[i]);
+			}
+		}
+
 		for (unsigned int i = 0; i < meshes.size(); i++)
 			meshes[i]->Draw(shader, useOwnTextures, drawTessalated);
 	}
@@ -131,8 +141,6 @@ void Model::setID(unsigned int ID) {
 		this->hasSpecularMap = loadTextureMaps(material, aiTextureType_SPECULAR, SPECULAR, textures);
 		this->hasHeightMap = loadTextureMaps(material, aiTextureType_AMBIENT, NORMAL, textures);
 
-		std::cout << " Verticies size: " << vertices.size() << "\n";
-
 		ExtractBoneWeightForVertices(vertices, mesh, scene);
 
 		return ResourceManager::loadMesh(vertices, indices, textures);
@@ -197,6 +205,8 @@ void Model::setID(unsigned int ID) {
 			}
 		}
 
+		rootBone = processSkeleton(scene->mRootNode, boneInfoMap);
+
 		printf("  %i bones\n", boneCount);
 	}
 
@@ -213,4 +223,45 @@ void Model::setID(unsigned int ID) {
         
 		}
 		return textures;
+	}
+
+	Bone* Model::processSkeleton(const aiNode* node, const std::map<std::string, BoneInfo>& boneInfoMap){
+		Bone* bone = nullptr;
+		for (int i = 0; i < node->mNumChildren; ++i){
+			Bone* childBone = processSkeleton(node->mChildren[i], boneInfoMap);
+			if (childBone){
+				if (!bone){
+					bone = childBone;
+				} else {
+					bone->addChild(childBone);
+				}
+			}
+		}
+		auto boneInfo = boneInfoMap.find(node->mName.C_Str());
+		if (boneInfo != boneInfoMap.end()){
+			bone = new Bone(node, boneInfo->second.offset, boneInfo->second.id);
+			for (int i = 0; i < node->mNumChildren; ++i){
+				Bone* childBone = processSkeleton(node->mChildren[i], boneInfoMap);
+				if (childBone){
+					bone->addChild(childBone);
+				}
+			}
+		}
+		return bone;
+	}
+
+	std::vector<glm::mat4> Model::getBoneMatrices(Bone* rootBone){
+		std::vector<glm::mat4> boneMatrices = std::vector<glm::mat4>(m_BoneCounter, glm::mat4(1.0f));
+		if (rootBone){
+			getBoneTransfrom(rootBone, boneMatrices);
+		}
+		return boneMatrices;
+	}
+
+	void Model::getBoneTransfrom(Bone* bone, std::vector<glm::mat4>& transforms){
+		int id = bone->getID();
+		transforms[id] = bone->getTransform() * bone->getOffset();
+		for (auto child : bone->getChildren()){
+			getBoneTransfrom(child, transforms);
+		}
 	}

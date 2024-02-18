@@ -125,16 +125,27 @@ public:
         ImGui::DragFloat3("Scale", &scale[0], 0.1f);
     }
 
-private:
-    glm::mat4 transform;
-    glm::vec3 position;
-    glm::quat rotation;
-    glm::vec3 eulerRotation;
-    glm::vec3 scale;
-    Entity* entityParent;
-    std::vector<Entity*> entityChildren; 
+protected:
 
-    void updateTransform() {
+    virtual void overrideTransform(const glm::mat4& newTransform) {
+        transform = newTransform;
+    }
+
+    virtual glm::mat4 calculateLocalTransform() const{
+        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
+        glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
+        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
+        return translationMatrix * rotationMatrix * scaleMatrix;
+    }
+
+    virtual glm::mat4 calculateLocalTransform(glm::vec3 eulerAngles) const {
+        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
+        glm::mat4 rotationMatrix = glm::yawPitchRoll(glm::radians(eulerAngles.y), glm::radians(eulerAngles.x), glm::radians(eulerAngles.z));
+        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
+        return translationMatrix * rotationMatrix * scaleMatrix;
+    }
+    
+    virtual void updateTransform() {
         glm::mat4 localTransform = calculateLocalTransform();
         eulerRotation = glm::degrees(glm::eulerAngles(rotation));
         if (entityParent) {
@@ -148,14 +159,7 @@ private:
         }
     }
 
-    glm::mat4 calculateLocalTransform() const {
-        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
-        glm::mat4 rotationMatrix = glm::mat4_cast(rotation);
-        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
-        return translationMatrix * rotationMatrix * scaleMatrix;
-    }
-
-    void updateTransform(glm::vec3 eulerAngles) {
+    virtual void updateTransform(glm::vec3 eulerAngles) {
         glm::mat4 localTransform = calculateLocalTransform(eulerAngles);
         rotation = glm::quat(glm::radians(eulerAngles));
         if (entityParent) {
@@ -169,12 +173,14 @@ private:
         }
     }
 
-    glm::mat4 calculateLocalTransform(glm::vec3 eulerAngles) const {
-        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
-        glm::mat4 rotationMatrix = glm::yawPitchRoll(glm::radians(eulerAngles.y), glm::radians(eulerAngles.x), glm::radians(eulerAngles.z));
-        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
-        return translationMatrix * rotationMatrix * scaleMatrix;
-    }
+private:
+    glm::mat4 transform;
+    glm::vec3 position;
+    glm::quat rotation;
+    glm::vec3 eulerRotation;
+    glm::vec3 scale;
+    Entity* entityParent;
+    std::vector<Entity*> entityChildren; 
 };
 
 #endif // ENTITY_H

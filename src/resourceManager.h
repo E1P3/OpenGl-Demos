@@ -14,8 +14,10 @@
 #include "gameObject.h"
 #include "lights.h"
 #include "camera.h"
+#include "bone.h"
 
 class Model;
+class Bone;
 
 struct keyData{
     float pressDuration;

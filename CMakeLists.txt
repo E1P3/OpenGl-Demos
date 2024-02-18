@@ -84,6 +84,8 @@ add_executable(graphics
     src/texture.h
     src/mesh.h
     src/entityModule.h
+    src/bone.h
+    src/skeleton.h
     src/model.h
     src/model.cpp
     src/lights.h
@@ -101,6 +103,7 @@ add_executable(graphics
     src/shaders/forwardPass/transmittance/glassShader.h
     src/shaders/forwardPass/textured/texturedShader.h
     src/shaders/forwardPass/tessalation/tessShader.h
+    src/shaders/forwardPass/animated/animShader.h
     src/shaders/skybox/skyboxShader.h
     src/cubemap.h
     src/utils/stb_image.h

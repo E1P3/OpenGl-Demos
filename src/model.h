@@ -16,6 +16,7 @@
 #include "utils/assimpHelper.h"
 #include "utils/animData.h"
 #include "resourceManager.h"
+#include "bone.h"
 
 class Model
 {
@@ -29,7 +30,8 @@ public:
 
     void setID(unsigned int ID);
     
-	int& GetBoneCount() { return m_BoneCounter; }
+	int& getBoneCount() { return m_BoneCounter; }
+	Bone* getRootBone() { return rootBone; }
 
 	void Draw(Shader* shader, bool useOwnTextures = true, bool drawTessalated = false);
 
@@ -37,6 +39,7 @@ private:
     unsigned int ID;
     std::vector<Texture*> textures;
 	std::vector<Mesh*>    meshes;
+	Bone* rootBone = nullptr;
 	bool hasDiffuseMap = false;
 	bool hasSpecularMap = false;
 	bool hasNormalMap = false;
@@ -61,11 +64,17 @@ private:
 	
 	void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
 
+	Bone* processSkeleton(const aiNode* node, const std::map<std::string, BoneInfo>& boneInfoMap);
+
 	void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 
 	std::vector<Texture*> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
 
 	bool loadTextureMaps(aiMaterial* material, aiTextureType type, TextureType typeName, std::vector<Texture*>& textures);
+
+	std::vector<glm::mat4> getBoneMatrices(Bone* rootBone);
+
+	void getBoneTransfrom(Bone* bone, std::vector<glm::mat4>& transforms);
 };
 
 
