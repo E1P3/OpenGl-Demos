@@ -17,23 +17,24 @@ public:
     }
 
     static void printKeysPressed() {
-        std::cout << "Keys pressed: ";
-    for (int i = 0; i < 1024; i++) {
-        if (ResourceManager::isKeyPressed(i)) {
-            const char* keyName = glfwGetKeyName(i, 0);
-            if (keyName != nullptr) {
-                std::cout << keyName << " ";
+            std::cout << "Keys pressed: ";
+        for (int i = 0; i < 1024; i++) {
+            if (ResourceManager::isKeyPressed(i)) {
+                const char* keyName = glfwGetKeyName(i, 0);
+                if (keyName != nullptr) {
+                    std::cout << keyName << " ";
+                }
             }
         }
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
-}
 
     static void printAllInfo() {
         printFrameRate();
         printMousePosition();
         printKeysPressed();
     }
+
 };
 
 #endif

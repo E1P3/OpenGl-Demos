@@ -24,8 +24,6 @@ void printBones(Bone* bone, int level = 0) {
         printBones(child, level + 1);
 }
 
-
-
 void setUpScene(){
 
     std::string batemanPath = std::string(ASSET_DIR) + "/models/woltor.dae";
@@ -33,8 +31,6 @@ void setUpScene(){
     std::string vAnimShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/animated/animShader.vert";
     std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhongTex.vert";
     std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhongTex.frag";
-
-    std::string IKJointNames[] = {"RightArm", "RightForeArm", "RightHand"};
 
     Camera* camera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f), Camera_Projection::PERSP, 45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
     ResourceManager::setActiveCamera(camera);
@@ -57,56 +53,45 @@ void setUpScene(){
     batemanObject->addModule(batemanRenderModule);
     batemanObject->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
 
-    GameObject* sphereObject = ResourceManager::loadGameObject();
+    GameObject* endEffectorLeft = ResourceManager::loadGameObject();
+    endEffectorLeft->setName("Left End Effector");
     RenderModule* sphereRenderModule = new RenderModule(sphere, phongMaterial, phongShader);
-    sphereObject->addModule(sphereRenderModule);
-    sphereObject->setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+    endEffectorLeft->addModule(sphereRenderModule);
+    endEffectorLeft->setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
+    endEffectorLeft->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
 
-    GameObject* sphereObject1 = ResourceManager::loadGameObject();
+    GameObject* endEffectorRight = ResourceManager::loadGameObject();
+    endEffectorRight->setName("Right End Effector");
     RenderModule* sphereRenderModule1 = new RenderModule(sphere, phongMaterial, phongShader);
-    sphereObject1->addModule(sphereRenderModule1);
-    sphereObject1->setPosition(glm::vec3(0.0f, 0.0f, 20.0f));
-
-    GameObject* sphereObject2 = ResourceManager::loadGameObject();
-    RenderModule* sphereRenderModule2 = new RenderModule(sphere, phongMaterial, phongShader);
-    sphereObject2->addModule(sphereRenderModule2);
-    sphereObject2->setPosition(glm::vec3(10.0f, 0.0f, 30.0f));
-
-    GameObject* sphereObject3 = ResourceManager::loadGameObject();
-    RenderModule* sphereRenderModule3 = new RenderModule(sphere, phongMaterial, phongShader);
-    sphereObject3->addModule(sphereRenderModule3);
-    sphereObject3->setPosition(glm::vec3(0.0f, 10.0f, 40.0f));
-
-    sphereObject1->addChild(sphereObject2);
-    sphereObject2->addChild(sphereObject3);
+    endEffectorRight->addModule(sphereRenderModule1);
+    endEffectorRight->setPosition(glm::vec3(-10.0f, 10.0f, 10.0f));
+    endEffectorRight->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
 
     camera->setTarget(batemanObject);
     camera->setMode(Camera_Mode::TPS);
 
     Bone* root = bateman->getRootBone();
 
-    // std::vector<Entity*> jointEntities;
+    Bone* IKRightArm = bateman->findBone("mixamorig_RightArm", root);
+    IKSolver* solverRight = new IKSolver(IKRightArm, batemanObject);
 
-    // for(std::string jointName : IKJointNames){
-    //     jointName = "mixamorig_" + jointName;
-    //     Entity* jointEntity = bateman->findBone(jointName, root);
-    //     if(jointEntity){
-    //         jointEntities.push_back(jointEntity);
-    //     }
-    // }
-
-    Bone* IKRoot = bateman->findBone("mixamorig_RightArm", root);
-    IKSolver* solver = new IKSolver(IKRoot, sphereObject, batemanObject);
+    Bone* IKLeftArm = bateman->findBone("mixamorig_LeftArm", root);
+    IKSolver* solverLeft = new IKSolver(IKLeftArm, batemanObject);
 
     if (root) {
         ImGuiWrapper::attachGuiFunction("Skeleton", ([root](){root->OnGui();}));
-        ImGuiWrapper::attachGuiFunction("Goal", ([sphereObject, solver](){
-            sphereObject->OnGui();
-            solver->solveIK();
+        ImGuiWrapper::attachGuiFunction("Right Arm", ([endEffectorRight, solverRight](){
+            endEffectorRight->OnGui();
+            solverRight->OnGui();
+            solverRight->solveIK(endEffectorRight);
+            std::vector<glm::vec3> positions = solverRight->getCurrentPosition();
         }));
-        ImGuiWrapper::attachGuiFunction("joint1", ([sphereObject1](){sphereObject1->OnGui();}));
-        ImGuiWrapper::attachGuiFunction("joint2", ([sphereObject2](){sphereObject2->OnGui();}));
-        ImGuiWrapper::attachGuiFunction("joint3", ([sphereObject3](){sphereObject3->OnGui();}));
+        ImGuiWrapper::attachGuiFunction("Left Arm", ([endEffectorLeft, solverLeft](){
+            endEffectorLeft->OnGui();
+            solverLeft->OnGui();
+            solverLeft->solveIK(endEffectorLeft);
+            std::vector<glm::vec3> positions = solverLeft->getCurrentPosition();
+        }));
     }
 
 }
