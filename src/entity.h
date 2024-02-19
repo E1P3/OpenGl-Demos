@@ -26,8 +26,22 @@ public:
         return transform;
     }
 
+    glm::mat4 getLocalTransform() const {
+        return calculateLocalTransform();
+    }
+
     glm::vec3 getPosition() const {
         return position;
+    }
+
+    glm::vec3 getWorldPosition() const {
+        glm::mat4 worldTransform = getTransform();
+        return glm::vec3(worldTransform[3][0], worldTransform[3][1], worldTransform[3][2]);
+    }
+
+    glm::quat getWorldRotation() const {
+        glm::quat rotation = glm::quat_cast(getTransform());
+        return rotation;
     }
 
     glm::quat getRotation() const {
@@ -42,12 +56,22 @@ public:
         return scale;
     }
 
-    glm::vec3 getWorldPosition() const {
-        return glm::vec3(transform[3]);
+    std::vector<Entity*> getChildren() const {
+        return entityChildren;
     }
 
     void setPosition(const glm::vec3& newPosition) {
         position = newPosition;
+        updateTransform();
+    }
+
+    void setWorldRotation(const glm::quat& newRotation) {
+        if (entityParent) {
+            glm::quat parentRotation = glm::inverse(entityParent->getWorldRotation());
+            rotation = parentRotation * newRotation;
+        } else {
+            rotation = newRotation;
+        }
         updateTransform();
     }
 
@@ -99,8 +123,8 @@ public:
     }
 
     void addChildEntity(Entity* child) {
-        if (entityParent) {
-            entityParent->removeChildEntity(this);
+        if (child->entityParent) {
+            child->entityParent->removeChildEntity(this);
         }
         child->entityParent = this;
         entityChildren.push_back(child);
@@ -119,11 +143,20 @@ public:
     void OnGui() {
         ImGui::Text("\nTransform\n");
         ImGui::DragFloat3("Position", &position[0], 0.1f);
-        glm::vec3 rotationEuler = getRotationEuler();
-        ImGui::DragFloat3("Rotation", &rotationEuler[0], 1.0f, -90.0f, 90.0);
-        setRotation(rotationEuler);
+
+        // Convert the quaternion rotation to Euler angles for editing
+        glm::vec3 rotationEuler = glm::degrees(glm::eulerAngles(rotation));
+        if (ImGui::DragFloat3("Rotation", &rotationEuler[0], 1.0f, -90.0f, 90.0)) {
+            // Convert the edited Euler angles back to a quaternion rotation
+            rotation = glm::quat(glm::radians(rotationEuler));
+            // Update the transform
+            updateTransform(rotationEuler);
+        }
+
         ImGui::DragFloat3("Scale", &scale[0], 0.1f);
+        updateTransform();
     }
+
 
 protected:
 
@@ -179,7 +212,7 @@ private:
     glm::quat rotation;
     glm::vec3 eulerRotation;
     glm::vec3 scale;
-    Entity* entityParent;
+    Entity* entityParent = nullptr;
     std::vector<Entity*> entityChildren; 
 };
 

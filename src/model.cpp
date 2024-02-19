@@ -265,3 +265,19 @@ void Model::setID(unsigned int ID) {
 			getBoneTransfrom(child, transforms);
 		}
 	}
+
+	Bone* Model::findBone(const std::string& name, Bone* bone){
+		if (bone){
+			if (bone->getName() == name){
+				return bone;
+			}
+			for (auto child : bone->getChildren()){
+				Bone* childBone = findBone(name, child);
+				if (childBone){
+					return childBone;
+				}
+			}
+		}
+		return nullptr;
+
+	}

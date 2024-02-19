@@ -32,6 +32,7 @@ public:
     
 	int& getBoneCount() { return m_BoneCounter; }
 	Bone* getRootBone() { return rootBone; }
+	Bone* findBone(const std::string& name, Bone* bone = nullptr);
 
 	void Draw(Shader* shader, bool useOwnTextures = true, bool drawTessalated = false);
 
@@ -75,6 +76,7 @@ private:
 	std::vector<glm::mat4> getBoneMatrices(Bone* rootBone);
 
 	void getBoneTransfrom(Bone* bone, std::vector<glm::mat4>& transforms);
+
 };
 
 

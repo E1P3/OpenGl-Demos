@@ -85,6 +85,7 @@ add_executable(graphics
     src/mesh.h
     src/entityModule.h
     src/bone.h
+    src/IKSolver.h
     src/skeleton.h
     src/model.h
     src/model.cpp
