@@ -87,10 +87,12 @@ void setUpScene(){
     GameObject* controlPoint0 = SpawnSphere("Control Point 0", glm::vec3(-5.0f, 10.0f, -5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     GameObject* controlPoint1 = SpawnSphere("Control Point 1", glm::vec3(-5.0f, 10.0f, 5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     GameObject* controlPoint2 = SpawnSphere("Control Point 2", glm::vec3(5.0f, 10.0f, 5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    GameObject* controlPoint3 = SpawnSphere("Control Point 3", glm::vec3(5.0f, 10.0f, -5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     animator->addControlPoint(controlPoint0);
     animator->addControlPoint(controlPoint1);
     animator->addControlPoint(controlPoint2);
+    animator->addControlPoint(controlPoint3);
 
     if (root) {
         ImGuiWrapper::attachGuiFunction("Skeleton", ([root](){root->OnGui();}));
@@ -108,7 +110,8 @@ void setUpScene(){
         }));
         ImGuiWrapper::attachGuiFunction("Animator", ([animator](){
             animator->OnGui();
-            animator->updateCubic(ResourceManager::getDeltaTime());
+            animator->update();
+            (ResourceManager::getDeltaTime());
             if(ImGui::Button("Add Control Point")){
                 GameObject* newControlPoint = SpawnSphere("Control Point " + std::to_string(animator->getControlPointCount()), glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
                 ImGuiWrapper::attachGuiFunction("Control Point " + std::to_string(animator->getControlPointCount()), ([newControlPoint](){
