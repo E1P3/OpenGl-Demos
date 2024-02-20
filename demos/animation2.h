@@ -1,5 +1,5 @@
-#ifndef TEST_H
-#define TEST_H
+#ifndef ANIMATION2_H
+#define ANIMATION2_H
 
 #include "../src/resourceManager.h"
 #include "../src/shaders/forwardPass/phong/blinnPhongShader.h"
@@ -11,10 +11,6 @@
 #include "../src/utils/assimpHelper.h"
 #include "../src/imgui/imguiWrapper.h"
 #include "../src/IKSolver.h"
-#include "../src/animator.h"
-
-Model* sphere;
-blinnPhongShader* phongShader;
 
 void printBones(Bone* bone, int level = 0) {
     if (!bone)
@@ -26,17 +22,6 @@ void printBones(Bone* bone, int level = 0) {
 
     for (auto child : bone->getChildren())
         printBones(child, level + 1);
-}
-
-GameObject* SpawnSphere(std::string name, glm::vec3 position, glm::vec3 color = glm::vec3(0.5f, 0.5f, 0.5f)){
-    GameObject* newControlPoint = ResourceManager::loadGameObject();
-    BasicMaterial* sphereMaterial = new BasicMaterial(glm::vec3(0.0f,0.0f,0.0f), color, glm::vec3(0.0f,0.0f,0.0f), 100.0f);
-    RenderModule* sphereRenderModule = new RenderModule(sphere, sphereMaterial, phongShader);
-    newControlPoint->addModule(sphereRenderModule);
-    newControlPoint->setPosition(position);
-    newControlPoint->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
-    newControlPoint->setName(name);
-    return newControlPoint;
 }
 
 void setUpScene(){
@@ -54,22 +39,33 @@ void setUpScene(){
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
     DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 1.0f));
 
-    BasicMaterial* phongMaterial = new BasicMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0f,0.0f,0.0f), 100.0f);
+    BasicMaterial *phongMaterial = new BasicMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0f,0.0f,0.0f), 100.0f);
     blinnPhongShader* phongAnimShader = new blinnPhongShader(vAnimShaderPath.c_str(), fShaderPath.c_str());
-    phongShader = new blinnPhongShader(vShaderPath.c_str(), fShaderPath.c_str());
+    blinnPhongShader* phongShader = new blinnPhongShader(vShaderPath.c_str(), fShaderPath.c_str());
     ResourceManager::addShader(phongAnimShader);
     ResourceManager::addShader(phongShader);
 
     Model* bateman = ResourceManager::loadModel(batemanPath.c_str());
-    sphere = ResourceManager::loadModel(spherePath.c_str());
+    Model* sphere = ResourceManager::loadModel(spherePath.c_str());
 
     GameObject* batemanObject = ResourceManager::loadGameObject();
     RenderModule* batemanRenderModule = new RenderModule(bateman, phongMaterial, phongAnimShader);
     batemanObject->addModule(batemanRenderModule);
     batemanObject->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
 
-    GameObject* endEffectorLeft = SpawnSphere("Left End Effector", glm::vec3(10.0f, 10.0f, 10.0f));
-    GameObject* endEffectorRight = SpawnSphere("Right End Effector", glm::vec3(-10.0f, 10.0f, 10.0f));
+    GameObject* endEffectorLeft = ResourceManager::loadGameObject();
+    endEffectorLeft->setName("Left End Effector");
+    RenderModule* sphereRenderModule = new RenderModule(sphere, phongMaterial, phongShader);
+    endEffectorLeft->addModule(sphereRenderModule);
+    endEffectorLeft->setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
+    endEffectorLeft->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
+
+    GameObject* endEffectorRight = ResourceManager::loadGameObject();
+    endEffectorRight->setName("Right End Effector");
+    RenderModule* sphereRenderModule1 = new RenderModule(sphere, phongMaterial, phongShader);
+    endEffectorRight->addModule(sphereRenderModule1);
+    endEffectorRight->setPosition(glm::vec3(-10.0f, 10.0f, 10.0f));
+    endEffectorRight->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
 
     camera->setTarget(batemanObject);
     camera->setMode(Camera_Mode::TPS);
@@ -81,16 +77,6 @@ void setUpScene(){
 
     Bone* IKLeftArm = bateman->findBone("mixamorig_LeftArm", root);
     IKSolver* solverLeft = new IKSolver(IKLeftArm, batemanObject);
-
-    Animator* animator = new Animator(endEffectorRight, 1.0f);
-
-    GameObject* controlPoint0 = SpawnSphere("Control Point 0", glm::vec3(-5.0f, 10.0f, -5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    GameObject* controlPoint1 = SpawnSphere("Control Point 1", glm::vec3(-5.0f, 10.0f, 5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    GameObject* controlPoint2 = SpawnSphere("Control Point 2", glm::vec3(5.0f, 10.0f, 5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-    animator->addControlPoint(controlPoint0);
-    animator->addControlPoint(controlPoint1);
-    animator->addControlPoint(controlPoint2);
 
     if (root) {
         ImGuiWrapper::attachGuiFunction("Skeleton", ([root](){root->OnGui();}));
@@ -106,19 +92,8 @@ void setUpScene(){
             solverLeft->solveIK(endEffectorLeft);
             std::vector<glm::vec3> positions = solverLeft->getCurrentPosition();
         }));
-        ImGuiWrapper::attachGuiFunction("Animator", ([animator](){
-            animator->OnGui();
-            animator->updateCubic(ResourceManager::getDeltaTime());
-            if(ImGui::Button("Add Control Point")){
-                GameObject* newControlPoint = SpawnSphere("Control Point " + std::to_string(animator->getControlPointCount()), glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-                ImGuiWrapper::attachGuiFunction("Control Point " + std::to_string(animator->getControlPointCount()), ([newControlPoint](){
-                    newControlPoint->OnGui();
-                }));
-                animator->addControlPoint(newControlPoint);
-            }
-        }));
     }
 
 }
 
-#endif // TEST_H    
+#endif // ANIMATION2_H    

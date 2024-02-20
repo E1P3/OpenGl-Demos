@@ -96,6 +96,7 @@ add_executable(graphics
     src/entityModules/gameplayModule.h
     src/camera.h
     src/camera.cpp
+    src/animator.h
     src/entityModules/controllerModule.h
     src/shaders/forwardPass/phong/blinnPhongShader.h
     src/shaders/forwardPass/toon/toonShader.h
@@ -124,6 +125,7 @@ add_executable(graphics
     demos/rendering2.h
     demos/rendering3.h
     demos/animation1.h
+    demos/animation2.h
     demos/test.h
     )
 
