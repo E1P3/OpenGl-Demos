@@ -3,12 +3,13 @@
 #include "camera.h"
 #include "resourceManager.h"
 
-Camera::Camera(glm::vec3 worldUp, Camera_Projection projection, float fov, float aspect, float near, float far){
+Camera::Camera(glm::vec3 worldUp, Camera_Projection projection, float fov, float aspect, float near, float far, float tpsOffset){
     this->worldUp = worldUp;
     this->projection = projection;
     this->projectionMatrix = glm::perspective(glm::radians(fov), aspect, near, far);
     this->front = glm::vec3(0.0f, 0.0f, -1.0f);
     this->up = worldUp;
+    this->tpsOffset = tpsOffset;
 }
 Camera::Camera(glm::vec3 worldUp, Camera_Projection projection, float left, float right, float bottom, float top, float near, float far){
     this->worldUp = worldUp;
@@ -152,7 +153,7 @@ void Camera::updateCameraVectors(){
 void Camera::updateViewMatrix(){
     if(target != nullptr){
         if(mode == TPS){
-            this->viewMatrix = glm::lookAt(this->position - this->front * 15.0f, this->position, this->up);
+            this->viewMatrix = glm::lookAt(this->position - this->front * tpsOffset, this->position, this->up);
         } else if(mode == FPS){
             this->viewMatrix = glm::lookAt(this->position, this->position + this->front, this->up);
         } else if(mode == FREE){

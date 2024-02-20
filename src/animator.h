@@ -106,6 +106,10 @@ public:
         return controlPoints.size();
     }
 
+    Entity* getLastControlPoint(){
+        return controlPoints[controlPoints.size() - 1];
+    }
+
     void addControlPoint(Entity* controlPoint){
         controlPoints.push_back(controlPoint);
     }
@@ -127,8 +131,9 @@ public:
         }
 
         if(isPlaying){
-            ImGui::Text("Current Frame: %f", currentFrame);
+            ImGui::DragFloat("Current Frame", &currentFrame, 0.1f, 0.0f, controlPoints.size() - 1);
         }
+        
 
         ImGui::Checkbox("Loop", &isLoop);
         ImGui::Checkbox("Cubic", &isCubic);

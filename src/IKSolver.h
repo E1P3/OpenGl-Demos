@@ -1,3 +1,6 @@
+#ifndef IK_SOLVER_H
+#define IK_SOLVER_H
+
 #include <iostream>
 #include <vector>
 #include <glm/glm.hpp>
@@ -170,3 +173,5 @@ private:
     std::vector<float> jointLengths;
 
 };
+
+#endif // IK_SOLVER_H

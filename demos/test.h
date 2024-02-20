@@ -47,11 +47,15 @@ void setUpScene(){
     std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhongTex.vert";
     std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhongTex.frag";
 
-    Camera* camera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f), Camera_Projection::PERSP, 45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
+    Camera* camera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f), Camera_Projection::PERSP, 45.0f, 16.0f / 9.0f, 0.1f, 10000.0f, 30.0f);
     ResourceManager::setActiveCamera(camera);
-    camera->setMode(Camera_Mode::FREE);
 
-    PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(3.0f, 3.0f, 3.0f), 1.0f, 0.09f, 0.032f);
+    GameObject* cameraTarget = ResourceManager::loadGameObject();
+    cameraTarget->setPosition(glm::vec3(0.0f, 10.0f, 0.0f));
+    camera->setTarget(cameraTarget);
+    camera->setMode(Camera_Mode::TPS);
+
+    PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(25.0f, 70.0f, 70.0f), 1.0f, 0.09f, 0.032f);
     DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 1.0f));
 
     BasicMaterial* phongMaterial = new BasicMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(0.0f,0.0f,0.0f), 100.0f);
@@ -68,11 +72,8 @@ void setUpScene(){
     batemanObject->addModule(batemanRenderModule);
     batemanObject->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
 
-    GameObject* endEffectorLeft = SpawnSphere("Left End Effector", glm::vec3(10.0f, 10.0f, 10.0f));
-    GameObject* endEffectorRight = SpawnSphere("Right End Effector", glm::vec3(-10.0f, 10.0f, 10.0f));
-
-    camera->setTarget(batemanObject);
-    camera->setMode(Camera_Mode::TPS);
+    GameObject* endEffectorLeft = SpawnSphere("Left End Effector", glm::vec3(3.0f, 7.0f, 1.0f));
+    GameObject* endEffectorRight = SpawnSphere("Right End Effector", glm::vec3(-3.0f, 7.0f, 1.0f));
 
     Bone* root = bateman->getRootBone();
 
@@ -86,13 +87,9 @@ void setUpScene(){
 
     GameObject* controlPoint0 = SpawnSphere("Control Point 0", glm::vec3(-5.0f, 10.0f, -5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     GameObject* controlPoint1 = SpawnSphere("Control Point 1", glm::vec3(-5.0f, 10.0f, 5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    GameObject* controlPoint2 = SpawnSphere("Control Point 2", glm::vec3(5.0f, 10.0f, 5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    GameObject* controlPoint3 = SpawnSphere("Control Point 3", glm::vec3(5.0f, 10.0f, -5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     animator->addControlPoint(controlPoint0);
     animator->addControlPoint(controlPoint1);
-    animator->addControlPoint(controlPoint2);
-    animator->addControlPoint(controlPoint3);
 
     if (root) {
         ImGuiWrapper::attachGuiFunction("Skeleton", ([root](){root->OnGui();}));
@@ -113,13 +110,13 @@ void setUpScene(){
             animator->update();
             (ResourceManager::getDeltaTime());
             if(ImGui::Button("Add Control Point")){
-                GameObject* newControlPoint = SpawnSphere("Control Point " + std::to_string(animator->getControlPointCount()), glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-                ImGuiWrapper::attachGuiFunction("Control Point " + std::to_string(animator->getControlPointCount()), ([newControlPoint](){
-                    newControlPoint->OnGui();
-                }));
+                GameObject* newControlPoint = SpawnSphere("Control Point",animator->getLastControlPoint()->getWorldPosition(), glm::vec3(1.0f, 0.0f, 0.0f));
+                newControlPoint->OnStart();
+                newControlPoint->Translate(glm::vec3(0.0f, 0.1f, 0.0f));
                 animator->addControlPoint(newControlPoint);
             }
         }));
+        ImGuiWrapper::attachGuiFunction("Point Light", ([pointLight](){pointLight->OnGui();}));
     }
 
 }

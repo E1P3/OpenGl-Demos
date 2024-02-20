@@ -19,7 +19,7 @@ enum Camera_Mode {
 
 class Camera {
 public:
-    Camera(glm::vec3 worldUp, Camera_Projection projection, float fov, float aspect, float near, float far);
+    Camera(glm::vec3 worldUp, Camera_Projection projection, float fov, float aspect, float near, float far, float tpsOffset = 15.0f);
     Camera(glm::vec3 worldUp, Camera_Projection projection, float left, float right, float bottom, float top, float near, float far);
     ~Camera();
 
@@ -50,6 +50,7 @@ private:
     Camera_Projection projection;
     Camera_Mode mode = FPS;
     float freeCameraVelocity = 0.1f;
+    float tpsOffset = 15.0f;
     float rotationSpeed = 0.1f;
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;
