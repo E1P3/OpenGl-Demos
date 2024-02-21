@@ -83,7 +83,9 @@ public:
 
     void OnGui(){
         ImGui::Text(name.c_str());
+        ImGui::PushID(this->ID);
         Entity::OnGui();
+        ImGui::PopID();
     }
     
 private:

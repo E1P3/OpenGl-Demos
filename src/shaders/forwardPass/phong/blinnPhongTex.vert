@@ -11,12 +11,13 @@ out vec2 TexCoords; // Passed to fragment shader
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform float textureScale = 1.0;
 
 void main()
 {
     FragPos = vec3(model * vec4(inPosition, 1.0));
     Normal = mat3(transpose(inverse(model))) * inNormal;
-    TexCoords = inTexCoords; // Pass texture coordinates to fragment shader
+    TexCoords = inTexCoords * textureScale; // Pass texture coordinates to fragment shader
     
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }

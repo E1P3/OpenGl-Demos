@@ -32,7 +32,7 @@ public:
     //Resource management
     static Shader* addShader(Shader* shader);
     static Shader* getShader(unsigned int ID);
-    static Texture* loadTexture( TextureType type, const char* textureFile);
+    static Texture* loadTexture( TextureType type, const char* textureFile, bool useMipmaps = true, GLenum interpolation = GL_LINEAR);
     static Texture* getTexture(unsigned int ID);
     static Mesh* loadMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures);
     static Mesh* getMesh(unsigned int ID);

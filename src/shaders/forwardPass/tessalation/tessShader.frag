@@ -19,6 +19,8 @@ struct Material{
 
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_normal;
+uniform bool hasDiffuse;
+uniform bool hasNormal;
 uniform Material material;
 
 out vec4 FragColor;
@@ -41,9 +43,9 @@ vec3 getDiffuse(vec3 normal, vec3 color){
 
 void main() {
 
-    vec3 normal = normalize(texture(texture_normal, gTexCoord).rgb * 2.0 - 1.0);
+    vec3 normal = hasNormal ? normalize(texture(texture_normal, gTexCoord).rgb * 2.0 - 1.0) : gFacetNormal;
     vec3 viewDir = normalize(gTangentViewPos - gTangentFragPos);
-    vec3 color = texture(texture_diffuse, gTexCoord).rgb;
+    vec3 color = hasDiffuse ? texture(texture_diffuse, gTexCoord).rgb : material.diffuse;
 
     vec3 ambient = getAmbient();
     vec3 diffuse = getDiffuse(normal, color);

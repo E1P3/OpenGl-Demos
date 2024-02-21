@@ -99,6 +99,7 @@ add_executable(graphics
     src/animator.h
     src/entityModules/controllerModule.h
     src/shaders/forwardPass/phong/blinnPhongShader.h
+    src/shaders/forwardPass/phong/blinnPhongTexShader.h
     src/shaders/forwardPass/toon/toonShader.h
     src/shaders/forwardPass/toon/outlineShader.h
     src/shaders/forwardPass/cook-torrace/pbrShader.h
@@ -125,6 +126,7 @@ add_executable(graphics
     demos/rendering1.h
     demos/rendering2.h
     demos/rendering3.h
+    demos/rendering4.h
     demos/animation1.h
     demos/animation2.h
     demos/test.h

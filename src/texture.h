@@ -16,19 +16,18 @@ enum TextureType {
 
 class Texture {
 public:
-    Texture(TextureType type, std::string filePath){
+    Texture(TextureType type, std::string filePath, bool useMipmaps = true, GLenum interpolation = GL_LINEAR) {
         this->filePath = filePath;
         this->type = type;
-        this->ID = load();
+        this->ID = load(useMipmaps, interpolation);
     }
     ~Texture() = default;
 
-    unsigned int load() {
+    unsigned int load(bool useMipmaps = true, GLenum interpolation = GL_LINEAR) {
         std::cout << "Loading texture: " << filePath;
         const char* path = filePath.c_str();
         unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
         if (data) {
-            
             GLenum format;
             if (channels == 1)
                 format = GL_RED;
@@ -40,12 +39,20 @@ public:
             glGenTextures(1, &ID);
             glBindTexture(GL_TEXTURE_2D, ID);
             glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
+            
+            if (useMipmaps) {
+                glGenerateMipmap(GL_TEXTURE_2D);
+                if (interpolation == GL_NEAREST)
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+                else
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            } else {
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, interpolation);
+            }
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, interpolation);
 
             stbi_image_free(data);
 

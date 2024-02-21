@@ -44,7 +44,7 @@ Shader *ResourceManager::getShader(unsigned int ID)
 {
     return shaders[ID];
 }
-Texture *ResourceManager::loadTexture(TextureType type, const char *textureFile)
+Texture *ResourceManager::loadTexture(TextureType type, const char *textureFile, bool useMipmaps, GLenum interpolation)
 {
     for (Texture *texture : textures)
     {
@@ -53,7 +53,7 @@ Texture *ResourceManager::loadTexture(TextureType type, const char *textureFile)
             return texture;
         }
     }
-    Texture *texture = new Texture(type, textureFile);
+    Texture *texture = new Texture(type, textureFile, useMipmaps, interpolation);
     textures.push_back(texture);
     return texture;
 }
