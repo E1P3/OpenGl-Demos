@@ -16,6 +16,10 @@ public:
         extractJointChain();
     }
 
+    void setAxis(glm::vec3 axis){
+        this->axis = axis;
+    }
+
     void solveIK(Entity* goal) {
 
         Initialize();
@@ -28,17 +32,19 @@ public:
             finalTarget = goal->getWorldPosition();
         }
 
-        float distance = glm::length(finalTarget - root->getWorldPosition());
+        finalTarget = finalTarget * axis;
+
+        float distance = glm::length(finalTarget - root->getWorldPosition() * axis);
         float totalLength = 0.0f;
         for (float length : jointLengths) {
             totalLength += length;
         }
         if(distance > totalLength){
-            setRotationToTargetRecursive(root, finalTarget);
+            setRotationToTargetRecursive(root, finalTarget * axis);
             return;
         }
 
-        solveFABRIK(finalTarget);
+        solveFABRIK(finalTarget * axis);
 
     }
 
@@ -55,20 +61,21 @@ public:
     void backward(glm::vec3 target){
         currentPosition.back() = target;
         for(int i = jointChain.size() - 2; i > 0; i--){ // dont shift root and the end effector
-            currentPosition[i] = shiftAlongLine(currentPosition[i + 1], glm::normalize(currentPosition[i] - currentPosition[i + 1]), jointLengths[i]);
+            currentPosition[i] = shiftAlongLine(currentPosition[i + 1], glm::normalize(currentPosition[i] - currentPosition[i + 1]) * axis, jointLengths[i]);
         }
     }
 
     void forward(glm::vec3 target){
         currentPosition[0] = root->getWorldPosition();
         for(int i = 0; i < jointChain.size() - 2; i++){
-            currentPosition[i+1] = shiftAlongLine(currentPosition[i], glm::normalize(currentPosition[i + 1] - currentPosition[i]), jointLengths[i]);
+            currentPosition[i+1] = shiftAlongLine(currentPosition[i], glm::normalize(currentPosition[i + 1] - currentPosition[i]) * axis, jointLengths[i]);
         }
     }
 
     void setFinalRotations(){
         for(int i = 1; i < jointChain.size() - 1; i++){
-            glm::vec3 direction = glm::normalize(currentPosition[i] - currentPosition[i-1]);
+            glm::vec3 direction = glm::normalize(currentPosition[i] - currentPosition[i-1]) * axis;
+
             setRotationToDirection(jointChain[i-1], direction);
         }
     }
@@ -91,6 +98,7 @@ public:
 
     void setRotationToDirection(Entity* entity, glm::vec3 direction) {
         glm::quat newRotation = glm::rotation(glm::vec3(0.0f, 1.0f, 0.0f), direction);
+        glm::vec3 euler = glm::degrees(glm::eulerAngles(newRotation)) * axis;
         entity->setWorldRotation(newRotation);
     }
 
@@ -123,15 +131,15 @@ public:
         initialRotation.clear();
 
         for(Entity* entity : jointChain){
-            initialPosition.push_back(entity->getWorldPosition());
-            initialRotation.push_back(entity->getWorldRotation());
+            initialPosition.push_back(entity->getWorldPosition() * axis);
+            initialRotation.push_back(entity->getWorldRotation() * axis);
         }
     }
 
     void calculateJointLengths() {
         jointLengths.clear();
         for(int i = 0;  i < jointChain.size() - 1; i++){
-            jointLengths.push_back(glm::length(jointChain[i + 1]->getWorldPosition() - jointChain[i]->getWorldPosition()));
+            jointLengths.push_back(glm::length(jointChain[i + 1]->getWorldPosition() * axis - jointChain[i]->getWorldPosition() * axis));
         }
     }
 
@@ -146,6 +154,7 @@ public:
         if(ImGui::Checkbox("End on Multiple", &endOnMultiple)){
             extractJointChain();
         }
+        
     }
 
 private:
@@ -161,7 +170,8 @@ private:
     bool endOnMultiple = true;
     Entity* root;
     Entity* offsetEntity; // entity of the game object bound to a skeleton
-    
+    glm::vec3 axis = glm::vec3(1.0f, 1.0f, 1.0f);
+
     std::vector<glm::vec3> initialPosition;
     std::vector<glm::quat> initialRotation;
 

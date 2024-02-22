@@ -75,6 +75,11 @@ public:
         updateTransform();
     }
 
+    void setWorldRotation(const glm::vec3& rotationEuler) {
+        glm::quat newRotation = glm::quat(glm::radians(rotationEuler));
+        setWorldRotation(newRotation);
+    }
+
     void setRotation(const glm::quat& newRotation) {
         rotation = glm::normalize(newRotation);
         updateTransform();

@@ -57,7 +57,7 @@ void updateSkeletonSpheres(Bone* bone, std::vector<GameObject*> spheres) {
 
 void setUpScene(){
 
-    std::string batemanPath = std::string(ASSET_DIR) + "/models/hazmat";
+    std::string characterPath = std::string(ASSET_DIR) + "/models/hazmat";
     std::string spherePath = std::string(ASSET_DIR) + "/models/defaultSphere.fbx";
     std::string vAnimShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/animated/animShader.vert";
     std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhongTex.vert";
@@ -80,32 +80,33 @@ void setUpScene(){
     ResourceManager::addShader(phongAnimShader);
     ResourceManager::addShader(phongShader);
 
-    std::string batemanFbxPath = batemanPath + ".fbx";
-    std::string batemanDaePath = batemanPath + ".dae";
+    std::string characterFbxPath = characterPath + ".fbx";
+    std::string characterDaePath = characterPath + ".dae";
 
-    Model* bateman = ResourceManager::loadModel(batemanFbxPath.c_str());
-    Model* batemanSkeleton = ResourceManager::loadModel(batemanDaePath.c_str());
+    Model* character = ResourceManager::loadModel(characterFbxPath.c_str());
+    Model* characterSkeleton = ResourceManager::loadModel(characterDaePath.c_str());
 
-    bateman->setRootBone(batemanSkeleton->getRootBone());
+    character->setRootBone(characterSkeleton->getRootBone()); // 
 
     sphere = ResourceManager::loadModel(spherePath.c_str());
 
-    GameObject* batemanObject = ResourceManager::loadGameObject();
-    RenderModule* batemanRenderModule = new RenderModule(bateman, phongMaterial, phongAnimShader);
-    batemanObject->addModule(batemanRenderModule);
-    batemanObject->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
+    GameObject* characterObject = ResourceManager::loadGameObject();
+    RenderModule* characterRenderModule = new RenderModule(character, phongMaterial, phongAnimShader);
+    characterObject->addModule(characterRenderModule);
+    characterObject->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
 
     GameObject* endEffectorLeft = SpawnSphere("Left End Effector", glm::vec3(3.0f, 7.0f, 1.0f));
     GameObject* endEffectorRight = SpawnSphere("Right End Effector", glm::vec3(-3.0f, 7.0f, 1.0f));
 
-    Bone* root = bateman->getRootBone();
+    Bone* root = character->getRootBone();
 
-    Bone* IKRightArm = bateman->findBone("mixamorig_RightArm", root);
-    IKSolver* solverRight = new IKSolver(IKRightArm, batemanObject);
+    Bone* IKRightArm = character->findBone("mixamorig_RightArm", root);
+    IKSolver* solverRight = new IKSolver(IKRightArm, characterObject);
 
-    Bone* IKLeftArm = bateman->findBone("mixamorig_LeftArm", root);
-    IKSolver* solverLeft = new IKSolver(IKLeftArm, batemanObject);
+    Bone* IKLeftArm = character->findBone("mixamorig_LeftArm", root);
+    IKSolver* solverLeft = new IKSolver(IKLeftArm, characterObject);
 
+    solverLeft->setAxis(glm::vec3(1.0f, 1.0f, 0.0f));
 
     Animator* animator = new Animator(endEffectorRight, 1.0f);
 
@@ -115,8 +116,7 @@ void setUpScene(){
     animator->addControlPoint(controlPoint0);
     animator->addControlPoint(controlPoint1);
 
-    std::vector<GameObject*> skeletonSpheres;
-    spawnSpheresOnSkeleton(root, skeletonSpheres);
+    bool* is2D = new bool(false);
 
     if (root) {
         ImGuiWrapper::attachGuiFunction("Skeleton", ([root](){root->OnGui();}));
@@ -126,11 +126,18 @@ void setUpScene(){
             solverRight->solveIK(endEffectorRight);
             std::vector<glm::vec3> positions = solverRight->getCurrentPosition();
         }));
-        ImGuiWrapper::attachGuiFunction("Left Arm", ([endEffectorLeft, solverLeft](){
+        ImGuiWrapper::attachGuiFunction("Left Arm", ([endEffectorLeft, solverLeft, is2D](){
             endEffectorLeft->OnGui();
             solverLeft->OnGui();
             solverLeft->solveIK(endEffectorLeft);
             std::vector<glm::vec3> positions = solverLeft->getCurrentPosition();
+            ImGui::SameLine();
+            ImGui::Checkbox("2D", is2D);
+            if(*is2D){
+                solverLeft->setAxis(glm::vec3(1.0f, 1.0f, 0.0f));
+            } else {
+                solverLeft->setAxis(glm::vec3(1.0f, 1.0f, 1.0f));
+            }
         }));
         ImGuiWrapper::attachGuiFunction("Animator", ([animator](){
             animator->OnGui();
@@ -144,9 +151,6 @@ void setUpScene(){
             }
         }));
         ImGuiWrapper::attachGuiFunction("Point Light", ([pointLight](){pointLight->OnGui();}));
-        ImGuiWrapper::attachGuiFunction("Skeleton Debug", ([root, skeletonSpheres](){
-            updateSkeletonSpheres(root, skeletonSpheres);
-        }));
     }
 
 }
