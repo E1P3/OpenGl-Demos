@@ -23,6 +23,8 @@ class Model
 public:
 	Model(std::string const& path, bool gamma = false) : gammaCorrection(gamma)
     {
+		int indentation = path.find_last_of('/') + 1;
+		this->name = path.substr(indentation, path.find_last_of('.') - indentation);
 		loadModel(path);
 	}
 
@@ -33,11 +35,13 @@ public:
 	int& getBoneCount() { return m_BoneCounter; }
 	Bone* getRootBone() { return rootBone; }
 	Bone* findBone(const std::string& name, Bone* bone = nullptr);
+	void setRootBone(Bone* bone) { rootBone = bone; }
 
 	void Draw(Shader* shader, bool useOwnTextures = true, bool drawTessalated = false);
 
 private:
     unsigned int ID;
+	std::string name;
     std::vector<Texture*> textures;
 	std::vector<Mesh*>    meshes;
 	Bone* rootBone = nullptr;
@@ -76,6 +80,8 @@ private:
 	std::vector<glm::mat4> getBoneMatrices(Bone* rootBone);
 
 	void getBoneTransfrom(Bone* bone, std::vector<glm::mat4>& transforms);
+
+	aiString Model::removePathFromName(aiString name);
 
 };
 

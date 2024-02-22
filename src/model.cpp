@@ -217,12 +217,20 @@ void Model::setID(unsigned int ID) {
 		{
 			aiString str;
 			mat->GetTexture(type, i, &str);
-			std::string fullPath = std::string(ASSET_DIR) + "/textures/" + str.C_Str();
+			aiString fileName = removePathFromName(str);
+			std::string fullPath = std::string(ASSET_DIR) + "/textures/textures_"+ this->name.c_str() + "/" + fileName.C_Str();
             Texture* texture = ResourceManager::loadTexture(typeName, fullPath.c_str());
             textures.push_back(texture);
         
 		}
 		return textures;
+	}
+
+	aiString Model::removePathFromName(aiString name){
+		std::string fullPath = std::string(name.C_Str());
+		std::string fileName = fullPath.substr(fullPath.find_last_of("/\\") + 1);
+		aiString newName = aiString(fileName);
+		return newName;
 	}
 
 	Bone* Model::processSkeleton(const aiNode* node, const std::map<std::string, BoneInfo>& boneInfoMap){

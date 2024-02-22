@@ -39,9 +39,25 @@ GameObject* SpawnSphere(std::string name, glm::vec3 position, glm::vec3 color = 
     return newControlPoint;
 }
 
+void spawnSpheresOnSkeleton(Bone* bone, std::vector<GameObject*>& spheres) {
+    spheres.push_back(SpawnSphere(bone->getName(), bone->getWorldPosition()));
+    for (auto child : bone->getChildren())
+        spawnSpheresOnSkeleton(child, spheres);
+}
+
+void updateSkeletonSpheres(Bone* bone, std::vector<GameObject*> spheres) {
+    for(GameObject* sphere : spheres){
+        if(sphere->getName() == bone->getName()){
+            sphere->setPosition(bone->getWorldPosition());
+        }
+    }
+    for (auto child : bone->getChildren())
+        updateSkeletonSpheres(child, spheres);
+}
+
 void setUpScene(){
 
-    std::string batemanPath = std::string(ASSET_DIR) + "/models/woltor.dae";
+    std::string batemanPath = std::string(ASSET_DIR) + "/models/hazmat";
     std::string spherePath = std::string(ASSET_DIR) + "/models/defaultSphere.fbx";
     std::string vAnimShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/animated/animShader.vert";
     std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhongTex.vert";
@@ -64,7 +80,14 @@ void setUpScene(){
     ResourceManager::addShader(phongAnimShader);
     ResourceManager::addShader(phongShader);
 
-    Model* bateman = ResourceManager::loadModel(batemanPath.c_str());
+    std::string batemanFbxPath = batemanPath + ".fbx";
+    std::string batemanDaePath = batemanPath + ".dae";
+
+    Model* bateman = ResourceManager::loadModel(batemanFbxPath.c_str());
+    Model* batemanSkeleton = ResourceManager::loadModel(batemanDaePath.c_str());
+
+    bateman->setRootBone(batemanSkeleton->getRootBone());
+
     sphere = ResourceManager::loadModel(spherePath.c_str());
 
     GameObject* batemanObject = ResourceManager::loadGameObject();
@@ -83,6 +106,7 @@ void setUpScene(){
     Bone* IKLeftArm = bateman->findBone("mixamorig_LeftArm", root);
     IKSolver* solverLeft = new IKSolver(IKLeftArm, batemanObject);
 
+
     Animator* animator = new Animator(endEffectorRight, 1.0f);
 
     GameObject* controlPoint0 = SpawnSphere("Control Point 0", glm::vec3(-5.0f, 10.0f, -5.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -90,6 +114,9 @@ void setUpScene(){
 
     animator->addControlPoint(controlPoint0);
     animator->addControlPoint(controlPoint1);
+
+    std::vector<GameObject*> skeletonSpheres;
+    spawnSpheresOnSkeleton(root, skeletonSpheres);
 
     if (root) {
         ImGuiWrapper::attachGuiFunction("Skeleton", ([root](){root->OnGui();}));
@@ -117,6 +144,9 @@ void setUpScene(){
             }
         }));
         ImGuiWrapper::attachGuiFunction("Point Light", ([pointLight](){pointLight->OnGui();}));
+        ImGuiWrapper::attachGuiFunction("Skeleton Debug", ([root, skeletonSpheres](){
+            updateSkeletonSpheres(root, skeletonSpheres);
+        }));
     }
 
 }
