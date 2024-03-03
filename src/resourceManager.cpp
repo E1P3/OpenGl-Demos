@@ -22,6 +22,8 @@ bool ResourceManager::isDebug = false;
 bool ResourceManager::isMouseEnabled = false;
 int ResourceManager::screenWidth, ResourceManager::screenHeight;
 std::map<GameObject *, std::vector<glm::vec3>> ResourceManager::pickableVerticies;
+GameObject *ResourceManager::currentlySelected;
+
 Model *ResourceManager::loadModel(const char *modelFile)
 {
     Model *model = new Model(modelFile);
@@ -334,7 +336,7 @@ void ResourceManager::addGeometryInfo(GameObject *gameObject, std::vector<glm::v
     pickableVerticies[gameObject] = vertexPositions;
 }
 
-glm::vec3 ResourceManager::getMouseRayDirection()
+glm::vec3 ResourceManager::getMouseRayHit()
 {
     int mouseX = ResourceManager::getMouseX();
     int mouseY = ResourceManager::getMouseY();
@@ -349,9 +351,22 @@ glm::vec3 ResourceManager::getMouseRayDirection()
     return glm::unProject(window, viewMatrix, projectionMatrix, glm::vec4(0, 0, screenWidth, screenHeight));
 }
 
+glm::vec3 ResourceManager::getMouseRayOrigin()
+{
+    int mouseX = ResourceManager::getMouseX();
+    int mouseY = ResourceManager::getMouseY();
+    int screenWidth = ResourceManager::getScreenWidth();
+    int screenHeight = ResourceManager::getScreenHeight();
+    glm::mat4 projectionMatrix = ResourceManager::getActiveCamera()->getProjectionMatrix();
+    glm::mat4 viewMatrix = ResourceManager::getActiveCamera()->getViewMatrix();
+
+    glm::vec3 window = glm::vec3(mouseX, screenHeight - mouseY - 1, 0);
+    return glm::unProject(window, viewMatrix, projectionMatrix, glm::vec4(0, 0, screenWidth, screenHeight));
+}
+
 GameObject *ResourceManager::checkMouseVertexPick(glm::vec3 &vertex)
 {
-    glm::vec3 mouseRayDirection = getMouseRayDirection();
+    glm::vec3 mouseRayDirection = getMouseRayHit();
     GameObject *closestGameObject = nullptr;
     glm::vec3 closestVertex = glm::vec3(0, 0, 0);
     
@@ -374,6 +389,20 @@ GameObject *ResourceManager::checkMouseVertexPick(glm::vec3 &vertex)
             }
         }
     }
+
+    if(closestDistance > 1.0f){
+        return nullptr;
+    }
     vertex = closestVertex;
     return closestGameObject;
+}
+
+GameObject *ResourceManager::getCurrentlySelected()
+{
+    return currentlySelected;
+}
+
+void ResourceManager::setCurrentlySelected(GameObject *selected)
+{
+    currentlySelected = selected;
 }

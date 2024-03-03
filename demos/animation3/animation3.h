@@ -1,13 +1,13 @@
-#ifndef TEST_H
-#define TEST_H
+#ifndef ANIMATION_3_H
+#define ANIMATION_3_H
 
-#include "../src/resourceManager.h"
-#include "../src/entityModules/controllerModule.h"
-#include "../src/entityModules/renderModule.h"
-#include "../src/entityModules/gameplayModule.h"
-#include "../src/imgui/imguiWrapper.h"
-#include "../src/shaders/forwardPass/phong/blinnPhongShader.h"
-#include "../src/materials/basicMaterial.h"
+#include "../../src/resourceManager.h"
+#include "../../src/entityModules/controllerModule.h"
+#include "../../src/entityModules/renderModule.h"
+#include "../../src/entityModules/gameplayModule.h"
+#include "../../src/imgui/imguiWrapper.h"
+#include "../../src/shaders/forwardPass/phong/blinnPhongShader.h"
+#include "../../src/materials/basicMaterial.h"
 
 Model* sphereModel;
 blinnPhongShader* phongShader;
@@ -137,4 +137,4 @@ void setUpScene(){
     
 }
 
-#endif // TEST_H    
+#endif // ANIMATION_3_H    

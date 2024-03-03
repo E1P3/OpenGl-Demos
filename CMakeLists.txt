@@ -129,6 +129,8 @@ add_executable(graphics
     demos/rendering4.h
     demos/animation1.h
     demos/animation2.h
+    demos/animation3/animation3.h
+    demos/animation3/manipulator.h
     demos/tessalationTest.h
     demos/test.h
     )
