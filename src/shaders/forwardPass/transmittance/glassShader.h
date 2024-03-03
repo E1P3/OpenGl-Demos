@@ -28,11 +28,7 @@ public:
 
         // Load RenderModule uniforms
 
-        for(RenderModule* module : objectsToRender){
-            this->SetMatrix4("model", module->getParent()->getTransform());
-            module->material->Draw(this);
-            module->model->Draw(this);
-        }
+        Shader::Render();
 
     }
 

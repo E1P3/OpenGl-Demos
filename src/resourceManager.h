@@ -18,6 +18,7 @@
 
 class Model;
 class Bone;
+class Ray;
 
 struct keyData{
     float pressDuration;
@@ -61,6 +62,8 @@ public:
     static double getMouseDeltaY();
     static void setActiveCamera(Camera* camera);
     static Camera* getActiveCamera();
+    static int getScreenWidth() { return screenWidth; };
+    static int getScreenHeight() { return screenHeight; };
 
     //glfw loop events
     static void initialize();

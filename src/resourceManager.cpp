@@ -328,3 +328,4 @@ keyData ResourceManager::getMouseData(int button)
 {
     return mouseStates[button];
 }
+

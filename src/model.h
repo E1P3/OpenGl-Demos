@@ -36,6 +36,7 @@ public:
 	Bone* getRootBone() { return rootBone; }
 	Bone* findBone(const std::string& name, Bone* bone = nullptr);
 	void setRootBone(Bone* bone) { rootBone = bone; }
+	std::vector<glm::vec3> getVertices();
 
 	void Draw(Shader* shader, bool useOwnTextures = true, bool drawTessalated = false);
 
@@ -82,6 +83,8 @@ private:
 	void getBoneTransfrom(Bone* bone, std::vector<glm::mat4>& transforms);
 
 	aiString Model::removePathFromName(aiString name);
+
+	std::vector<Mesh*> getMeshes() { return meshes; }
 
 };
 

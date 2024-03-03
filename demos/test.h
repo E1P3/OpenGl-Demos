@@ -5,49 +5,49 @@
 #include "../src/entityModules/controllerModule.h"
 #include "../src/entityModules/renderModule.h"
 #include "../src/entityModules/gameplayModule.h"
-#include "../src/materials/tessMaterial.h"
-#include "../src/materials/texturedMaterial.h"
-#include "../src/shaders/forwardPass/textured/texturedShader.h"
-#include "../src/shaders/forwardPass/tessalation/tessShader.h"
 #include "../src/imgui/imguiWrapper.h"
+#include "../src/shaders/forwardPass/phong/blinnPhongShader.h"
+#include "../src/materials/basicMaterial.h"
 
 void setUpScene(){
-    std::string texturePath = std::string(ASSET_DIR) + "/textures/ireland-heightmap.jpg";
-    std::string planePath = std::string(ASSET_DIR) + "/models/terrain.fbx";
-
-    std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.vert";
-    std::string tcsShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShaderView.tesc";
-    std::string tesShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.tese";
-    std::string gShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.geom";
-    std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/tessalation/tessShader.frag";
+    std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.vert";
+    std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.frag";
 
     DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 1.0f));
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(-3.0f, 3.0f, -3.0f), 1.0f, 0.09f, 0.032f);
 
-    TessalationShader* tessShader = new TessalationShader(vShaderPath.c_str(), fShaderPath.c_str(), gShaderPath.c_str(), tcsShaderPath.c_str(), tesShaderPath.c_str());
-    ResourceManager::addShader(tessShader);
-    Texture* textureHeight = new Texture(HEIGHT, texturePath.c_str(), true, GL_LINEAR);
-    Texture* textureDiffuse = new Texture(DIFFUSE, texturePath.c_str(), true, GL_LINEAR);
-    tessShader->addTexture(textureHeight);
-    //tessShader->addTexture(textureDiffuse);
+    blinnPhongShader* phongShader = new blinnPhongShader(vShaderPath.c_str(), fShaderPath.c_str());
+    ResourceManager::addShader(phongShader);
 
-    TessalationMaterial* tessMaterial = new TessalationMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f, 0.0f, 10.0f, 5.0f);
-
-    Model* surfaceModel = ResourceManager::loadModel(planePath.c_str());
+    Model* surfaceModel = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/terrain.fbx").c_str());
+    Model* sphereModel = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/defaultSphere.fbx").c_str());
+    BasicMaterial *material = new BasicMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.5f,0.5f,0.5f), glm::vec3(1.0f,1.0f,1.0f), 32.0f);
 
     Camera* camera = new Camera(glm::vec3(0.0f, 1.0f, 0.0f), Camera_Projection::PERSP, 45.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
     ResourceManager::setActiveCamera(camera);
     camera->setMode(Camera_Mode::FREE);
 
-    GameObject* surface = ResourceManager::loadGameObject();
-    RenderModule* renderModule = new RenderModule(surfaceModel, tessMaterial, tessShader);
-    surface->addModule(renderModule);
-    surface->Rotate(glm::vec3(-90.0f, 0.0f, 0.0f));
+    GameObject* dragon = ResourceManager::loadGameObject();
+    RenderModule* renderModule = new RenderModule(sphereModel, material, phongShader);
+    dragon->addModule(renderModule);
 
-    ImGuiWrapper::attachGuiFunction("Point Light", [pointLight](){pointLight->OnGui();});
-    ImGuiWrapper::attachGuiFunction("Material Properties", [tessMaterial](){tessMaterial->OnGui();});
-    ImGuiWrapper::attachGuiFunction("Surface Properties", [surface](){surface->OnGui();});
+    GameObject* sphere = ResourceManager::loadGameObject();
+    BasicMaterial* sphereMaterial = new BasicMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f,0.0f,0.0f), 100.0f);
+    RenderModule* sphereRenderModule = new RenderModule(sphereModel, sphereMaterial, phongShader);
+    sphere->addModule(sphereRenderModule);
+    sphere->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
+
     ImGuiWrapper::attachGuiFunction("Frame Rate", [](){ImGui::Text("Frame Rate: %.1f", ImGui::GetIO().Framerate);});
+    ImGuiWrapper::attachGuiFunction("Pointer", [sphere, renderModule](){
+        keyData key = ResourceManager::getMouseData(GLFW_MOUSE_BUTTON_LEFT);
+        if(key.pressDuration > 0.0f && key.pressDuration < 1.1f * ResourceManager::getDeltaTime()){
+            glm::vec3 newPosition = renderModule->getClosestVertexToMouseClick();
+            if(newPosition != glm::vec3(0.0f)){
+                sphere->setPosition(newPosition);
+            }
+        }
+    });
+    
 }
 
 #endif // TEST_H    

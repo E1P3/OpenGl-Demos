@@ -31,11 +31,8 @@ public:
             this->SetVector3f("light.specular", pointLightsToRender[0]->getSpecular());
         }
 
-        for(RenderModule* module : objectsToRender){
-            this->SetMatrix4("model", module->getParent()->getTransform());
-            module->material->Draw(this);
-            module->model->Draw(this);
-        }
+        // Load RenderModule uniforms
+        Shader::Render();
 
         outlineShader->Render();
     }

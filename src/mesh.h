@@ -113,6 +113,13 @@ public:
         glActiveTexture(GL_TEXTURE0);
     }
 
+    std::vector<glm::vec3> getVertices() {
+        std::vector<glm::vec3> _verticies;
+        for (Vertex vertex : vertices) {
+            _verticies.push_back(vertex.Position);
+        }
+        return _verticies;
+    }
 
 private:
 

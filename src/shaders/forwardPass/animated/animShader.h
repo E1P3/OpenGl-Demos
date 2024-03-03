@@ -19,11 +19,7 @@ public:
         this->SetMatrix4("view", ResourceManager::getActiveCamera()->getViewMatrix());
         this->SetMatrix4("projection", ResourceManager::getActiveCamera()->getProjectionMatrix());
 
-        for(RenderModule* module : objectsToRender){
-            this->SetMatrix4("model", module->getParent()->getTransform());
-            module->material->Draw(this); // use basic matrial
-            module->model->Draw(this, true, false);
-        }
+        Shader::Render();
 
     }
 };

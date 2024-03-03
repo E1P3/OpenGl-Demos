@@ -180,7 +180,15 @@
 		glDeleteProgram(ID);
 	}
 
-	void Shader::Render(){}; // override in inherited class
+	void Shader::Render(){
+		this->Use();
+		for(RenderModule* module : objectsToRender){
+            if (!module->isEnabled) continue;
+            this->SetMatrix4("model", module->getParent()->getTransform());
+            module->material->Draw(this);
+            module->model->Draw(this);
+        }
+	}; // override in inherited class
 
 	void Shader::bindRenderModule(RenderModule* object) {
 		objectsToRender.push_back(object);

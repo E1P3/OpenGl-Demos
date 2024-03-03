@@ -45,11 +45,7 @@ public:
 
         this->SetFloat("textureScale", textureScale);
 
-        for(RenderModule* module : objectsToRender){
-            this->SetMatrix4("model", module->getParent()->getTransform());
-            module->material->Draw(this);
-            module->model->Draw(this, useOwnTextures);
-        }
+        Shader::Render();
 
     }
 
