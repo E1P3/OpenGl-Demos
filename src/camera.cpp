@@ -33,6 +33,17 @@ void Camera::OnStart(){
     
 }
 
+void Camera::OnGui(){
+    ImGui::Begin("Camera Properties");
+    ImGui::Text("Position: (%.2f, %.2f, %.2f)", this->position.x, this->position.y, this->position.z);
+    ImGui::Text("Front: (%.2f, %.2f, %.2f)", this->front.x, this->front.y, this->front.z);
+    ImGui::Text("Up: (%.2f, %.2f, %.2f)", this->up.x, this->up.y, this->up.z);
+    ImGui::Text("Right: (%.2f, %.2f, %.2f)", this->right.x, this->right.y, this->right.z);
+    ImGui::Text("Rotation: (%.2f, %.2f, %.2f)", this->rotationEuler.x, this->rotationEuler.y, this->rotationEuler.z);
+    ImGui::End();
+
+}
+
 glm::mat4 Camera::getViewMatrix(){
     return this->viewMatrix;
 }
@@ -61,6 +72,10 @@ glm::vec3 Camera::getRotationEuler(){
     return this->rotationEuler;
 }
 
+void Camera::setPosition(glm::vec3 position){
+    this->position = position;
+}
+
 void Camera::setActive(bool active){
     this->isActive = active;
 }
@@ -74,6 +89,9 @@ void Camera::setMode(Camera_Mode mode){
     currentMode = mode;
 }
 
+void Camera::setTpsOffset(float offset){
+    this->tpsOffset = offset;
+}
 Camera_Mode Camera::getMode(){
     return mode;
 }

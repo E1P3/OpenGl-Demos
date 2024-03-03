@@ -17,6 +17,16 @@ class RenderModule : public EntityModule {
             this->shader = shader;
         }
 
+        RenderModule(GameObject* parent, Model* model, Material* material, Shader* shader, bool exposeGometry = false){
+            this->model = model;
+            this->material = material;
+            this->shader = shader;
+            parent->addModule(this);
+            if(exposeGometry){
+                ResourceManager::addGeometryInfo(parent, this->model->getVertices());
+            }
+        }
+
         void OnStart() override{
             if(shader != nullptr){
                 shader->bindRenderModule(this);
@@ -27,35 +37,23 @@ class RenderModule : public EntityModule {
             
         }
 
-        glm::vec3 getClosestVertexToMouseClick() {
-            int mouseX = ResourceManager::getMouseX();
-            int mouseY = ResourceManager::getMouseY();
-            int screenWidth = ResourceManager::getScreenWidth();
-            int screenHeight = ResourceManager::getScreenHeight();
-            glm::mat4 projectionMatrix = ResourceManager::getActiveCamera()->getProjectionMatrix();
-            glm::mat4 viewMatrix = ResourceManager::getActiveCamera()->getViewMatrix();
+        glm::vec3 getClosestVertexToMouseClick(glm::vec3 mouseRayDirection) {
             glm::mat4 modelMatrix = this->getParent()->getTransform();
             std::vector<glm::vec3> vertices = this->model->getVertices();
 
-            glm::mat4 MV = modelMatrix * viewMatrix;
-
-            glm::vec3 window = glm::vec3(mouseX, screenHeight - mouseY - 1, 0);
-            glReadPixels(mouseX, screenHeight - mouseY - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &window.z);
-
-            std::cout << "Window: " << window.x << " " << window.y << " " << window.z << std::endl;
-            glm::vec3 world = glm::unProject(window, MV, projectionMatrix, glm::vec4(0, 0, screenWidth, screenHeight));
-
             glm::vec3 closestVertex = glm::vec3(0, 0, 0);
+            glm::vec3 initialVertex = glm::vec3(0, 0, 0);
             float closestDistance = 1000000;
             for (int i = 0; i < vertices.size(); i++) {
                 glm::vec4 vertex = modelMatrix * glm::vec4(vertices[i], 1);
-                float distance = glm::distance(glm::vec3(vertex), world);
+                float distance = glm::distance(glm::vec3(vertex), mouseRayDirection);
                 if (distance < closestDistance) {
                     closestDistance = distance;
                     closestVertex = glm::vec3(vertex);
+                    initialVertex = vertices[i];
                 }
             }
-
+            
             return closestVertex;
         }
 

@@ -21,7 +21,7 @@ std::vector<DirectionalLight *> ResourceManager::directionalLights;
 bool ResourceManager::isDebug = false;
 bool ResourceManager::isMouseEnabled = false;
 int ResourceManager::screenWidth, ResourceManager::screenHeight;
-
+std::map<GameObject *, std::vector<glm::vec3>> ResourceManager::pickableVerticies;
 Model *ResourceManager::loadModel(const char *modelFile)
 {
     Model *model = new Model(modelFile);
@@ -329,3 +329,51 @@ keyData ResourceManager::getMouseData(int button)
     return mouseStates[button];
 }
 
+void ResourceManager::addGeometryInfo(GameObject *gameObject, std::vector<glm::vec3> vertexPositions)
+{
+    pickableVerticies[gameObject] = vertexPositions;
+}
+
+glm::vec3 ResourceManager::getMouseRayDirection()
+{
+    int mouseX = ResourceManager::getMouseX();
+    int mouseY = ResourceManager::getMouseY();
+    int screenWidth = ResourceManager::getScreenWidth();
+    int screenHeight = ResourceManager::getScreenHeight();
+    glm::mat4 projectionMatrix = ResourceManager::getActiveCamera()->getProjectionMatrix();
+    glm::mat4 viewMatrix = ResourceManager::getActiveCamera()->getViewMatrix();
+
+    glm::vec3 window = glm::vec3(mouseX, screenHeight - mouseY - 1, 0);
+    glReadPixels(mouseX, screenHeight - mouseY - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &window.z);
+
+    return glm::unProject(window, viewMatrix, projectionMatrix, glm::vec4(0, 0, screenWidth, screenHeight));
+}
+
+GameObject *ResourceManager::checkMouseVertexPick(glm::vec3 &vertex)
+{
+    glm::vec3 mouseRayDirection = getMouseRayDirection();
+    GameObject *closestGameObject = nullptr;
+    glm::vec3 closestVertex = glm::vec3(0, 0, 0);
+    
+    float closestDistance = 1000000;
+    for ( const auto& pair : pickableVerticies)
+    {
+        GameObject* gameObject = pair.first;
+        const std::vector<glm::vec3> vertices = pair.second;
+
+        glm::mat4 modelMatrix = gameObject->getTransform();
+        for (int i = 0; i < vertices.size(); i++)
+        {
+            glm::vec4 vertex = modelMatrix * glm::vec4(vertices[i], 1);
+            float distance = glm::distance(glm::vec3(vertex), mouseRayDirection);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestVertex = glm::vec3(vertex);
+                closestGameObject = gameObject;
+            }
+        }
+    }
+    vertex = closestVertex;
+    return closestGameObject;
+}

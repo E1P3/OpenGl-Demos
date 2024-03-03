@@ -25,6 +25,7 @@ public:
 
     void OnUpdate();
     void OnStart();
+    void OnGui();
 
     glm::mat4 getViewMatrix();
     glm::mat4 getProjectionMatrix();
@@ -33,10 +34,12 @@ public:
     glm::vec3 getUp();
     glm::vec3 getRight();
     glm::vec3 getRotationEuler();
+    void setPosition(glm::vec3 position);
     void lookAt(glm::vec3 target, glm::vec3 up);
     void setActive(bool active);
     void setTarget(Entity* target);
     void setMode(Camera_Mode mode);
+    void setTpsOffset(float offset);
     Camera_Mode getMode();
 
 private:

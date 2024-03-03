@@ -121,7 +121,12 @@ public:
     float getConstant(){return constant;}
     float getLinear(){return linear;}
     float getQuadratic(){return quadratic;}
-
+    void OnGui(){
+        Entity::OnGui();
+        ImGui::SliderFloat("Constant", &constant, 0.0f, 1.0f);
+        ImGui::SliderFloat("Linear", &linear, 0.0f, 1.0f);
+        ImGui::SliderFloat("Quadratic", &quadratic, 0.0f, 1.0f);
+    }
 private:
 	float constant = 1.0f;
 	float linear = 0.22f;
