@@ -63,7 +63,7 @@ public:
         this->name = name;
     }
 
-    void OnUpdate() {
+    virtual void OnUpdate() {
         for (auto module : modules) {
             module->OnUpdate();
         }

@@ -5,20 +5,27 @@
 #include "../../src/entityModules/controllerModule.h"
 #include "../../src/entityModules/renderModule.h"
 #include "../../src/entityModules/gameplayModule.h"
+#include "../../src/entityModules/meshManipulatorModule.h"
 #include "../../src/imgui/imguiWrapper.h"
 #include "../../src/shaders/forwardPass/phong/blinnPhongShader.h"
 #include "../../src/materials/basicMaterial.h"
 
+
 Model* sphereModel;
+Mesh* faceMesh;
 blinnPhongShader* phongShader;
 BasicMaterial* sphereMaterial;
 
 GameObject* spawnManipulator(glm::vec3 position){
     GameObject* newControlPoint = ResourceManager::loadGameObject();
     RenderModule* sphereRenderModule = new RenderModule(newControlPoint, sphereModel, sphereMaterial, phongShader, true);
+    MeshManipulatorModule* meshManipulatorModule = new MeshManipulatorModule(faceMesh);
+    newControlPoint->addModule(sphereRenderModule);
+    newControlPoint->addModule(meshManipulatorModule);
     newControlPoint->setPosition(position);
     newControlPoint->setName("Manipulator");
     newControlPoint->Scale(glm::vec3(0.3f, 0.3f, 0.3f));
+    newControlPoint->OnStart();
     return newControlPoint;
 }
 
@@ -40,6 +47,8 @@ void setUpScene(){
     ResourceManager::addShader(phongShader);
 
     Model* faceModel = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/neutral.obj").c_str());
+    faceMesh = faceModel->getMeshes()[0];
+
     sphereModel = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/defaultSphere.fbx").c_str());
     BasicMaterial *faceMaterial = new BasicMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.5f,0.0f), glm::vec3(0.0f,1.0f,0.5f), 1.5f);
     BasicMaterial *eyeMaterial = new BasicMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,1.0f), 5.0f);
@@ -91,7 +100,6 @@ void setUpScene(){
                     if(picked->getName() == "Face"){
                         picked = nullptr;
                         GameObject* newControlPoint = spawnManipulator(position);
-                        newControlPoint->OnStart();
                         ResourceManager::setCurrentlySelected(newControlPoint);
                     }
                 }
@@ -112,29 +120,12 @@ void setUpScene(){
                     }
                 }
             }
-            // if(picked != nullptr){
-            //     if(picked->getName() == "Face"){
-            //             GameObject* newControlPoint = spawnManipulator(position);
-            //             newControlPoint->OnStart();
-            //     }
-            //     else if(picked->getName() == "Manipulator"){
-            //         ResourceManager::setCurrentlySelected(picked);
-            //         glm::vec3 hitPosition = ResourceManager::getMouseRayHit();
-            //         glm::vec3 cameraPosition = ResourceManager::getActiveCamera()->getPosition();
-
-            //         glm::vec3 offset = getDisplacementFromLine(cameraPosition, picked->getWorldPosition(), hitPosition);
-            //         picked->setPosition(picked->getPosition() - offset);
-            //     }
-
-            // } 
         }
-
         if(ResourceManager::getCurrentlySelected() != nullptr){
             ResourceManager::getCurrentlySelected()->OnGui();
         }
-
     });
-    
+
 }
 
 #endif // ANIMATION_3_H    
