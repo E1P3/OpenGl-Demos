@@ -83,7 +83,7 @@ private:
 
 	void getBoneTransfrom(Bone* bone, std::vector<glm::mat4>& transforms);
 
-	aiString Model::removePathFromName(aiString name);
+	aiString removePathFromName(aiString name);
 
 };
 
