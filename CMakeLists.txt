@@ -113,9 +113,11 @@ add_executable(graphics
     src/cubemap.h
     src/utils/stb_image.h
     src/utils/stb_image.cpp
+    src/utils/stb_image_write.h
     src/utils/animData.h
     src/utils/assimpHelper.h
     src/utils/programInfo.h
+    src/utils/captureDepth.h
     src/imgui/imguiWrapper.h
     src/imgui/imguiWrapper.cpp
     src/materials/PBRMaterial.h

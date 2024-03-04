@@ -9,6 +9,7 @@
 #include "../../src/imgui/imguiWrapper.h"
 #include "../../src/shaders/forwardPass/phong/blinnPhongShader.h"
 #include "../../src/materials/basicMaterial.h"
+#include "../../src/utils/captureDepth.h"
 
 
 Model* sphereModel;
@@ -81,7 +82,11 @@ void setUpScene(){
     camera->setTarget(cameraTarget);
     camera->setMode(Camera_Mode::TPS);
 
-    ImGuiWrapper::attachGuiFunction("Frame Rate", [](){ImGui::Text("Frame Rate: %.1f", ImGui::GetIO().Framerate);});
+    ImGuiWrapper::attachGuiFunction("Frame Rate", [](){
+        ImGui::Text("Frame Rate: %.1f", ImGui::GetIO().Framerate);
+        ImGui::Text("Mouse Position: (%.1f, %.1f)", ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y);
+        ImGui::Text("Mouse Position: (%.1f, %.1f)", ResourceManager::getMouseX(), ResourceManager::getMouseY());
+    });
     ImGuiWrapper::attachGuiFunction("Face Properties", [face, faceMaterial](){face->OnGui(); faceMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Point Light", [pointLight](){pointLight->OnGui();});
     ImGuiWrapper::attachGuiFunction("EyeBalls", [eyeBallR, eyeBallL, eyeMaterial](){eyeBallR->OnGui(); eyeBallL->OnGui(); eyeMaterial->OnGui();});
@@ -94,11 +99,11 @@ void setUpScene(){
         if(key.isPressed){
             if(key.pressDuration > 0.0f && key.pressDuration < 1.1f * deltaTime)
             {
+                captureDepth();
                 position = ResourceManager::getMouseRayHit();
                 picked = ResourceManager::checkMouseVertexPick(position);
                 ResourceManager::setCurrentlySelected(picked);
                 if(picked != nullptr){
-                    ResourceManager::setCurrentlySelected(picked);
                     if(picked->getName() == "Face"){
                         picked = nullptr;
                         GameObject* newControlPoint = spawnManipulator(position);
