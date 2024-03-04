@@ -36,12 +36,18 @@ message("ASSIMP_HOME: ${ASSIMP_HOME}")
 message("GLM_HOME: ${GLM_HOME}")
 
 if(APPLE)
+    set(OS "APPLE")
+    add_definitions(-DOS="${OS}")
+
     set(ASSET_DIR "../assets")
     add_definitions(-DASSET_DIR="${ASSET_DIR}")
 
     set(SRC_DIR "../src")
     add_definitions(-DSRC_DIR="${SRC_DIR}")
 elseif(WIN32)
+    set(OS "WIN32")
+    add_definitions(-DOS="${OS}")
+
     set(ASSET_DIR "../../assets")
     add_definitions(-DASSET_DIR="${ASSET_DIR}")
 

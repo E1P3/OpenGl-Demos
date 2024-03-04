@@ -84,6 +84,8 @@ void setUpScene(){
 
     ImGuiWrapper::attachGuiFunction("Frame Rate", [](){
         ImGui::Text("Frame Rate: %.1f", ImGui::GetIO().Framerate);
+        ImGui::Text("Window size: (%.1f, %.1f)", ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+        ImGui::Text("Window size: (%.1d, %.1d)", ResourceManager::getScreenWidth(), ResourceManager::getScreenHeight());
         ImGui::Text("Mouse Position: (%.1f, %.1f)", ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y);
         ImGui::Text("Mouse Position: (%.1f, %.1f)", ResourceManager::getMouseX(), ResourceManager::getMouseY());
     });
@@ -100,7 +102,7 @@ void setUpScene(){
             if(key.pressDuration > 0.0f && key.pressDuration < 1.1f * deltaTime)
             {
                 //captureDepth();
-                captureScreenshot();
+                //captureScreenshot();
                 position = ResourceManager::getMouseRayHit();
                 picked = ResourceManager::checkMouseVertexPick(position);
                 ResourceManager::setCurrentlySelected(picked);

@@ -6,6 +6,7 @@
 #include "../resourceManager.h"
 #include <glad/glad.h>
 #include <iostream>
+#include "../imgui/imguiWrapper.h"
 #include "stb_image_write.h"
 
 static void captureDepth(){

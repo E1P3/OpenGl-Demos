@@ -17,7 +17,7 @@ public:
 
     void OnUpdate() override {
         if(checkPreviousPositions()) {
-            manipulateVerticesWithRBF();
+            updateVerticies();
         }
     }
 
@@ -27,7 +27,7 @@ public:
         previousPositions.push_back(intitialPosition);
         initialPositions.push_back(intitialPosition);
         weights.push_back(getWeights(intitialPosition));
-        manipulateVerticesWithRBF();
+        updateVerticies();
     }
 
     void setSigma(float sigma) {
@@ -37,18 +37,6 @@ public:
     void setC(float c) {
         this->c = c;
     }    
-
-    std::map<int, float> getWeights(glm::vec3 controlPointPosition){
-        std::map<int, float> weights;
-        std::vector<glm::vec3> vertexPositions = mesh->getInitialPositions();
-        for (int i = 0; i < vertexPositions.size(); i++){
-            float distance = glm::distance(vertexPositions[i], controlPointPosition);
-            float weight = computeWeight(distance);
-            if(weight > 0.0f)
-                weights[i] = weight;
-        }
-        return weights;
-    }
 
     bool checkPreviousPositions() {
         bool hasMoved = false;
@@ -78,12 +66,10 @@ public:
 
         if (prevSigma != sigma || prevC != c || prevRadius != radius || prevInfluence != influence || prevIsGaussian != isGaussian) {
             if(prevRadius != radius || prevIsGaussian != isGaussian || prevSigma != sigma){
-                weights.clear();
-                for (int i = 0; i < controlPoints.size(); i++) {
-                    weights.push_back(getWeights(controlPoints[i]->getWorldPosition()));
-                }
+                factor = -0.5 / (sigma * sigma);
+                updateControlPointWeights();
             }
-            manipulateVerticesWithRBF();
+            updateVerticies();
         }
 
         prevSigma = sigma;
@@ -103,18 +89,21 @@ private:
     std::vector<glm::vec3> initialPositions;
     std::vector<std::map<int, float>> weights;
     float sigma = 3.0f;
+    float factor = -0.5 / 9.0f;
     float c = 3.0f;
     float radius = 10.0f;
     float influence = 0.5f;
     bool isGaussian = false;
 
-    void manipulateVerticesWithRBF() {
+    void updateVerticies() {
         std::vector<Vertex>& vertices = mesh->getVertices();
         std::vector<glm::vec3> vertexInitialPositions = mesh->getInitialPositions();
         for(int i = 0; i < vertexInitialPositions.size(); i++){
             glm::vec3 vertexPosition = vertexInitialPositions[i];
             glm::vec3 offset = calculateOffset(i, vertexPosition);
-            vertices[i].Position = vertexPosition + offset * influence;
+            if(offset != glm::vec3(0.0f, 0.0f, 0.0f)){
+                vertices[i].Position = vertexPosition + offset * influence;
+            }
         }
         mesh->updateVertexBuffer();
     }
@@ -131,11 +120,26 @@ private:
             }
         }
 
-        // if(totalWeight > 0.0f){
-        //     offset /= totalWeight;
-        // }
-
         return offset;
+    }
+
+    void updateControlPointWeights() {
+        weights.clear();
+        for (int i = 0; i < controlPoints.size(); i++) {
+            weights.push_back(getWeights(initialPositions[i]));
+        }
+    }
+
+    std::map<int, float> getWeights(glm::vec3 controlPointPosition){
+        std::map<int, float> weights;
+        std::vector<glm::vec3> vertexPositions = mesh->getInitialPositions();
+        for (int i = 0; i < vertexPositions.size(); i++){
+            float distance = glm::distance(vertexPositions[i], controlPointPosition);
+            float weight = computeWeight(distance);
+            if(weight > 0.0f)
+                weights[i] = weight;
+        }
+        return weights;
     }
 
     float computeWeight(float distance) {
@@ -143,13 +147,13 @@ private:
             return std::max(0.0f, 1.0f - distance / radius);
         }
         else{
-            return computeGaussianWeight(distance, sigma);
+            return computeGaussianWeight(distance, factor);
         }
 
     }
 
-    float computeGaussianWeight(float distance, float sigma) {
-        return std::exp(-(distance * distance) / (2.0f * (sigma * sigma)));
+    float computeGaussianWeight(float distance, float factor) {
+        return std::exp(distance * distance * factor);
     }
 
 };
