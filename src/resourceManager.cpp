@@ -196,7 +196,17 @@ void ResourceManager::updateMousePosition()
 {
     lastMouseX = mouseX;
     lastMouseY = mouseY;
-    glfwGetCursorPos(window, &mouseX, &mouseY);
+
+    if(OS == "APPLE"){
+        mouseX = ImGui::GetIO().MousePos.x * 2;
+        mouseY = ImGui::GetIO().MousePos.y * 2;
+    }
+    else
+    {
+        glfwGetCursorPos(window, &mouseX, &mouseY);
+    }
+
+
     // glfwSetCursorPos(window, screenWidth / 2, screenHeight / 2);
 }
 
@@ -234,6 +244,11 @@ void ResourceManager::runGameLoop()
     updateKeysPressed();
     updateMousePressed();
     updateMousePosition();
+
+    if(OS == "APPLE"){    
+        screenHeight = ImGui::GetIO().DisplaySize.y * 2;
+        screenWidth = ImGui::GetIO().DisplaySize.x * 2;
+    }
 
     activeCamera->OnUpdate();
 
