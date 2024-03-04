@@ -49,4 +49,19 @@ static void captureDepth(){
     glDeleteTextures(1, &depthTexture);
 }
 
+static void captureScreenshot() {
+    int width = ResourceManager::getScreenWidth();
+    int height = ResourceManager::getScreenHeight();
+
+    // Read pixels from the default framebuffer
+    std::vector<unsigned char> imageData(width * height * 3); // 3 channels for RGB
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, imageData.data());
+
+    // Flip the image vertically (OpenGL reads from bottom to top)
+    stbi_flip_vertically_on_write(true);
+
+    // Write the image to a file
+    stbi_write_png("screenShot.png", width, height, 3, imageData.data(), 0);
+}
+
 #endif

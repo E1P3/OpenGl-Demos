@@ -99,7 +99,8 @@ void setUpScene(){
         if(key.isPressed){
             if(key.pressDuration > 0.0f && key.pressDuration < 1.1f * deltaTime)
             {
-                captureDepth();
+                //captureDepth();
+                captureScreenshot();
                 position = ResourceManager::getMouseRayHit();
                 picked = ResourceManager::checkMouseVertexPick(position);
                 ResourceManager::setCurrentlySelected(picked);
