@@ -36,7 +36,7 @@ public:
 	Bone* getRootBone() { return rootBone; }
 	Bone* findBone(const std::string& name, Bone* bone = nullptr);
 	void setRootBone(Bone* bone) { rootBone = bone; }
-	std::vector<glm::vec3> getVertices();
+	std::vector<Vertex> getVertices();
 	std::vector<Mesh*> getMeshes() { return meshes; }
 
 	void Draw(Shader* shader, bool useOwnTextures = true, bool drawTessalated = false);

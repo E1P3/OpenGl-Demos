@@ -23,7 +23,12 @@ class RenderModule : public EntityModule {
             this->shader = shader;
             parent->addModule(this);
             if(exposeGometry){
-                ResourceManager::addGeometryInfo(parent, this->model->getVertices());
+                std::vector<Vertex> vertices = this->model->getVertices();
+                std::vector<glm::vec3> positions;
+                for(Vertex vertex : vertices){
+                    positions.push_back(vertex.Position);
+                }
+                ResourceManager::addGeometryInfo(parent, positions);
             }
         }
 
@@ -35,26 +40,6 @@ class RenderModule : public EntityModule {
 
         void OnUpdate() override{
             
-        }
-
-        glm::vec3 getClosestVertexToMouseClick(glm::vec3 mouseRayDirection) {
-            glm::mat4 modelMatrix = this->getParent()->getTransform();
-            std::vector<glm::vec3> vertices = this->model->getVertices();
-
-            glm::vec3 closestVertex = glm::vec3(0, 0, 0);
-            glm::vec3 initialVertex = glm::vec3(0, 0, 0);
-            float closestDistance = 1000000;
-            for (int i = 0; i < vertices.size(); i++) {
-                glm::vec4 vertex = modelMatrix * glm::vec4(vertices[i], 1);
-                float distance = glm::distance(glm::vec3(vertex), mouseRayDirection);
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestVertex = glm::vec3(vertex);
-                    initialVertex = vertices[i];
-                }
-            }
-            
-            return closestVertex;
         }
 
         ~RenderModule();

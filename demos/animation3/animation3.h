@@ -19,9 +19,7 @@ BasicMaterial* sphereMaterial;
 GameObject* spawnManipulator(glm::vec3 position){
     GameObject* newControlPoint = ResourceManager::loadGameObject();
     RenderModule* sphereRenderModule = new RenderModule(newControlPoint, sphereModel, sphereMaterial, phongShader, true);
-    MeshManipulatorModule* meshManipulatorModule = new MeshManipulatorModule(faceMesh);
     newControlPoint->addModule(sphereRenderModule);
-    newControlPoint->addModule(meshManipulatorModule);
     newControlPoint->setPosition(position);
     newControlPoint->setName("Manipulator");
     newControlPoint->Scale(glm::vec3(0.3f, 0.3f, 0.3f));
@@ -62,6 +60,8 @@ void setUpScene(){
     GameObject* face = ResourceManager::loadGameObject();
     face->setName("Face");
     RenderModule* renderModule = new RenderModule(face, faceModel, faceMaterial, phongShader, true);
+    MeshManipulatorModule* meshManipulatorModule = new MeshManipulatorModule(faceMesh);
+    face->addModule(meshManipulatorModule);
 
     GameObject* eyeBallR = ResourceManager::loadGameObject();
     RenderModule* eyeBallRRenderModule = new RenderModule(sphereModel, eyeMaterial, phongShader);
@@ -85,7 +85,8 @@ void setUpScene(){
     ImGuiWrapper::attachGuiFunction("Face Properties", [face, faceMaterial](){face->OnGui(); faceMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Point Light", [pointLight](){pointLight->OnGui();});
     ImGuiWrapper::attachGuiFunction("EyeBalls", [eyeBallR, eyeBallL, eyeMaterial](){eyeBallR->OnGui(); eyeBallL->OnGui(); eyeMaterial->OnGui();});
-    ImGuiWrapper::attachGuiFunction("Pointer", [](){
+    ImGuiWrapper::attachGuiFunction("Control Points", [meshManipulatorModule](){meshManipulatorModule->OnGui();});
+    ImGuiWrapper::attachGuiFunction("Pointer", [meshManipulatorModule](){
         keyData key = ResourceManager::getMouseData(GLFW_MOUSE_BUTTON_LEFT);
         float deltaTime = ResourceManager::getDeltaTime();
         glm::vec3 position;
@@ -95,11 +96,13 @@ void setUpScene(){
             {
                 position = ResourceManager::getMouseRayHit();
                 picked = ResourceManager::checkMouseVertexPick(position);
+                ResourceManager::setCurrentlySelected(picked);
                 if(picked != nullptr){
                     ResourceManager::setCurrentlySelected(picked);
                     if(picked->getName() == "Face"){
                         picked = nullptr;
                         GameObject* newControlPoint = spawnManipulator(position);
+                        meshManipulatorModule->addControlPoint(newControlPoint);
                         ResourceManager::setCurrentlySelected(newControlPoint);
                     }
                 }
@@ -116,7 +119,7 @@ void setUpScene(){
 
                         glm::vec3 offset = positionFlattened - ResourceManager::getMouseRayOrigin();
 
-                        picked->setPosition(position - offset*100.0f);
+                        picked->setPosition(position - offset*10.0f);
                     }
                 }
             }

@@ -35,6 +35,7 @@ public:
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
+        saveInitialPositions();
 
         // now that we have all the required data, set the vertex buffers and its attribute pointers.
         setupMesh();
@@ -113,34 +114,36 @@ public:
         glActiveTexture(GL_TEXTURE0);
     }
 
-    std::vector<glm::vec3> getVertices() {
-        std::vector<glm::vec3> _verticies;
-        for (Vertex vertex : vertices) {
-            _verticies.push_back(vertex.Position);
-        }
-        return _verticies;
+    std::vector<glm::vec3> getInitialPositions() {
+        return initialPositions;
     }
 
-    void updateMeshVerticies(std::vector<glm::vec3> newVerticies) {
+    std::vector<Vertex>& getVertices() {
+        return vertices;
+    }
 
-        for (int i = 0; i < vertices.size(); i++) {
-            vertices[i].Position = newVerticies[i];
-        }
-
+    void updateVertexBuffer() {
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
         glBindVertexArray(0);
-
     }
 
 private:
 
     unsigned int VAO, VBO, EBO, ID;
     std::vector<Vertex>       vertices;
+    std::vector<glm::vec3>    initialPositions; //exposed for override
     std::vector<unsigned int> indices;
     std::vector<Texture*>     textures;
+
+    void saveInitialPositions(){
+        initialPositions.resize(vertices.size());
+        for(int i = 0; i < vertices.size(); i++){
+            initialPositions[i] = vertices[i].Position;
+        }
+    }
 
     void setupMesh()
     {

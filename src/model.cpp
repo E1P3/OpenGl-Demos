@@ -290,10 +290,10 @@ void Model::setID(unsigned int ID) {
 
 	}
 
-	std::vector<glm::vec3> Model::getVertices(){
-		std::vector<glm::vec3> vertices;
-		for (auto mesh : meshes){
-			std::vector<glm::vec3> meshVertices = mesh->getVertices();
+	std::vector<Vertex> Model::getVertices(){
+		std::vector<Vertex> vertices;
+		for (Mesh* mesh : meshes){
+			std::vector<Vertex> meshVertices = mesh->getVertices();
 			vertices.insert(vertices.end(), meshVertices.begin(), meshVertices.end());
 		}
 		return vertices;
