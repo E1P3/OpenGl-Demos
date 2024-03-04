@@ -40,9 +40,9 @@ public:
 
     std::map<int, float> getWeights(glm::vec3 controlPointPosition){
         std::map<int, float> weights;
-        std::vector<glm::vec3> initialPositions = mesh->getInitialPositions();
-        for (int i = 0; i < initialPositions.size(); i++){
-            float distance = glm::distance(initialPositions[i], controlPointPosition);
+        std::vector<glm::vec3> vertexPositions = mesh->getInitialPositions();
+        for (int i = 0; i < vertexPositions.size(); i++){
+            float distance = glm::distance(vertexPositions[i], controlPointPosition);
             float weight = computeWeight(distance);
             if(weight > 0.0f)
                 weights[i] = weight;
@@ -62,21 +62,22 @@ public:
     }
 
     void OnGui() {
-        ImGui::Begin("Mesh Manipulator Module");
-        ImGui::Text("Control Points");
+        ImGui::Begin("Control Points");
 
         static float prevSigma = sigma;
         static float prevC = c;
         static float prevRadius = radius;
         static float prevInfluence = influence;
+        static bool prevIsGaussian = isGaussian;
 
-        ImGui::SliderFloat("Sigma", &sigma, 0.1f, 10.0f);
+        ImGui::SliderFloat("Sigma", &sigma, 0.0f, 10.0f);
         ImGui::SliderFloat("C", &c, 0.1f, 10.0f);
         ImGui::SliderFloat("Radius", &radius, 0.1f, 10.0f);
         ImGui::SliderFloat("Influence", &influence, 0.0f, 1.0f);
+        ImGui::Checkbox("Gaussian", &isGaussian);
 
-        if (prevSigma != sigma || prevC != c || prevRadius != radius || prevInfluence != influence) {
-            if(prevRadius != radius){
+        if (prevSigma != sigma || prevC != c || prevRadius != radius || prevInfluence != influence || prevIsGaussian != isGaussian) {
+            if(prevRadius != radius || prevIsGaussian != isGaussian || prevSigma != sigma){
                 weights.clear();
                 for (int i = 0; i < controlPoints.size(); i++) {
                     weights.push_back(getWeights(controlPoints[i]->getWorldPosition()));
@@ -89,6 +90,7 @@ public:
         prevC = c;
         prevRadius = radius;
         prevInfluence = influence;
+        prevIsGaussian = isGaussian;
 
         ImGui::End();
     }
@@ -104,6 +106,7 @@ private:
     float c = 3.0f;
     float radius = 10.0f;
     float influence = 0.5f;
+    bool isGaussian = false;
 
     void manipulateVerticesWithRBF() {
         std::vector<Vertex>& vertices = mesh->getVertices();
@@ -135,16 +138,18 @@ private:
         return offset;
     }
 
-    float computeWeight(float distance){
-        return std::max(0.0f, 1.0f - distance / radius);
+    float computeWeight(float distance) {
+        if(!isGaussian){
+            return std::max(0.0f, 1.0f - distance / radius);
+        }
+        else{
+            return computeGaussianWeight(distance, sigma);
+        }
+
     }
 
     float computeGaussianWeight(float distance, float sigma) {
-        return std::exp(-0.5f * (distance * distance) / (sigma * sigma));
-    }
-
-    float computeMultiquadricWeight(float distance, float c) {
-        return std::sqrt(distance * distance + c * c);
+        return std::exp(-(distance * distance) / (2.0f * (sigma * sigma)));
     }
 
 };
