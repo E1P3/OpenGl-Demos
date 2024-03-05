@@ -105,6 +105,7 @@ add_executable(graphics
     src/animator.h
     src/entityModules/controllerModule.h
     src/entityModules/meshManipulatorModule.h
+    src/entityModules/blendShapeModule.h
     src/shaders/forwardPass/phong/blinnPhongShader.h
     src/shaders/forwardPass/phong/blinnPhongTexShader.h
     src/shaders/forwardPass/toon/toonShader.h

@@ -27,6 +27,7 @@ public:
         previousPositions.push_back(intitialPosition);
         initialPositions.push_back(intitialPosition);
         weights.push_back(getWeights(intitialPosition));
+        cpOffsets.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
         updateVerticies();
     }
 
@@ -37,17 +38,6 @@ public:
     void setC(float c) {
         this->c = c;
     }    
-
-    bool checkPreviousPositions() {
-        bool hasMoved = false;
-        for (int i = 0; i < controlPoints.size(); i++) {
-            if (controlPoints[i]->getWorldPosition() != previousPositions[i]) {
-                previousPositions[i] = controlPoints[i]->getWorldPosition();
-                hasMoved = true;
-            }
-        }
-        return hasMoved;
-    }
 
     void OnGui() {
         ImGui::Begin("Control Points");
@@ -87,12 +77,13 @@ private:
     std::vector<GameObject*> controlPoints;
     std::vector<glm::vec3> previousPositions;
     std::vector<glm::vec3> initialPositions;
+    std::vector<glm::vec3> cpOffsets;
     std::vector<std::map<int, float>> weights;
     float sigma = 3.0f;
     float factor = -0.5 / 9.0f;
     float c = 3.0f;
     float radius = 10.0f;
-    float influence = 0.5f;
+    float influence = 1.0f;
     bool isGaussian = false;
 
     void updateVerticies() {
@@ -113,10 +104,11 @@ private:
         float totalWeight = 0.0f;
         for(int i = 0; i < controlPoints.size(); i++){
             if(weights[i].find(vertexIndex) != weights[i].end()){
-                glm::vec3 cpOffset = controlPoints[i]->getWorldPosition() - initialPositions[i];
-                float weight = weights[i][vertexIndex];
-                offset += cpOffset * weight;
-                totalWeight += weight;
+                if(cpOffsets[i] != glm::vec3(0.0f, 0.0f, 0.0f)){
+                    float weight = weights[i][vertexIndex];
+                    offset += cpOffsets[i] * weight;
+                    totalWeight += weight;
+                }
             }
         }
 
@@ -150,6 +142,18 @@ private:
             return computeGaussianWeight(distance, factor);
         }
 
+    }
+
+    bool checkPreviousPositions() {
+        bool hasMoved = false;
+        for (int i = 0; i < controlPoints.size(); i++) {
+            if (controlPoints[i]->getWorldPosition() != previousPositions[i]) {
+                previousPositions[i] = controlPoints[i]->getWorldPosition();
+                cpOffsets[i] = controlPoints[i]->getWorldPosition() -initialPositions[i];
+                hasMoved = true;
+            }
+        }
+        return hasMoved;
     }
 
     float computeGaussianWeight(float distance, float factor) {

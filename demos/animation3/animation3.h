@@ -10,7 +10,9 @@
 #include "../../src/shaders/forwardPass/phong/blinnPhongShader.h"
 #include "../../src/materials/basicMaterial.h"
 #include "../../src/utils/captureDepth.h"
+#include "../../src/entityModules/blendShapeModule.h"
 
+bool loadFaces = true;
 
 Model* sphereModel;
 Mesh* faceMesh;
@@ -46,7 +48,83 @@ void setUpScene(){
     ResourceManager::addShader(phongShader);
 
     Model* faceModel = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/neutral.obj").c_str());
+    Model* jaw_open_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_jaw_open.obj").c_str());
+    Model* kiss_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_kiss.obj").c_str());
+    Model* l_brow_lower_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_brow_lower.obj").c_str());
+    Model* l_brow_narrow_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_brow_narrow.obj").c_str());
+    Model* l_brow_raise_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_brow_raise.obj").c_str());
+    Model* l_eye_closed_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_eye_closed.obj").c_str());
+    Model* l_eye_lower_open = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_eye_lower_open.obj").c_str());
+    Model* l_eye_upper_open = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_eye_upper_open.obj").c_str());
+    Model* l_nose_wrinkle_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_nose_wrinkle.obj").c_str());
+    Model* l_puff_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_puff.obj").c_str());
+    Model* l_sad_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_sad.obj").c_str());
+    Model* l_smile_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_smile.obj").c_str());
+    Model* l_suck_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_l_suck.obj").c_str());
+    Model* r_brow_lower_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_brow_lower.obj").c_str());
+    Model* r_brow_narrow_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_brow_narrow.obj").c_str());
+    Model* r_brow_raise_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_brow_raise.obj").c_str());
+    Model* r_eye_closed_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_eye_closed.obj").c_str());
+    Model* r_eye_lower_open = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_eye_lower_open.obj").c_str());
+    Model* r_eye_upper_open = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_eye_upper_open.obj").c_str());
+    Model* r_nose_wrinkle_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_nose_wrinkle.obj").c_str());
+    Model* r_puff_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_puff.obj").c_str());
+    Model* r_sad_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_sad.obj").c_str());
+    Model* r_smile_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_smile.obj").c_str());
+    Model* r_suck_model = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/faces/Mery_r_suck.obj").c_str());
+
     faceMesh = faceModel->getMeshes()[0];
+    Mesh* jaw_open_mesh = jaw_open_model->getMeshes()[0];
+    Mesh* kiss_mesh = kiss_model->getMeshes()[0];
+    Mesh* l_brow_lower_mesh = l_brow_lower_model->getMeshes()[0];
+    Mesh* l_brow_narrow_mesh = l_brow_narrow_model->getMeshes()[0];
+    Mesh* l_brow_raise_mesh = l_brow_raise_model->getMeshes()[0];
+    Mesh* l_eye_closed_mesh = l_eye_closed_model->getMeshes()[0];
+    Mesh* l_eye_lower_open_mesh = l_eye_lower_open->getMeshes()[0];
+    Mesh* l_eye_upper_open_mesh = l_eye_upper_open->getMeshes()[0];
+    Mesh* l_nose_wrinkle_mesh = l_nose_wrinkle_model->getMeshes()[0];
+    Mesh* l_puff_mesh = l_puff_model->getMeshes()[0];
+    Mesh* l_sad_mesh = l_sad_model->getMeshes()[0];
+    Mesh* l_smile_mesh = l_smile_model->getMeshes()[0];
+    Mesh* l_suck_mesh = l_suck_model->getMeshes()[0];
+    Mesh* r_brow_lower_mesh = r_brow_lower_model->getMeshes()[0];
+    Mesh* r_brow_narrow_mesh = r_brow_narrow_model->getMeshes()[0];
+    Mesh* r_brow_raise_mesh = r_brow_raise_model->getMeshes()[0];
+    Mesh* r_eye_closed_mesh = r_eye_closed_model->getMeshes()[0];
+    Mesh* r_eye_lower_open_mesh = r_eye_lower_open->getMeshes()[0];
+    Mesh* r_eye_upper_open_mesh = r_eye_upper_open->getMeshes()[0];
+    Mesh* r_nose_wrinkle_mesh = r_nose_wrinkle_model->getMeshes()[0];
+    Mesh* r_puff_mesh = r_puff_model->getMeshes()[0];
+    Mesh* r_sad_mesh = r_sad_model->getMeshes()[0];
+    Mesh* r_smile_mesh = r_smile_model->getMeshes()[0];
+    Mesh* r_suck_mesh = r_suck_model->getMeshes()[0];
+
+    BlendShapeModule* blendShapeModule = new BlendShapeModule(faceMesh);
+    blendShapeModule->addDeltaBlendShape(jaw_open_mesh, "jaw_open");
+    blendShapeModule->addDeltaBlendShape(kiss_mesh, "kiss");
+    blendShapeModule->addDeltaBlendShape(l_brow_lower_mesh, "l_brow_lower");
+    blendShapeModule->addDeltaBlendShape(l_brow_narrow_mesh, "l_brow_narrow");
+    blendShapeModule->addDeltaBlendShape(l_brow_raise_mesh, "l_brow_raise");
+    blendShapeModule->addDeltaBlendShape(l_eye_closed_mesh, "l_eye_closed");
+    blendShapeModule->addDeltaBlendShape(l_eye_lower_open_mesh, "l_eye_lower_open");
+    blendShapeModule->addDeltaBlendShape(l_eye_upper_open_mesh, "l_eye_upper_open");
+    blendShapeModule->addDeltaBlendShape(l_nose_wrinkle_mesh, "l_nose_wrinkle");
+    blendShapeModule->addDeltaBlendShape(l_puff_mesh, "l_puff");
+    blendShapeModule->addDeltaBlendShape(l_sad_mesh, "l_sad");
+    blendShapeModule->addDeltaBlendShape(l_smile_mesh, "l_smile");
+    blendShapeModule->addDeltaBlendShape(l_suck_mesh, "l_suck");
+    blendShapeModule->addDeltaBlendShape(r_brow_lower_mesh, "r_brow_lower");
+    blendShapeModule->addDeltaBlendShape(r_brow_narrow_mesh, "r_brow_narrow");
+    blendShapeModule->addDeltaBlendShape(r_brow_raise_mesh, "r_brow_raise");
+    blendShapeModule->addDeltaBlendShape(r_eye_closed_mesh, "r_eye_closed");
+    blendShapeModule->addDeltaBlendShape(r_eye_lower_open_mesh, "r_eye_lower_open");
+    blendShapeModule->addDeltaBlendShape(r_eye_upper_open_mesh, "r_eye_upper_open");
+    blendShapeModule->addDeltaBlendShape(r_nose_wrinkle_mesh, "r_nose_wrinkle");
+    blendShapeModule->addDeltaBlendShape(r_puff_mesh, "r_puff");
+    blendShapeModule->addDeltaBlendShape(r_sad_mesh, "r_sad");
+    blendShapeModule->addDeltaBlendShape(r_smile_mesh, "r_smile");
+    blendShapeModule->addDeltaBlendShape(r_suck_mesh, "r_suck");
+
 
     sphereModel = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/defaultSphere.fbx").c_str());
     BasicMaterial *faceMaterial = new BasicMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.5f,0.0f), glm::vec3(0.0f,1.0f,0.5f), 1.5f);
@@ -62,7 +140,8 @@ void setUpScene(){
     face->setName("Face");
     RenderModule* renderModule = new RenderModule(face, faceModel, faceMaterial, phongShader, true);
     MeshManipulatorModule* meshManipulatorModule = new MeshManipulatorModule(faceMesh);
-    face->addModule(meshManipulatorModule);
+    //face->addModule(meshManipulatorModule);
+    face->addModule(blendShapeModule);
 
     GameObject* eyeBallR = ResourceManager::loadGameObject();
     RenderModule* eyeBallRRenderModule = new RenderModule(sphereModel, eyeMaterial, phongShader);
@@ -82,6 +161,7 @@ void setUpScene(){
     camera->setTarget(cameraTarget);
     camera->setMode(Camera_Mode::TPS);
 
+    ImGuiWrapper::attachGuiFunction("Blend Shapes", [blendShapeModule](){blendShapeModule->OnGui();});
     ImGuiWrapper::attachGuiFunction("Frame Rate", [](){
         ImGui::Text("Frame Rate: %.1f", ImGui::GetIO().Framerate);
         ImGui::Text("Window size: (%.1f, %.1f)", ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
@@ -89,7 +169,6 @@ void setUpScene(){
         ImGui::Text("Mouse Position: (%.1f, %.1f)", ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y);
         ImGui::Text("Mouse Position: (%.1f, %.1f)", ResourceManager::getMouseX(), ResourceManager::getMouseY());
     });
-    ImGuiWrapper::attachGuiFunction("Face Properties", [face, faceMaterial](){face->OnGui(); faceMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Point Light", [pointLight](){pointLight->OnGui();});
     ImGuiWrapper::attachGuiFunction("EyeBalls", [eyeBallR, eyeBallL, eyeMaterial](){eyeBallR->OnGui(); eyeBallL->OnGui(); eyeMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Control Points", [meshManipulatorModule](){meshManipulatorModule->OnGui();});
