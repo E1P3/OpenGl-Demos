@@ -1,16 +1,15 @@
 #ifndef ANIMATION_3_H
 #define ANIMATION_3_H
 
-#include "../../src/resourceManager.h"
-#include "../../src/entityModules/controllerModule.h"
-#include "../../src/entityModules/renderModule.h"
-#include "../../src/entityModules/gameplayModule.h"
-#include "../../src/entityModules/meshManipulatorModule.h"
-#include "../../src/imgui/imguiWrapper.h"
-#include "../../src/shaders/forwardPass/phong/blinnPhongShader.h"
-#include "../../src/materials/basicMaterial.h"
-#include "../../src/utils/captureDepth.h"
-#include "../../src/entityModules/faceManipulation.h"
+#include "../src/resourceManager.h"
+#include "../src/entityModules/controllerModule.h"
+#include "../src/entityModules/renderModule.h"
+#include "../src/entityModules/gameplayModule.h"
+#include "../src/imgui/imguiWrapper.h"
+#include "../src/shaders/forwardPass/phong/blinnPhongShader.h"
+#include "../src/materials/basicMaterial.h"
+#include "../src/utils/captureDepth.h"
+#include "../src/entityModules/faceManipulation.h"
 
 bool loadFaces = true;
 
@@ -40,6 +39,8 @@ glm::vec3 getDisplacementFromLine(glm::vec3 lineStart, glm::vec3 lineEnd, glm::v
 void setUpScene(){
     std::string vShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.vert";
     std::string fShaderPath = std::string(SRC_DIR) + "/shaders/forwardPass/phong/blinnPhong.frag";
+
+    std::string faceAnimationFilePath = std::string(ASSET_DIR) + "/misc/faceAnimation.txt";
 
     DirectionalLight* directionalLight = ResourceManager::loadDirectionalLight(0.1f, glm::vec3(0.0f, 0.0f, 1.0f));
     PointLight* pointLight = ResourceManager::loadPointLight(0.1f, glm::vec3(0.0f, 50.0f, 300.0f), 1.0f, 0.09f, 0.032f);
@@ -102,29 +103,29 @@ void setUpScene(){
     FaceManipulation* faceManipulation = new FaceManipulation(faceMesh);
     faceManipulation->addBlendShape(jaw_open_mesh, "jaw_open");
     faceManipulation->addBlendShape(kiss_mesh, "kiss");
-    //faceManipulation->addBlendShape(l_brow_lower_mesh, "l_brow_lower");
-    //faceManipulation->addBlendShape(l_brow_narrow_mesh, "l_brow_narrow");
-    //faceManipulation->addBlendShape(l_brow_raise_mesh, "l_brow_raise");
+    faceManipulation->addBlendShape(l_brow_lower_mesh, "l_brow_lower");
+    faceManipulation->addBlendShape(l_brow_narrow_mesh, "l_brow_narrow");
+    faceManipulation->addBlendShape(l_brow_raise_mesh, "l_brow_raise");
     faceManipulation->addBlendShape(l_eye_closed_mesh, "l_eye_closed");
-    //faceManipulation->addBlendShape(l_eye_lower_open_mesh, "l_eye_lower_open");
-    //faceManipulation->addBlendShape(l_eye_upper_open_mesh, "l_eye_upper_open");
-    //faceManipulation->addBlendShape(l_nose_wrinkle_mesh, "l_nose_wrinkle");
-    //faceManipulation->addBlendShape(l_puff_mesh, "l_puff");
-    //faceManipulation->addBlendShape(l_sad_mesh, "l_sad");
+    faceManipulation->addBlendShape(l_eye_lower_open_mesh, "l_eye_lower_open");
+    faceManipulation->addBlendShape(l_eye_upper_open_mesh, "l_eye_upper_open");
+    faceManipulation->addBlendShape(l_nose_wrinkle_mesh, "l_nose_wrinkle");
+    faceManipulation->addBlendShape(l_puff_mesh, "l_puff");
+    faceManipulation->addBlendShape(l_sad_mesh, "l_sad");
     faceManipulation->addBlendShape(l_smile_mesh, "l_smile");
-    //faceManipulation->addBlendShape(l_suck_mesh, "l_suck");
-    //faceManipulation->addBlendShape(r_brow_lower_mesh, "r_brow_lower");
-    //faceManipulation->addBlendShape(r_brow_narrow_mesh, "r_brow_narrow");
-    //faceManipulation->addBlendShape(r_brow_raise_mesh, "r_brow_raise");
+    faceManipulation->addBlendShape(l_suck_mesh, "l_suck");
+    faceManipulation->addBlendShape(r_brow_lower_mesh, "r_brow_lower");
+    faceManipulation->addBlendShape(r_brow_narrow_mesh, "r_brow_narrow");
+    faceManipulation->addBlendShape(r_brow_raise_mesh, "r_brow_raise");
     faceManipulation->addBlendShape(r_eye_closed_mesh, "r_eye_closed");
-    //faceManipulation->addBlendShape(r_eye_lower_open_mesh, "r_eye_lower_open");
-    //faceManipulation->addBlendShape(r_eye_upper_open_mesh, "r_eye_upper_open");
-    //faceManipulation->addBlendShape(r_nose_wrinkle_mesh, "r_nose_wrinkle");
-    //faceManipulation->addBlendShape(r_puff_mesh, "r_puff");
-    //faceManipulation->addBlendShape(r_sad_mesh, "r_sad");
+    faceManipulation->addBlendShape(r_eye_lower_open_mesh, "r_eye_lower_open");
+    faceManipulation->addBlendShape(r_eye_upper_open_mesh, "r_eye_upper_open");
+    faceManipulation->addBlendShape(r_nose_wrinkle_mesh, "r_nose_wrinkle");
+    faceManipulation->addBlendShape(r_puff_mesh, "r_puff");
+    faceManipulation->addBlendShape(r_sad_mesh, "r_sad");
     faceManipulation->addBlendShape(r_smile_mesh, "r_smile");
-    //faceManipulation->addBlendShape(r_suck_mesh, "r_suck");
-
+    faceManipulation->addBlendShape(r_suck_mesh, "r_suck");
+    faceManipulation->loadWeightAnimation(faceAnimationFilePath);
 
     sphereModel = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/defaultSphere.fbx").c_str());
     BasicMaterial *faceMaterial = new BasicMaterial(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.5f,0.0f), glm::vec3(0.0f,1.0f,0.5f), 1.5f);
@@ -139,8 +140,6 @@ void setUpScene(){
     GameObject* face = ResourceManager::loadGameObject();
     face->setName("Face");
     RenderModule* renderModule = new RenderModule(face, faceModel, faceMaterial, phongShader, true);
-    MeshManipulatorModule* meshManipulatorModule = new MeshManipulatorModule(faceMesh);
-    //face->addModule(meshManipulatorModule);
     face->addModule(faceManipulation);
 
     GameObject* eyeBallR = ResourceManager::loadGameObject();
@@ -170,8 +169,6 @@ void setUpScene(){
         ImGui::Text("Mouse Position: (%.1f, %.1f)", ResourceManager::getMouseX(), ResourceManager::getMouseY());
     });
     ImGuiWrapper::attachGuiFunction("Point Light", [pointLight](){pointLight->OnGui();});
-    ImGuiWrapper::attachGuiFunction("EyeBalls", [eyeBallR, eyeBallL, eyeMaterial](){eyeBallR->OnGui(); eyeBallL->OnGui(); eyeMaterial->OnGui();});
-    ImGuiWrapper::attachGuiFunction("Control Points", [meshManipulatorModule](){meshManipulatorModule->OnGui();});
     ImGuiWrapper::attachGuiFunction("Pointer", [faceManipulation](){
         keyData key = ResourceManager::getMouseData(GLFW_MOUSE_BUTTON_LEFT);
         float deltaTime = ResourceManager::getDeltaTime();
@@ -207,7 +204,7 @@ void setUpScene(){
 
                         glm::vec3 offset = positionFlattened - ResourceManager::getMouseRayOrigin();
 
-                        picked->setPosition(position - offset*1.0f);
+                        picked->setPosition(position - offset*10.0f);
                     }
                 }
             }

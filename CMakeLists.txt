@@ -102,13 +102,11 @@ add_executable(graphics
     src/resourceManager.cpp
     src/entityModules/renderModule.h
     src/entityModules/gameplayModule.h
+    src/entityModules/controllerModule.h
+    src/entityModules/faceManipulation.h
     src/camera.h
     src/camera.cpp
     src/animator.h
-    src/entityModules/controllerModule.h
-    src/entityModules/meshManipulatorModule.h
-    src/entityModules/blendShapeModule.h
-    src/entityModules/faceManipulation.h
     src/shaders/forwardPass/phong/blinnPhongShader.h
     src/shaders/forwardPass/phong/blinnPhongTexShader.h
     src/shaders/forwardPass/toon/toonShader.h
@@ -142,7 +140,7 @@ add_executable(graphics
     demos/rendering4.h
     demos/animation1.h
     demos/animation2.h
-    demos/animation3/animation3.h
+    demos/animation3.h
     demos/tessalationTest.h
     demos/test.h
     )

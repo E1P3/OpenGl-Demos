@@ -67,7 +67,7 @@ public:
     static glm::vec3 getMouseRayHit();
     static glm::vec3 getMouseRayOrigin();
     static void addGeometryInfo(GameObject* gameObject, std::vector<glm::vec3> vertexPositions);
-    static GameObject* checkMouseVertexPick(glm::vec3& vertex);
+    static GameObject* checkMouseVertexPick(glm::vec3& vertex, int& vertexIndex);
     static GameObject* getCurrentlySelected();
     static void setCurrentlySelected(GameObject* selected);
 

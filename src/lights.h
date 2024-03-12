@@ -42,6 +42,9 @@ public:
     glm::vec3 getDiffuse(){return diffuse;}
     glm::vec3 getAmbient(){return ambient;}
     glm::vec3 getSpecular(){return specular;}
+    float* getDiffuseRef(){return (float*)&diffuse;}
+    float* getAmbientRef(){return (float*)&ambient;}
+    float* getSpecularRef(){return (float*)&specular;}
     void setDiffuse(glm::vec3 diffuse){this->diffuse = diffuse;}
     void setAmbient(glm::vec3 ambient){this->ambient = ambient;}
     void setSpecular(glm::vec3 specular){this->specular = specular;}
@@ -126,6 +129,9 @@ public:
         ImGui::SliderFloat("Constant", &constant, 0.0f, 1.0f);
         ImGui::SliderFloat("Linear", &linear, 0.0f, 1.0f);
         ImGui::SliderFloat("Quadratic", &quadratic, 0.0f, 1.0f);
+        ImGui::ColorEdit3("Ambient", getAmbientRef());
+        ImGui::ColorEdit3("Diffuse", getDiffuseRef());
+        ImGui::ColorEdit3("Specular", getSpecularRef());
     }
 private:
 	float constant = 1.0f;
