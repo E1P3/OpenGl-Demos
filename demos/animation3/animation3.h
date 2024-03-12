@@ -10,7 +10,7 @@
 #include "../../src/shaders/forwardPass/phong/blinnPhongShader.h"
 #include "../../src/materials/basicMaterial.h"
 #include "../../src/utils/captureDepth.h"
-#include "../../src/entityModules/blendShapeModule.h"
+#include "../../src/entityModules/faceManipulation.h"
 
 bool loadFaces = true;
 
@@ -99,31 +99,31 @@ void setUpScene(){
     Mesh* r_smile_mesh = r_smile_model->getMeshes()[0];
     Mesh* r_suck_mesh = r_suck_model->getMeshes()[0];
 
-    BlendShapeModule* blendShapeModule = new BlendShapeModule(faceMesh);
-    blendShapeModule->addDeltaBlendShape(jaw_open_mesh, "jaw_open");
-    blendShapeModule->addDeltaBlendShape(kiss_mesh, "kiss");
-    blendShapeModule->addDeltaBlendShape(l_brow_lower_mesh, "l_brow_lower");
-    blendShapeModule->addDeltaBlendShape(l_brow_narrow_mesh, "l_brow_narrow");
-    blendShapeModule->addDeltaBlendShape(l_brow_raise_mesh, "l_brow_raise");
-    blendShapeModule->addDeltaBlendShape(l_eye_closed_mesh, "l_eye_closed");
-    blendShapeModule->addDeltaBlendShape(l_eye_lower_open_mesh, "l_eye_lower_open");
-    blendShapeModule->addDeltaBlendShape(l_eye_upper_open_mesh, "l_eye_upper_open");
-    blendShapeModule->addDeltaBlendShape(l_nose_wrinkle_mesh, "l_nose_wrinkle");
-    blendShapeModule->addDeltaBlendShape(l_puff_mesh, "l_puff");
-    blendShapeModule->addDeltaBlendShape(l_sad_mesh, "l_sad");
-    blendShapeModule->addDeltaBlendShape(l_smile_mesh, "l_smile");
-    blendShapeModule->addDeltaBlendShape(l_suck_mesh, "l_suck");
-    blendShapeModule->addDeltaBlendShape(r_brow_lower_mesh, "r_brow_lower");
-    blendShapeModule->addDeltaBlendShape(r_brow_narrow_mesh, "r_brow_narrow");
-    blendShapeModule->addDeltaBlendShape(r_brow_raise_mesh, "r_brow_raise");
-    blendShapeModule->addDeltaBlendShape(r_eye_closed_mesh, "r_eye_closed");
-    blendShapeModule->addDeltaBlendShape(r_eye_lower_open_mesh, "r_eye_lower_open");
-    blendShapeModule->addDeltaBlendShape(r_eye_upper_open_mesh, "r_eye_upper_open");
-    blendShapeModule->addDeltaBlendShape(r_nose_wrinkle_mesh, "r_nose_wrinkle");
-    blendShapeModule->addDeltaBlendShape(r_puff_mesh, "r_puff");
-    blendShapeModule->addDeltaBlendShape(r_sad_mesh, "r_sad");
-    blendShapeModule->addDeltaBlendShape(r_smile_mesh, "r_smile");
-    blendShapeModule->addDeltaBlendShape(r_suck_mesh, "r_suck");
+    FaceManipulation* faceManipulation = new FaceManipulation(faceMesh);
+    faceManipulation->addBlendShape(jaw_open_mesh, "jaw_open");
+    faceManipulation->addBlendShape(kiss_mesh, "kiss");
+    faceManipulation->addBlendShape(l_brow_lower_mesh, "l_brow_lower");
+    faceManipulation->addBlendShape(l_brow_narrow_mesh, "l_brow_narrow");
+    faceManipulation->addBlendShape(l_brow_raise_mesh, "l_brow_raise");
+    faceManipulation->addBlendShape(l_eye_closed_mesh, "l_eye_closed");
+    faceManipulation->addBlendShape(l_eye_lower_open_mesh, "l_eye_lower_open");
+    faceManipulation->addBlendShape(l_eye_upper_open_mesh, "l_eye_upper_open");
+    faceManipulation->addBlendShape(l_nose_wrinkle_mesh, "l_nose_wrinkle");
+    faceManipulation->addBlendShape(l_puff_mesh, "l_puff");
+    faceManipulation->addBlendShape(l_sad_mesh, "l_sad");
+    faceManipulation->addBlendShape(l_smile_mesh, "l_smile");
+    faceManipulation->addBlendShape(l_suck_mesh, "l_suck");
+    faceManipulation->addBlendShape(r_brow_lower_mesh, "r_brow_lower");
+    faceManipulation->addBlendShape(r_brow_narrow_mesh, "r_brow_narrow");
+    faceManipulation->addBlendShape(r_brow_raise_mesh, "r_brow_raise");
+    faceManipulation->addBlendShape(r_eye_closed_mesh, "r_eye_closed");
+    faceManipulation->addBlendShape(r_eye_lower_open_mesh, "r_eye_lower_open");
+    faceManipulation->addBlendShape(r_eye_upper_open_mesh, "r_eye_upper_open");
+    faceManipulation->addBlendShape(r_nose_wrinkle_mesh, "r_nose_wrinkle");
+    faceManipulation->addBlendShape(r_puff_mesh, "r_puff");
+    faceManipulation->addBlendShape(r_sad_mesh, "r_sad");
+    faceManipulation->addBlendShape(r_smile_mesh, "r_smile");
+    faceManipulation->addBlendShape(r_suck_mesh, "r_suck");
 
 
     sphereModel = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/defaultSphere.fbx").c_str());
@@ -141,7 +141,7 @@ void setUpScene(){
     RenderModule* renderModule = new RenderModule(face, faceModel, faceMaterial, phongShader, true);
     MeshManipulatorModule* meshManipulatorModule = new MeshManipulatorModule(faceMesh);
     //face->addModule(meshManipulatorModule);
-    face->addModule(blendShapeModule);
+    face->addModule(faceManipulation);
 
     GameObject* eyeBallR = ResourceManager::loadGameObject();
     RenderModule* eyeBallRRenderModule = new RenderModule(sphereModel, eyeMaterial, phongShader);
@@ -161,7 +161,7 @@ void setUpScene(){
     camera->setTarget(cameraTarget);
     camera->setMode(Camera_Mode::TPS);
 
-    ImGuiWrapper::attachGuiFunction("Blend Shapes", [blendShapeModule](){blendShapeModule->OnGui();});
+    ImGuiWrapper::attachGuiFunction("Blend Shapes", [faceManipulation](){faceManipulation->OnGui();});
     ImGuiWrapper::attachGuiFunction("Frame Rate", [](){
         ImGui::Text("Frame Rate: %.1f", ImGui::GetIO().Framerate);
         ImGui::Text("Window size: (%.1f, %.1f)", ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
@@ -172,7 +172,7 @@ void setUpScene(){
     ImGuiWrapper::attachGuiFunction("Point Light", [pointLight](){pointLight->OnGui();});
     ImGuiWrapper::attachGuiFunction("EyeBalls", [eyeBallR, eyeBallL, eyeMaterial](){eyeBallR->OnGui(); eyeBallL->OnGui(); eyeMaterial->OnGui();});
     ImGuiWrapper::attachGuiFunction("Control Points", [meshManipulatorModule](){meshManipulatorModule->OnGui();});
-    ImGuiWrapper::attachGuiFunction("Pointer", [meshManipulatorModule](){
+    ImGuiWrapper::attachGuiFunction("Pointer", [faceManipulation](){
         keyData key = ResourceManager::getMouseData(GLFW_MOUSE_BUTTON_LEFT);
         float deltaTime = ResourceManager::getDeltaTime();
         glm::vec3 position;
@@ -189,7 +189,7 @@ void setUpScene(){
                     if(picked->getName() == "Face"){
                         picked = nullptr;
                         GameObject* newControlPoint = spawnManipulator(position);
-                        meshManipulatorModule->addControlPoint(newControlPoint);
+                        faceManipulation->addManipulator(newControlPoint);
                         ResourceManager::setCurrentlySelected(newControlPoint);
                     }
                 }

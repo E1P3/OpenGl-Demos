@@ -24,11 +24,13 @@ endif()
 set(GLAD_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad)
 set(GLM_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/glm)
 set(IMGUI_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui)
+set(EIGEN_HOME ${CMAKE_CURRENT_SOURCE_DIR}/libs/eigen)
 
 include_directories("${GLFW_HOME}/include")
 include_directories("${GLAD_HOME}/include")
 include_directories("${ASSIMP_HOME}/include")
 include_directories("${GLM_HOME}/include")
+include_directories("${EIGEN_HOME}")
 
 message("GLFW_HOME: ${GLFW_HOME}")
 message("GLAD_HOME: ${GLAD_HOME}")
@@ -106,6 +108,7 @@ add_executable(graphics
     src/entityModules/controllerModule.h
     src/entityModules/meshManipulatorModule.h
     src/entityModules/blendShapeModule.h
+    src/entityModules/faceManipulation.h
     src/shaders/forwardPass/phong/blinnPhongShader.h
     src/shaders/forwardPass/phong/blinnPhongTexShader.h
     src/shaders/forwardPass/toon/toonShader.h
