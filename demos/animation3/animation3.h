@@ -102,28 +102,28 @@ void setUpScene(){
     FaceManipulation* faceManipulation = new FaceManipulation(faceMesh);
     faceManipulation->addBlendShape(jaw_open_mesh, "jaw_open");
     faceManipulation->addBlendShape(kiss_mesh, "kiss");
-    faceManipulation->addBlendShape(l_brow_lower_mesh, "l_brow_lower");
-    faceManipulation->addBlendShape(l_brow_narrow_mesh, "l_brow_narrow");
-    faceManipulation->addBlendShape(l_brow_raise_mesh, "l_brow_raise");
+    //faceManipulation->addBlendShape(l_brow_lower_mesh, "l_brow_lower");
+    //faceManipulation->addBlendShape(l_brow_narrow_mesh, "l_brow_narrow");
+    //faceManipulation->addBlendShape(l_brow_raise_mesh, "l_brow_raise");
     faceManipulation->addBlendShape(l_eye_closed_mesh, "l_eye_closed");
-    faceManipulation->addBlendShape(l_eye_lower_open_mesh, "l_eye_lower_open");
-    faceManipulation->addBlendShape(l_eye_upper_open_mesh, "l_eye_upper_open");
-    faceManipulation->addBlendShape(l_nose_wrinkle_mesh, "l_nose_wrinkle");
-    faceManipulation->addBlendShape(l_puff_mesh, "l_puff");
-    faceManipulation->addBlendShape(l_sad_mesh, "l_sad");
+    //faceManipulation->addBlendShape(l_eye_lower_open_mesh, "l_eye_lower_open");
+    //faceManipulation->addBlendShape(l_eye_upper_open_mesh, "l_eye_upper_open");
+    //faceManipulation->addBlendShape(l_nose_wrinkle_mesh, "l_nose_wrinkle");
+    //faceManipulation->addBlendShape(l_puff_mesh, "l_puff");
+    //faceManipulation->addBlendShape(l_sad_mesh, "l_sad");
     faceManipulation->addBlendShape(l_smile_mesh, "l_smile");
-    faceManipulation->addBlendShape(l_suck_mesh, "l_suck");
-    faceManipulation->addBlendShape(r_brow_lower_mesh, "r_brow_lower");
-    faceManipulation->addBlendShape(r_brow_narrow_mesh, "r_brow_narrow");
-    faceManipulation->addBlendShape(r_brow_raise_mesh, "r_brow_raise");
+    //faceManipulation->addBlendShape(l_suck_mesh, "l_suck");
+    //faceManipulation->addBlendShape(r_brow_lower_mesh, "r_brow_lower");
+    //faceManipulation->addBlendShape(r_brow_narrow_mesh, "r_brow_narrow");
+    //faceManipulation->addBlendShape(r_brow_raise_mesh, "r_brow_raise");
     faceManipulation->addBlendShape(r_eye_closed_mesh, "r_eye_closed");
-    faceManipulation->addBlendShape(r_eye_lower_open_mesh, "r_eye_lower_open");
-    faceManipulation->addBlendShape(r_eye_upper_open_mesh, "r_eye_upper_open");
-    faceManipulation->addBlendShape(r_nose_wrinkle_mesh, "r_nose_wrinkle");
-    faceManipulation->addBlendShape(r_puff_mesh, "r_puff");
-    faceManipulation->addBlendShape(r_sad_mesh, "r_sad");
+    //faceManipulation->addBlendShape(r_eye_lower_open_mesh, "r_eye_lower_open");
+    //faceManipulation->addBlendShape(r_eye_upper_open_mesh, "r_eye_upper_open");
+    //faceManipulation->addBlendShape(r_nose_wrinkle_mesh, "r_nose_wrinkle");
+    //faceManipulation->addBlendShape(r_puff_mesh, "r_puff");
+    //faceManipulation->addBlendShape(r_sad_mesh, "r_sad");
     faceManipulation->addBlendShape(r_smile_mesh, "r_smile");
-    faceManipulation->addBlendShape(r_suck_mesh, "r_suck");
+    //faceManipulation->addBlendShape(r_suck_mesh, "r_suck");
 
 
     sphereModel = ResourceManager::loadModel((std::string(ASSET_DIR) + "/models/defaultSphere.fbx").c_str());
@@ -183,13 +183,14 @@ void setUpScene(){
                 //captureDepth();
                 //captureScreenshot();
                 position = ResourceManager::getMouseRayHit();
-                picked = ResourceManager::checkMouseVertexPick(position);
+                int vertexIndex = -1;
+                picked = ResourceManager::checkMouseVertexPick(position, vertexIndex);
                 ResourceManager::setCurrentlySelected(picked);
                 if(picked != nullptr){
                     if(picked->getName() == "Face"){
                         picked = nullptr;
                         GameObject* newControlPoint = spawnManipulator(position);
-                        faceManipulation->addManipulator(newControlPoint);
+                        faceManipulation->addManipulator(newControlPoint, vertexIndex);
                         ResourceManager::setCurrentlySelected(newControlPoint);
                     }
                 }
@@ -206,7 +207,7 @@ void setUpScene(){
 
                         glm::vec3 offset = positionFlattened - ResourceManager::getMouseRayOrigin();
 
-                        picked->setPosition(position - offset*10.0f);
+                        picked->setPosition(position - offset*1.0f);
                     }
                 }
             }

@@ -12,11 +12,13 @@ struct manipulator{
     glm::vec3 initialPosition;
     glm::vec3 currentPosition;
     glm::vec3 delta = glm::vec3(0.0f, 0.0f, 0.0f);
+    int vertexIndex;
 
-    manipulator(GameObject* controlPoint){
+    manipulator(GameObject* controlPoint, int vertexIndex){
         this->controlPoint = controlPoint;
         this->initialPosition = controlPoint->getWorldPosition();
         this->currentPosition = initialPosition;
+        this->vertexIndex = vertexIndex;
     }
 };
 
@@ -59,11 +61,32 @@ public:
     }
 
     void OnGui() {
+
+        float _alpha = alpha;
+        float _u = u;
+
         ImGui::Begin("Face Manipulation");
+        if(ImGui::Button("Reset Manipulators")){
+            resetManipulators();
+        }
+        
         for(int i = 0; i < blendShapes.size(); i++){
             ImGui::SliderFloat(blendShapes[i].name.c_str(), &blendShapes[i].weight, 0.0f, 1.0f);
         }
+
+        ImGui::SliderFloat("Alpha", &_alpha, 0.0f, 1.0f);
+        ImGui::SliderFloat("U", &_u, 0.0f, 1.0f);
         ImGui::End();
+
+        if(_alpha != alpha){
+            alpha = _alpha;
+            updateWeights();
+        }
+
+        if(_u != u){
+            u = _u;
+            updateWeights();
+        }
     }
 
     void addBlendShape(Mesh* mesh, std::string name){
@@ -71,8 +94,8 @@ public:
         blendShapes.push_back(newBlendShape);
     }
 
-    void addManipulator(GameObject* controlPoint){
-        manipulator newManipulator(controlPoint);
+    void addManipulator(GameObject* controlPoint, int vertexIndex){
+        manipulator newManipulator(controlPoint, vertexIndex);
         manipulators.push_back(newManipulator);
     }
 
@@ -90,9 +113,9 @@ public:
 
         for(int i = 0; i < blendShapes.size(); i++){
             for(int j = 0; j < (blendShapes[i].verticies.size() * 3); j += 3){
-               B(j, i) = blendShapes[i].verticies[j/3].x; 
-               B(j + 1, i) = blendShapes[i].verticies[j/3].y; 
-               B(j + 2, i) = blendShapes[i].verticies[j/3].z;
+               B(j, i) = blendShapes[i].deltas[j/3].x; 
+               B(j + 1, i) = blendShapes[i].deltas[j/3].y; 
+               B(j + 2, i) = blendShapes[i].deltas[j/3].z;
             }
         }
 
@@ -103,7 +126,8 @@ public:
 private:
     Mesh* defaultMesh;
     std::vector<glm::vec3> initialPositions;
-    float alpha = 0.001f;
+    float alpha = 0.1f;
+    float u = 0.001f;
     std::vector<manipulator> manipulators;
     std::vector<blendShape> blendShapes;
     Eigen::MatrixXf B;
@@ -112,9 +136,10 @@ private:
 
     bool checkForManipulatorMovement(){
         for(int i = 0; i < manipulators.size(); i++){
-            if(manipulators[i].currentPosition != manipulators[i].controlPoint->getWorldPosition()){
-                manipulators[i].delta = manipulators[i].controlPoint->getWorldPosition() - manipulators[i].currentPosition;
-                manipulators[i].currentPosition = manipulators[i].controlPoint->getWorldPosition();
+            glm::vec3 currentManipulatorPosition = manipulators[i].controlPoint->getWorldPosition();
+            if(manipulators[i].currentPosition != currentManipulatorPosition){
+                manipulators[i].delta = currentManipulatorPosition - initialPositions[manipulators[i].vertexIndex];
+                manipulators[i].currentPosition = currentManipulatorPosition;
                 return true;
             }
         }
@@ -123,10 +148,12 @@ private:
 
     Eigen::VectorXf updateM(){
         Eigen::VectorXf m = Eigen::VectorXf(manipulators.size()* 3);
+        glm::vec3 delta = glm::vec3(0.0f,0.0f,0.0f);
         for(int i = 0; i < manipulators.size(); i++){
-            m(i) = manipulators[i].delta.x;
-            m(i + 1) = manipulators[i].delta.y;
-            m(i + 2) = manipulators[i].delta.z;
+            delta = manipulators[i].currentPosition - manipulators[i].initialPosition;
+            m(i) = delta.x;
+            m(i + 1) = delta.y;
+            m(i + 2) = delta.z;
         }
         return m;
     }
@@ -137,6 +164,16 @@ private:
             w(i) = blendShapes[i].weight;
         }
         return w;
+    }
+
+    void resetManipulators(){
+        for(int i = 0; i < manipulators.size(); i++){
+            manipulators[i].controlPoint->setPosition(initialPositions[manipulators[i].vertexIndex]);
+            manipulators[i].currentPosition = initialPositions[manipulators[i].vertexIndex];
+            manipulators[i].initialPosition = initialPositions[manipulators[i].vertexIndex];
+            manipulators[i].delta = glm::vec3(0.0f, 0.0f, 0.0f);
+        }
+        updateWeights();
     }
 
     void updateDefaultMesh(){
@@ -153,22 +190,46 @@ private:
         defaultMesh->updateVertexBuffer();
     }
 
-    void updateWeights(){
+    void updateWeights() {
         Eigen::VectorXf m = updateM();
+        Eigen::MatrixXf _B = Eigen::MatrixXf::Zero(manipulators.size() * 3, blendShapes.size());
+        Eigen::MatrixXf _Bt = Eigen::MatrixXf::Zero(blendShapes.size(), manipulators.size() * 3);
+        Eigen::MatrixXf _BtB;
         Eigen::VectorXf w0 = getWeights();
-        Eigen::MatrixXf A = BtB + alpha * Eigen::MatrixXf::Identity(BtB.rows(), BtB.cols());
-        Eigen::VectorXf b = Bt * m + alpha * w0;
+
+        // Populate _B and _Bt matrices
+        for (int i = 0; i < blendShapes.size(); i++) {
+            for (int j = 0; j < manipulators.size(); j++) {
+                int vertexIndex = manipulators[j].vertexIndex;
+                _B(j * 3, i) = blendShapes[i].verticies[vertexIndex].x;
+                _B(j * 3 + 1, i) = blendShapes[i].verticies[vertexIndex].y;
+                _B(j * 3 + 2, i) = blendShapes[i].verticies[vertexIndex].z;
+            }
+        }
+
+        _Bt = _B.transpose();
+        _BtB = _Bt * _B;
+        Eigen::MatrixXf A = _BtB + ((alpha + u) * Eigen::MatrixXf::Identity(_BtB.rows(), _BtB.cols()));
+        Eigen::MatrixXf b = (_Bt * m) + (alpha * w0);
         Eigen::LDLT<Eigen::MatrixXf> solver(A);
         Eigen::VectorXf w = solver.solve(b);
-        for(int i = 0; i < blendShapes.size(); i++){
-            blendShapes[i].weight = w(i);
+        w.normalize();
+        
+        // Clamp the weights and update blendShapes
+        for (int i = 0; i < blendShapes.size(); i++) {
+            blendShapes[i].weight = clamp(w(i), 1.0f, 0.0f);
         }
 
         updateDefaultMesh();
     }
 
+
     bool isNotZero(const glm::vec3& vec) {
         return vec.x != 0.0f || vec.y != 0.0f || vec.z != 0.0f;
+    }
+
+    float clamp(float value, float max, float min){
+        return std::max(min, std::min(max, value));
     }
 
 };

@@ -379,7 +379,7 @@ glm::vec3 ResourceManager::getMouseRayOrigin()
     return glm::unProject(window, viewMatrix, projectionMatrix, glm::vec4(0, 0, screenWidth, screenHeight));
 }
 
-GameObject *ResourceManager::checkMouseVertexPick(glm::vec3 &vertex)
+GameObject *ResourceManager::checkMouseVertexPick(glm::vec3 &vertex, int &vertexIndex)
 {
     glm::vec3 mouseRayDirection = getMouseRayHit();
     GameObject *closestGameObject = nullptr;
@@ -401,6 +401,7 @@ GameObject *ResourceManager::checkMouseVertexPick(glm::vec3 &vertex)
                 closestDistance = distance;
                 closestVertex = glm::vec3(vertex);
                 closestGameObject = gameObject;
+                vertexIndex = i;
             }
         }
     }
