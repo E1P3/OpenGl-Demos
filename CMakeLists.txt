@@ -143,6 +143,15 @@ add_executable(graphics
     demos/animation3.h
     demos/tessalationTest.h
     demos/test.h
+    demos/rendering3/rendering3.h
+    demos/rendering3/binary_triangle_tree.c
+    demos/rendering3/binary_triangle_tree.h
+    demos/rendering3/heightmap.cpp
+    demos/rendering3/heightmap.h
+    demos/rendering3/terrain_patch.cpp
+    demos/rendering3/terrain_patch.hpp
+    demos/rendering3/roamShader.h
+    demos/rendering3/util.h
     )
 
 if (APPLE)
