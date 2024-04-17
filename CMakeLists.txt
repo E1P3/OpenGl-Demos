@@ -144,7 +144,7 @@ add_executable(graphics
     demos/tessalationTest.h
     demos/test.h
     demos/rendering3/rendering3.h
-    demos/rendering3/binary_triangle_tree.c
+    demos/rendering3/binary_triangle_tree.cpp
     demos/rendering3/binary_triangle_tree.h
     demos/rendering3/heightmap.cpp
     demos/rendering3/heightmap.h

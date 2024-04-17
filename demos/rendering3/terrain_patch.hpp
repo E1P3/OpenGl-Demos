@@ -35,54 +35,18 @@ private:
 	size_t m_poolNext;
 
 public:
-	/**
-	 * Initialise terrain patch.
-	 *
-	 * @param filename to read the map from
-	 * @param x offset on world
-	 * @param y offset on world
-	 */
+
 	TerrainPatch(const char *fn, int offset_x = 0, int offset_y = 0, bool isImage = true);
 	~TerrainPatch();
 
-	/**
-	 * Debug print the terrain patch data
-	 */
 	void print() const;
 
-	/**
-	 * Compute variance trees for the given patch.
-	 *
-	 * This is called once for patches, and after every modification on heightmap.
-	 *
-	 * @param tessellation max levels
-	 */
 	void computeVariance(int maxTessellationLevels = 14);
 
-	/**
-	 * Resets the tessellation for the next frame.
-	 */
 	void reset();
 
-	/**
-	 * Tessellate/triangulate the terrain patch 
-	 *
-	 * @param viewer position
-	 * @param allowed error margin
-	 */
 	void tessellate(const glm::vec3 &view, float LODScaling, float errorMargin = 0.001);
 
-	/**
-	 * Get the tesselation result into vertices array
-	 *
-	 * size of the given params should be at least
-	 * (left_num_leaves + right_num_leaves)*(number of elements per triangle)
-	 * as no bounds are tested
-	 *
-	 * @param vertices
-	 * @param colors
-	 * @param normalTexels
-	 */
 	void getTessellation(float *vertices, float *colors, float *normalTexels);
 
 	size_t amountOfLeaves() const;
@@ -92,22 +56,9 @@ public:
 	Heightmap *getHeightmap();
 
 private:
-	// PRIVATE FUNCTIONS
 
-	/**
-	 * Allocate a BTT node from the triangle pool.
-	 *
-	 */
 	BTTNode *allocateNode();
 
-	/**
-	 * Split the Given binary triangle node with following rules:
-	 * @ http://www.gamasutra.com/view/feature/131596/realtime_dynamic_level_of_detail_.php?print=1
-	 *
-	 *  1. The Node is part of a Diamond - Split the node and its Base Neighbor.
-	 *  2. The Node is on the edge of the mesh - Trivial, only split the node.
-	 *  3. The Node is not part of a Diamond - Force Split the Base Neighbor.
-	 */
 	void split(BTTNode *node);
 
 	void tessellateRecursive(

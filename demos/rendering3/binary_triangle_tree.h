@@ -3,40 +3,6 @@
 
 #include <stddef.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/*
- *           Apex Vertex
- *   *************+*************
- *   *           ***           *
- *   * Left     * * *  Right   *
- *   * Neighbor*  *  * Neihbor *
- *   *        *   *   *        *
- *   *       *    *    *       *
- *   *      *     *     *      *
- *   *     *      *      *     *
- *   *    *       *       *    *
- *   *   * Left   * Right  *   *
- *   *  *  Child  * Child   *  *
- *   * *          *          * *
- *   **           *           **
- *   +************+************+
- * Left        Center        Right
- * Vertex      Vertex        Vertex
- *      *                   *
- *       *                 *
- *        *   Base        *
- *         *  Neigbor    *
- *          *           *
- *           *         *
- *            *       *
- *             *     *
- *              *   *
- *               * *
- *                *
- */
 typedef struct BTTNodeT
 {
 	struct BTTNodeT *left_child;
@@ -48,18 +14,7 @@ typedef struct BTTNodeT
 
 } BTTNode;
 
-/**
- * Calculate the number of leaves on given tree
- *
- * @param BTT
- *
- * @return number of leaves
- */
+
 size_t BTTNode_number_of_leaves(BTTNode *tree);
-
-#ifdef __cplusplus
-} // extern "C"
-#endif
-
 
 #endif // BINARY_TRIANGLE_TREE_H

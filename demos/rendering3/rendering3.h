@@ -47,7 +47,7 @@ void setUpScene(){
     camera->setMode(Camera_Mode::FREE);
 
     GameObject* cameraOrbit = ResourceManager::loadGameObject();
-    cameraOrbit->setPosition(glm::vec3(500.0f, -200.0f, -500.0f));
+    cameraOrbit->setPosition(glm::vec3(500.0f, -300.0f, -500.0f));
 
     GameObject* target = ResourceManager::loadGameObject();
     target->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -56,7 +56,7 @@ void setUpScene(){
     GameObject* terrain = ResourceManager::loadGameObject();
     RenderModule* renderModule = new RenderModule(nullptr, sphereMaterial, roamShader);
     terrain->addModule(renderModule);
-    terrain->setPosition(glm::vec3(0.0f, -200.0f, 0.0f));
+    terrain->setPosition(glm::vec3(0.0f, -300.0f, 0.0f));
     terrain->setRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
     terrain->setScale(glm::vec3(1000.0f, 1000.0f, 50.0f));
 
@@ -73,6 +73,9 @@ void setUpScene(){
     //ImGuiWrapper::attachGuiFunction("Terrain", [terrain](){terrain->OnGui();});
     ImGuiWrapper::attachGuiFunction("Shader", [roamShader](){roamShader->OnGui();});
     ImGuiWrapper::attachGuiFunction("Camera", [camera](){camera->OnGui();});
+    ImGuiWrapper::attachGuiFunction("Frame Rate", [](){
+        ImGui::Text("Frame Rate: %.1f", ImGui::GetIO().Framerate);
+    });
     //ImGuiWrapper::attachGuiFunction("Camera Orbit", [cameraOrbit](){cameraOrbit->OnGui();});
     
 }

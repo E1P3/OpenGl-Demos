@@ -86,7 +86,10 @@ public:
 
     void drawTerrainPatch(GameObject* self = nullptr){
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        if(isWireframe){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
+
 		glLineWidth(2.0);
         this->terrainPatch->reset();
         glm::vec3 referencePosition = target != nullptr ? target->getPosition() : ResourceManager::getActiveCamera()->getPosition();
@@ -125,7 +128,10 @@ public:
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        if(isWireframe){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+
     }
 
     void OnGui() {
@@ -137,6 +143,12 @@ public:
         errorMargin = errorMargin * 1000.0f;
         ImGui::SliderFloat("Error Margin", &errorMargin, 0.0f, 100.0f);
         errorMargin = errorMargin * 0.001f;
+        int currentTessLevel = this->tessalationLevel;
+        ImGui::SliderInt("Tessalation Level", &this->tessalationLevel, 1, 30);
+        if(currentTessLevel != this->tessalationLevel){
+            this->terrainPatch->computeVariance(this->tessalationLevel);
+        }
+        ImGui::Checkbox("Wireframe", &isWireframe);
         ImGui::End();
     }
 
@@ -153,5 +165,17 @@ private:
     bool isInitialised = false;
     float LODScaling = 216.0f;
     float errorMargin = 0.0045f;
+    int tessalationLevel = 20;
+    bool isWireframe = true;
+
+    void reverseArray(float* array, int size) {
+        int i, j;
+        float temp;
+        for (i = 0, j = size - 1; i < j; i++, j--) {
+            temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    }
 
 };
