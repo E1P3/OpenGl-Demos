@@ -66,12 +66,12 @@ void TerrainPatch::computeVariance(int maxTessellationLevels)
 	memset(m_rightVariance, 0, sizeof(float)*m_varianceSize);
 
 	computeVarianceRecursive(
-		maxTessellationLevels, 0, m_leftVariance, 1, m_map,
+		maxTessellationLevels, 0, m_rightVariance, 1, m_map,
 		0,              m_map->height-1, Heightmap_get(m_map, 0, m_map->height-1),
 		m_map->width-1, 0,               Heightmap_get(m_map, m_map->width-1, 0),
 		0,              0,               Heightmap_get(m_map, 0, 0));
 	computeVarianceRecursive(
-		maxTessellationLevels, 0, m_rightVariance, 1, m_map,
+		maxTessellationLevels, 0, m_leftVariance, 1, m_map,
 		m_map->width-1, 0,               Heightmap_get(m_map, m_map->width-1, 0),
 		0,              m_map->height-1, Heightmap_get(m_map, 0, m_map->height-1),
 		m_map->width-1, m_map->height-1, Heightmap_get(m_map, m_map->width-1, m_map->height-1));
@@ -93,13 +93,6 @@ void TerrainPatch::reset()
 
 void TerrainPatch::tessellate(const glm::vec3 &view, float LODScaling,  float errorMargin)
 {
-	float center_x = (0 + m_map->width-1) * 0.5f;
-	float center_y = (m_map->height-1 + 0) * 0.5f;
-	float a = center_x/m_map->width - view.x;
-	float b = center_y/m_map->height + view.z;
-	float distance = 1 + ((a*a + b*b)*m_map->width/LODScaling);
-	float variance = m_leftVariance[1]/distance;
-	printf("a: %f, b: %f, distance: %f, variance: %f\n", a, b, distance, variance);
 	tessellateRecursive(
 		m_leftRoot, view, errorMargin,
 		0,              m_map->height-1,

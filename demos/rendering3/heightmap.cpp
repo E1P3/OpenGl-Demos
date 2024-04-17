@@ -24,17 +24,6 @@ void Heightmap_print(Heightmap *map)
 	size_t histogram[11] = {0};
 	size_t i;
 
-	// for (i=0; i<map->width*map->height; ++i) {
-	// 	float val = map->map[i];
-	// 	val *= 10;
-	// 	if (val >10) {
-	// 		printf("WAD: %f\n", map->map[i]);
-	// 		histogram[10]++;
-	// 	} else {
-	// 		histogram[(int)val]++;
-	// 	}
-	// }
-
 	printf("  histogram {\n");
 	printf("    0.0 - 0.1 : %lu,\n", histogram[0]);
 	printf("    0.1 - 0.2 : %lu,\n", histogram[1]);
