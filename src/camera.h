@@ -40,6 +40,7 @@ public:
     void setTarget(Entity* target);
     void setMode(Camera_Mode mode);
     void setTpsOffset(float offset);
+    void setSpeed(float speed){freeCameraVelocity = speed;}
     Camera_Mode getMode();
 
 private:

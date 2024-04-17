@@ -7,7 +7,7 @@
 #include <string.h>
 #include <glm/glm.hpp>
 
-TerrainPatch::TerrainPatch(const char *fn, int offset_x, int offset_y)
+TerrainPatch::TerrainPatch(const char *fn, int offset_x, int offset_y, bool isImage)
 	: m_map(NULL)
 	, m_worldX(offset_x)
 	, m_worldY(offset_y)
@@ -22,7 +22,7 @@ TerrainPatch::TerrainPatch(const char *fn, int offset_x, int offset_y)
 	, m_poolSize(100000)
 	, m_poolNext(0)
 {
-	m_map = Heightmap_read(fn);
+	m_map = Heightmap_read(fn, isImage);
 	if (m_map == NULL) {
 		return;
 	}
@@ -91,23 +91,62 @@ void TerrainPatch::reset()
 	m_poolNext = 2;
 }
 
-void TerrainPatch::tessellate(const glm::vec3 &view, float errorMargin)
+void TerrainPatch::tessellate(const glm::vec3 &view, float LODScaling,  float errorMargin)
 {
+	float center_x = (0 + m_map->width-1) * 0.5f;
+	float center_y = (m_map->height-1 + 0) * 0.5f;
+	float a = center_x/m_map->width - view.x;
+	float b = center_y/m_map->height + view.z;
+	float distance = 1 + ((a*a + b*b)*m_map->width/LODScaling);
+	float variance = m_leftVariance[1]/distance;
+	printf("a: %f, b: %f, distance: %f, variance: %f\n", a, b, distance, variance);
 	tessellateRecursive(
 		m_leftRoot, view, errorMargin,
 		0,              m_map->height-1,
 		m_map->width-1, 0,
 		0,              0,
-		m_leftVariance, 1);
+		m_leftVariance, 1, LODScaling);
 	tessellateRecursive(
 		m_rightRoot, view, errorMargin,
 		m_map->width-1, 0,
 		0,              m_map->height-1,
 		m_map->width-1, m_map->height-1,
-		m_rightVariance, 1);
+		m_rightVariance, 1, LODScaling);
 
 	m_leftLeaves = BTTNode_number_of_leaves(m_leftRoot);
 	m_rightLeaves = BTTNode_number_of_leaves(m_rightRoot);
+}
+
+void TerrainPatch::tessellateRecursive(
+	BTTNode *node, const glm::vec3 &view, float errorMargin,
+	int left_x, int left_y, int right_x, int right_y, int apex_x, int apex_y,
+	float *variance_tree, int variance_idx, float LODScaling)
+{
+	float center_x = (left_x + right_x) * 0.5f;
+	float center_y = (left_y + right_y) * 0.5f;
+
+	if (variance_idx < m_varianceSize) {
+		float a = center_x/m_map->width - view.x;
+		float b = center_y/m_map->height + view.z;
+		float distance = 1 + ((a*a + b*b)*m_map->width/LODScaling);
+		float variance = variance_tree[variance_idx]/distance;
+
+		if (variance > errorMargin) {
+			split(node);
+			if (node->left_child &&
+			   ((abs(left_x - right_x) >= 3) || (abs(left_y - right_y) >= 3)))
+			{
+				tessellateRecursive(
+					node->left_child, view, errorMargin,
+					apex_x, apex_y, left_x, left_y, center_x, center_y,
+					variance_tree, (variance_idx<<1), LODScaling);
+				tessellateRecursive(
+					node->right_child, view, errorMargin,
+					right_x, right_y, apex_x, apex_y, center_x, center_y,
+					variance_tree, (variance_idx<<1)+1, LODScaling);
+			}
+		}
+	}
 }
 
 void TerrainPatch::getTessellation(float *vertices, float *colors, float *normalTexels)
@@ -123,6 +162,54 @@ void TerrainPatch::getTessellation(float *vertices, float *colors, float *normal
 		m_map->width-1, 0,
 		0,              m_map->height-1,
 		m_map->width-1, m_map->height-1);
+}
+
+void TerrainPatch::getTessellationRecursive(
+	BTTNode *node, Heightmap *map,
+	float *vertices, float *colors, float *normalTexels, int *idx,
+	int left_x, int left_y, int right_x, int right_y, int apex_x, int apex_y)
+{
+	if (node->left_child) {
+		int center_x = (left_x + right_x) / 2;
+		int center_y = (left_y + right_y) / 2;
+
+		getTessellationRecursive(
+			node->left_child, map, vertices, colors, normalTexels, idx,
+			apex_x, apex_y, left_x, left_y, center_x, center_y);
+		getTessellationRecursive(
+			node->right_child, map, vertices, colors, normalTexels, idx,
+			right_x, right_y, apex_x, apex_y, center_x, center_y);
+	} else {
+		// we're at leaf
+		vertices[*idx+0] = (float) left_x / map->width;
+		vertices[*idx+1] = (float) left_y / map->height;
+		vertices[*idx+2] = Heightmap_get(map, left_x, left_y);
+		vertices[*idx+3] = (float) right_x / map->width;
+		vertices[*idx+4] = (float) right_y / map->height;
+		vertices[*idx+5] = Heightmap_get(map, right_x, right_y);
+		vertices[*idx+6] = (float) apex_x / map->width;
+		vertices[*idx+7] = (float) apex_y / map->height;
+		vertices[*idx+8] = Heightmap_get(map, apex_x, apex_y);
+
+		colors[*idx+0] = 1;
+		colors[*idx+1] = 1;
+		colors[*idx+2] = 1;
+		colors[*idx+3] = 1;
+		colors[*idx+4] = 1;
+		colors[*idx+5] = 1;
+		colors[*idx+6] = 1;
+		colors[*idx+7] = 1;
+		colors[*idx+8] = 1;
+
+		normalTexels[(*idx/9)*6+0] = (float) left_x / map->width;
+		normalTexels[(*idx/9)*6+1] = (float) left_y / map->height;
+		normalTexels[(*idx/9)*6+2] = (float) right_x / map->width;
+		normalTexels[(*idx/9)*6+3] = (float) right_y / map->height;
+		normalTexels[(*idx/9)*6+4] = (float) apex_x / map->width;
+		normalTexels[(*idx/9)*6+5] = (float) apex_y / map->height;
+
+		*idx += 9;
+	}
 }
 
 BTTNode *TerrainPatch::allocateNode()
@@ -196,38 +283,6 @@ void TerrainPatch::split(BTTNode *node)
 	}
 }
 
-void TerrainPatch::tessellateRecursive(
-	BTTNode *node, const glm::vec3 &view, float errorMargin,
-	int left_x, int left_y, int right_x, int right_y, int apex_x, int apex_y,
-	float *variance_tree, int variance_idx)
-{
-	float center_x = (left_x + right_x) * 0.5f;
-	float center_y = (left_y + right_y) * 0.5f;
-
-	if (variance_idx < m_varianceSize) {
-		float a = center_x/m_map->width - view.x;
-		float b = center_y/m_map->height - view.y;
-		float distance = 1 + ((a*a + b*b)*m_map->width/128.0f);
-		float variance = variance_tree[variance_idx]/distance;
-
-		if (variance > errorMargin) {
-			split(node);
-			if (node->left_child &&
-			   ((abs(left_x - right_x) >= 3) || (abs(left_y - right_y) >= 3)))
-			{
-				tessellateRecursive(
-					node->left_child, view, errorMargin,
-					apex_x, apex_y, left_x, left_y, center_x, center_y,
-					variance_tree, (variance_idx<<1));
-				tessellateRecursive(
-					node->right_child, view, errorMargin,
-					right_x, right_y, apex_x, apex_y, center_x, center_y,
-					variance_tree, (variance_idx<<1)+1);
-			}
-		}
-	}
-}
-
 void TerrainPatch::computeVarianceRecursive(
 	int maxTessellationLevels, int level, float *varianceTree, int idx, Heightmap *map,
 	int left_x,  int left_y,  float left_z,
@@ -254,53 +309,5 @@ void TerrainPatch::computeVarianceRecursive(
 		                        varianceTree[(idx<<1)+1]);
 	} else {
 		varianceTree[idx] = fabs(center_z - ((left_z + right_z)*0.5));
-	}
-}
-
-void TerrainPatch::getTessellationRecursive(
-	BTTNode *node, Heightmap *map,
-	float *vertices, float *colors, float *normalTexels, int *idx,
-	int left_x, int left_y, int right_x, int right_y, int apex_x, int apex_y)
-{
-	if (node->left_child) {
-		int center_x = (left_x + right_x) / 2;
-		int center_y = (left_y + right_y) / 2;
-
-		getTessellationRecursive(
-			node->left_child, map, vertices, colors, normalTexels, idx,
-			apex_x, apex_y, left_x, left_y, center_x, center_y);
-		getTessellationRecursive(
-			node->right_child, map, vertices, colors, normalTexels, idx,
-			right_x, right_y, apex_x, apex_y, center_x, center_y);
-	} else {
-		// we're at leaf
-		vertices[*idx+0] = (float) left_x / map->width;
-		vertices[*idx+1] = (float) left_y / map->height;
-		vertices[*idx+2] = Heightmap_get(map, left_x, left_y);
-		vertices[*idx+3] = (float) right_x / map->width;
-		vertices[*idx+4] = (float) right_y / map->height;
-		vertices[*idx+5] = Heightmap_get(map, right_x, right_y);
-		vertices[*idx+6] = (float) apex_x / map->width;
-		vertices[*idx+7] = (float) apex_y / map->height;
-		vertices[*idx+8] = Heightmap_get(map, apex_x, apex_y);
-
-		colors[*idx+0] = 1;
-		colors[*idx+1] = 1;
-		colors[*idx+2] = 1;
-		colors[*idx+3] = 1;
-		colors[*idx+4] = 1;
-		colors[*idx+5] = 1;
-		colors[*idx+6] = 1;
-		colors[*idx+7] = 1;
-		colors[*idx+8] = 1;
-
-		normalTexels[(*idx/9)*6+0] = (float) left_x / map->width;
-		normalTexels[(*idx/9)*6+1] = (float) left_y / map->height;
-		normalTexels[(*idx/9)*6+2] = (float) right_x / map->width;
-		normalTexels[(*idx/9)*6+3] = (float) right_y / map->height;
-		normalTexels[(*idx/9)*6+4] = (float) apex_x / map->width;
-		normalTexels[(*idx/9)*6+5] = (float) apex_y / map->height;
-
-		*idx += 9;
 	}
 }

@@ -35,11 +35,13 @@ void Camera::OnStart(){
 
 void Camera::OnGui(){
     ImGui::Begin("Camera Properties");
-    ImGui::Text("Position: (%.2f, %.2f, %.2f)", this->position.x, this->position.y, this->position.z);
+    glm::vec3 _position = this->getPosition();
+    ImGui::Text("Position: (%.2f, %.2f, %.2f)", _position.x, _position.y, _position.z);
     ImGui::Text("Front: (%.2f, %.2f, %.2f)", this->front.x, this->front.y, this->front.z);
     ImGui::Text("Up: (%.2f, %.2f, %.2f)", this->up.x, this->up.y, this->up.z);
     ImGui::Text("Right: (%.2f, %.2f, %.2f)", this->right.x, this->right.y, this->right.z);
     ImGui::Text("Rotation: (%.2f, %.2f, %.2f)", this->rotationEuler.x, this->rotationEuler.y, this->rotationEuler.z);
+    ImGui::SliderFloat("tpsOffset", &tpsOffset, 0.0f, 1000.0f);
     ImGui::End();
 
 }
@@ -53,6 +55,9 @@ glm::mat4 Camera::getProjectionMatrix(){
 }
 
 glm::vec3 Camera::getPosition(){
+    if(this->currentMode == TPS && this->target != nullptr){
+        return this->target->getWorldPosition() - this->front * tpsOffset;
+    }
     return this->position;
 }
 

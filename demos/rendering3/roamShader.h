@@ -4,19 +4,27 @@
 #include "../../src/resourceManager.h"
 #include "../../src/entityModules/renderModule.h"
 #include "terrain_patch.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 class RoamShader : public Shader {
 
 public:
-    RoamShader(const char* PVS, const char* PFS, TerrainPatch* terrainPatch) {
+    RoamShader(const char* PVS, const char* PFS, TerrainPatch* terrainPatch, float LODScaling = 216.0f, float errorMargin = 0.0045f){
         this->Compile(this->readShaderSource(PVS), this->readShaderSource(PFS));
         this->terrainPatch = terrainPatch;
-        this->terrainPatch->computeVariance();
-        initialiseTerrainPatch();
+        this->terrainPatch->computeVariance(20);
+        this->LODScaling = LODScaling;
+        this->errorMargin = errorMargin;
     }
 
     void Render() override {
         this->Use();
+
+        if(isInitialised == false){
+            initialiseTerrainPatch();
+            isInitialised = true;
+        }
 
         this->SetMatrix4("view", ResourceManager::getActiveCamera()->getViewMatrix());
         this->SetMatrix4("projection", ResourceManager::getActiveCamera()->getProjectionMatrix());
@@ -72,9 +80,17 @@ public:
 
     }
 
-    void drawTerrainPatch(){
+    void setTarget(GameObject* target){
+        this->target = target;
+    }
+
+    void drawTerrainPatch(GameObject* self = nullptr){
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glLineWidth(2.0);
         this->terrainPatch->reset();
-        this->terrainPatch->tessellate(ResourceManager::getActiveCamera()->getPosition() * 0.001f);
+        glm::vec3 referencePosition = target != nullptr ? target->getPosition() : ResourceManager::getActiveCamera()->getPosition();
+        this->terrainPatch->tessellate(referencePosition * scaler, LODScaling, errorMargin);
         this->terrainPatch->getTessellation(triPool, colorPool, normalTexelPool);
 
         size_t leaves = this->terrainPatch->amountOfLeaves();
@@ -109,15 +125,33 @@ public:
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);
 
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
+    void OnGui() {
+        ImGui::Begin("Roam Shader");
+        ImGui::Text("This project renders terrain based on the position of the camera.");
+        ImGui::Text("Use LODScaling and ErrorMargin to adjuts the LOD generation.");
+        ImGui::Text("Press F to change from third person to first person view.");
+        ImGui::SliderFloat("LOD Scaling", &LODScaling, 0.0f, 1024.0f);
+        errorMargin = errorMargin * 1000.0f;
+        ImGui::SliderFloat("Error Margin", &errorMargin, 0.0f, 100.0f);
+        errorMargin = errorMargin * 0.001f;
+        ImGui::End();
     }
 
 private:
     TerrainPatch* terrainPatch;
+    GameObject* target = nullptr;
+    float scaler = 0.001f;
     GLuint buffers[3];
     GLuint arrays[3];
     GLuint normalTexture;
     float* triPool;
     float* colorPool;
     float* normalTexelPool;
+    bool isInitialised = false;
+    float LODScaling = 216.0f;
+    float errorMargin = 0.0045f;
 
 };

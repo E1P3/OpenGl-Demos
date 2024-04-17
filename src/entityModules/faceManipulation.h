@@ -138,9 +138,7 @@ public:
         this->initialPositions = defaultMesh->getInitialPositions();
     };
 
-    void OnStart() override {
-        initialiseEigenVariables();
-    }
+    void OnStart() override {}
 
     void OnUpdate() override {
         if(useManipulators){
@@ -221,36 +219,9 @@ private:
     float u = 0.001f;
     std::vector<manipulator> manipulators;
     std::vector<blendShape> blendShapes;
-    Eigen::MatrixXf B;
-    Eigen::MatrixXf Bt;
-    Eigen::MatrixXf BtB;
     bool useManipulators = true;
     WeightAnimation weightAnimation;
     bool useAnimation = false;
-
-    void initialiseEigenVariables(){
-        if(blendShapes.empty() || blendShapes[0].verticies.empty()) {
-            return;
-        }
-
-        unsigned int num_rows = manipulators.size();
-        unsigned int num_cols = blendShapes.size();
-
-        B = Eigen::MatrixXf(blendShapes[0].verticies.size() * 3, blendShapes.size());
-        Bt = Eigen::MatrixXf(blendShapes.size(), blendShapes[0].verticies.size() * 3);
-        BtB = Eigen::MatrixXf(blendShapes.size(), blendShapes.size());
-
-        for(int i = 0; i < blendShapes.size(); i++){
-            for(int j = 0; j < (blendShapes[i].verticies.size() * 3); j += 3){
-               B(j, i) = blendShapes[i].deltas[j/3].x; 
-               B(j + 1, i) = blendShapes[i].deltas[j/3].y; 
-               B(j + 2, i) = blendShapes[i].deltas[j/3].z;
-            }
-        }
-
-        Bt = B.transpose();
-        BtB = Bt * B;
-    }
 
     float checkForManipulatorMovement(){
         for(int i = 0; i < manipulators.size(); i++){

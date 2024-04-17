@@ -52,44 +52,77 @@ void Heightmap_print(Heightmap *map)
 	printf("}\n");
 }
 
-Heightmap *Heightmap_read(const char *filename)
+Heightmap *Heightmap_read(const char *filename, bool isImage)
 {
-	stbi_set_flip_vertically_on_load(true);
-	int width, height, nchannels;
-	unsigned char *data = stbi_load(filename, &width, &height, &nchannels, 0);
+	if(isImage){
+		stbi_set_flip_vertically_on_load(true);
+		int width, height, nchannels;
+		unsigned char *data = stbi_load(filename, &width, &height, &nchannels, 0);
 
-	if (!data) {
-		printf("Unable to open file %s : %s\n", filename, strerror(errno));
-		stbi_image_free(data);
-		return NULL;
-	} else {
-		printf("Loaded image %s\n", filename);
+		if (!data) {
+			printf("Unable to open file %s : %s\n", filename, strerror(errno));
+			stbi_image_free(data);
+			return NULL;
+		} else {
+			printf("Loaded image %s\n", filename);
+
+			Heightmap *map = (Heightmap*)malloc(sizeof(Heightmap));
+			map->normal_map = NULL;
+			map->map = (float*)malloc(width*height*sizeof(float));
+
+			map->width = width;
+			map->height = height;
+
+			float *ptr = map->map;
+
+			float yScale = 64.0f / 255.0f; float yOffset = 10.0f;
+
+			for (int i = 0; i < map->height; i++) {
+				for(int j = 0; j < map->width; j++) {
+					unsigned char* texel = data + (j + width * i) * nchannels;
+					unsigned char r = texel[0];
+					*ptr = (int)r * yScale + ((int)r == 0 ? 0.0f : yOffset);
+					map->minZ = MIN(map->minZ, *ptr);
+					map->maxZ = MAX(map->maxZ, *ptr);
+					++ptr;
+				}
+			}
+
+			stbi_image_free(data);
+
+			return map;
+		}
+
+	} else{
+		FILE *f = fopen(filename, "r");
+		if (!f) {
+			printf("Unable to open file %s : %s\n", filename, strerror(errno));
+			return NULL;
+		}
 
 		Heightmap *map = (Heightmap*)malloc(sizeof(Heightmap));
 		map->normal_map = NULL;
-		map->map = (float*)malloc(width*height*sizeof(float));
 
-		map->width = width;
-		map->height = height;
+		fscanf(f, "%d %d\n", &map->width, &map->height);
+		map->map = (float*)malloc(map->width*map->height*sizeof(float));
+
+		map->minZ = FLT_MAX;
+		map->maxZ = FLT_MIN;
 
 		float *ptr = map->map;
-
-		float yScale = 1.0f / 256.0f, yShift = 16.0f;
-
-		for (int i = 0; i < map->height; i++) {
-			for(int j = 0; j < map->width; j++) {
-				unsigned char* texel = data + (j + width * i) * nchannels;
-				unsigned char r = texel[0];
-				*ptr = (int)r * yScale - yShift;
+		for (int i=0; i<map->height; ++i) {
+			for (int j=0; j<map->width; ++j) {
+				fscanf(f, "%f", ptr);
 				map->minZ = MIN(map->minZ, *ptr);
 				map->maxZ = MAX(map->maxZ, *ptr);
 				++ptr;
 			}
 		}
 
-		stbi_image_free(data);
+		fclose(f);
 
 		return map;
+	
 	}
 }
 

@@ -42,7 +42,7 @@ public:
 	 * @param x offset on world
 	 * @param y offset on world
 	 */
-	TerrainPatch(const char *fn, int offset_x = 0, int offset_y = 0);
+	TerrainPatch(const char *fn, int offset_x = 0, int offset_y = 0, bool isImage = true);
 	~TerrainPatch();
 
 	/**
@@ -70,7 +70,7 @@ public:
 	 * @param viewer position
 	 * @param allowed error margin
 	 */
-	void tessellate(const glm::vec3 &view, float errorMargin = 0.001);
+	void tessellate(const glm::vec3 &view, float LODScaling, float errorMargin = 0.001);
 
 	/**
 	 * Get the tesselation result into vertices array
@@ -113,7 +113,7 @@ private:
 	void tessellateRecursive(
 		BTTNode *node, const glm::vec3 &view, float errorMargin,
 		int left_x, int left_y, int right_x, int right_y, int apex_x, int apex_y,
-		float *variance, int variance_idx);
+		float *variance, int variance_idx, float LODScaling);
 
 	void computeVarianceRecursive(
 		int maxTessellationLevels, int level, float *varianceTree, int idx, Heightmap *map,

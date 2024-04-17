@@ -15,7 +15,7 @@ typedef struct
 } Heightmap;
 
 void Heightmap_print(Heightmap *map);
-Heightmap *Heightmap_read(const char *filename);
+Heightmap *Heightmap_read(const char *filename, bool isImage = true);
 void Heightmap_delete(Heightmap *map);
 void Heightmap_normalize(Heightmap *map);
 void Heightmap_calculate_normals(Heightmap *map);
