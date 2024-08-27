@@ -17,19 +17,19 @@ Thanks to cmake all you need is to build it and its dependencies and run the gen
 
 ## Demos
 
-### Plane rotation showcase
+### Plane
 
 ![animation1](https://github.com/E1P3/graphics-year5/blob/main/media/anim1.gif)
 
 Showcase of heirarchical object placement as well as the camera system of the engine. Allows to change the orientation of the plane as well as the camera, with appropriate quaternion and euler rotations presented in the UI.
 
-### Shader showcase
+### PBR vs Toon vs Blinn-Phong Shader
 
 ![rendering1](https://github.com/E1P3/graphics-year5/blob/main/media/render1.gif)
 
 Presentation of three shaders serving different purposes. It features a PBR shader based on cook torrace model, a toon shader and a simple blinn phong. All shaders rendered on selection of models. The UI allows to controll the material properties to change the look of each shader.
 
-### Reflection/Refraction showcase
+### Reflection/Refraction
 
 ![rendering2](https://github.com/E1P3/graphics-year5/blob/main/media/render2.gif)
 
