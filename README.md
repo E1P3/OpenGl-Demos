@@ -1,6 +1,6 @@
-# graphics-year5
+# OpenGL Demos
 
-Opengl graphics Engine for most of my work on real time rendering and animation for my Masters. Both Mac and Windows compatible.
+Opengl graphics Engine for most of my demos on real time rendering and animation for my Masters. Both Mac and Windows compatible.
 The Engine features a number of pre built shaders as well as a framework to easily create new shaders and gameplay modules to suit the needs of the game.
 Allows for creation of models, shaders, materials and entityModules that can be added to a gameObject to allow for variety of usecases.
 Simply inherit EntityModule or Shader modules to quickly iterate and test different rendering techiniques and gameplay features.
